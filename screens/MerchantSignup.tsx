@@ -2,12 +2,12 @@
 import * as React from 'react';
 import 'react-native-gesture-handler';
 import {StyleSheet, View, Image} from 'react-native';
-//import {StackActions} from '@react-navigation/native';
+import {StackActions} from '@react-navigation/native';
 //material ui + form
 import {Button, Text, TextInput} from 'react-native-paper';
 import {Formik} from 'formik';
 
-export default function MerchantSignup({}) {
+export default function MerchantSignup({navigation}: {navigation: any}) {
   return (
     <Formik
       initialValues={{
@@ -18,7 +18,7 @@ export default function MerchantSignup({}) {
       }}
       onSubmit={values => {
         console.log(values);
-        //navigation.dispatch(StackActions.replace('MerchantRegDetails'));
+        navigation.dispatch(StackActions.replace('MerchantDetails'));
       }}>
       {({handleChange, handleBlur, handleSubmit, values}) => (
         <View style={styles.container}>
@@ -65,9 +65,7 @@ export default function MerchantSignup({}) {
             style={styles.buttonDefault}
             textColor="black"
             mode="contained"
-            onPress={handleSubmit}
-            // onPress={() => {navigation.dispatch(StackActions.replace("MerchantRegDetails"));}}
-          >
+            onPress={handleSubmit}>
             Sign Up
           </Button>
 
@@ -76,7 +74,7 @@ export default function MerchantSignup({}) {
             <Text
               style={styles.Highlight}
               onPress={() => {
-                //navigation.dispatch(StackActions.replace('MerchantSignIn'));
+                navigation.dispatch(StackActions.replace('MerchantSignIn'));
               }}>
               Here
             </Text>
