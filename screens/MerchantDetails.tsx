@@ -1,5 +1,6 @@
 import {Button, StyleSheet, View} from 'react-native';
 import * as React from 'react';
+import {StackActions} from '@react-navigation/native';
 
 export default function MerchantDetails({navigation}: {navigation: any}) {
   return (
@@ -7,7 +8,7 @@ export default function MerchantDetails({navigation}: {navigation: any}) {
       <Button
         title="Register"
         onPress={() => {
-          navigation.pop(2);
+          navigation.dispatch(StackActions.replace('MerchantSignin'));
         }}
       />
     </View>

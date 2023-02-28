@@ -10,7 +10,7 @@ import MerchantDetails from './screens/MerchantDetails';
 import MerchantSignin from './screens/MerchantSignin';
 import MerchantHomepage from './screens/MerchantHomepage';
 //paper meterial ui
-import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
+import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 
 const Stack = createStackNavigator();
 

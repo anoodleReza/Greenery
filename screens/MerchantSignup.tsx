@@ -1,11 +1,12 @@
 //basic
-import * as React from 'react';
+import React from 'react';
 import 'react-native-gesture-handler';
 import {StyleSheet, View, Image} from 'react-native';
 import {StackActions} from '@react-navigation/native';
 //material ui + form
 import {Button, Text, TextInput} from 'react-native-paper';
 import {Formik} from 'formik';
+import Axios from 'axios';
 
 export default function MerchantSignup({navigation}: {navigation: any}) {
   return (
@@ -18,6 +19,17 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
       }}
       onSubmit={values => {
         console.log(values);
+        //send to server
+        //not sure about the link, maybe we need to make it cloud based? but it works
+        //register
+        Axios.post('http://10.0.2.2:3001/register', {
+          username: values.username,
+          email: values.email,
+          password: values.password,
+        }).then(response => {
+          console.log(response);
+        });
+        //next page
         navigation.dispatch(StackActions.replace('MerchantDetails'));
       }}>
       {({handleChange, handleBlur, handleSubmit, values}) => (
@@ -66,7 +78,7 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
             textColor="black"
             mode="contained"
             onPress={handleSubmit}>
-            Sign Up
+            Next
           </Button>
 
           <Text>
@@ -74,7 +86,7 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
             <Text
               style={styles.Highlight}
               onPress={() => {
-                navigation.dispatch(StackActions.replace('MerchantSignIn'));
+                navigation.dispatch(StackActions.replace('MerchantSignin'));
               }}>
               Here
             </Text>
