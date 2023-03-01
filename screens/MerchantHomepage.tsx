@@ -5,7 +5,6 @@ import {StackActions} from '@react-navigation/native';
 //user session security
 import * as Keychain from 'react-native-keychain';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function MerchantHomepage({navigation}: {navigation: any}) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');

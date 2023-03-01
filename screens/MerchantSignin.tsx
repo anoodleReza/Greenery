@@ -29,13 +29,13 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
             //correct user information
             //set session to data from here
             handleLogin(response.data[0].username, response.data[0].password);
+            console.log('Credentials saved');
+            navigation.dispatch(StackActions.replace('MerchantHomepage'));
           } else {
             //wrong credentials
             console.log(response.data.message);
           }
         });
-        //next page
-        navigation.dispatch(StackActions.replace('MerchantHomepage'));
       }}>
       {({handleChange, handleBlur, handleSubmit, values}) => (
         <View style={styles.container}>
@@ -84,8 +84,8 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
   );
 }
 const handleLogin = async (usernameSes: string, passwordSes: string) => {
-  console.log('storing credentials');
   await Keychain.setGenericPassword(usernameSes, passwordSes);
+  console.log('storing credentials');
 };
 
 //we need to make a separate stylesheet file and import it here instead to kkeep the styling normalized for all pages

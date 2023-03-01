@@ -7,16 +7,36 @@ import {StackActions} from '@react-navigation/native';
 import {Button, Text, TextInput} from 'react-native-paper';
 import {Formik} from 'formik';
 import Axios from 'axios';
-
+import * as Yup from 'yup';
 export default function MerchantSignup({navigation}: {navigation: any}) {
+  //formik validation
+  const SignupSchema = Yup.object().shape({
+    username: Yup.string()
+      .min(2, 'Too Short!')
+      .max(50, 'Too Long!')
+      .required('Required'),
+    email: Yup.string().email('Invalid email').required('Required'),
+    password: Yup.string()
+      .min(2, 'Too Short!')
+      .max(50, 'Too Long!')
+      .required('Required'),
+    confirmPassword: Yup.string()
+      .required('Required')
+      .oneOf([Yup.ref('password')], 'Must match "password" field value'),
+  });
+
   return (
     <Formik
+      //formik setup
       initialValues={{
         username: '',
         email: '',
         password: '',
         confirmPassword: '',
       }}
+      //activate validation
+      validationSchema={SignupSchema}
+      //submit setup
       onSubmit={values => {
         console.log(values);
         //send to server
@@ -32,7 +52,7 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
         //next page
         navigation.dispatch(StackActions.replace('MerchantDetails'));
       }}>
-      {({handleChange, handleBlur, handleSubmit, values}) => (
+      {({handleChange, handleBlur, handleSubmit, values, errors, touched}) => (
         <View style={styles.container}>
           {/* Image section */}
           <Image style={styles.Image} source={require('../assets/logo.png')} />
@@ -44,6 +64,7 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
             onChangeText={handleChange('username')}
             onBlur={handleBlur('username')}
             value={values.username}
+            error={touched.username && Boolean(errors.username)}
           />
           <TextInput
             mode="outlined"
@@ -52,6 +73,7 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
             value={values.email}
             onChangeText={handleChange('email')}
             onBlur={handleBlur('email')}
+            error={touched.email && Boolean(errors.email)}
           />
           <TextInput
             mode="outlined"
@@ -61,6 +83,7 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
             value={values.password}
             onChangeText={handleChange('password')}
             onBlur={handleBlur('password')}
+            error={touched.password && Boolean(errors.password)}
           />
           <TextInput
             mode="outlined"
@@ -70,6 +93,8 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
             value={values.confirmPassword}
             onChangeText={handleChange('confirmPassword')}
             onBlur={handleBlur('confirmPassword')}
+            error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+
           />
 
           {/* Bottom Buttons */}

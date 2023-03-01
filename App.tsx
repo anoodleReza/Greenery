@@ -19,10 +19,26 @@ function App() {
     <PaperProvider theme={theme}>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="MerchantSignin" component={MerchantSignin} />
-          <Stack.Screen name="MerchantSignup" component={MerchantSignup} />
-          <Stack.Screen name="MerchantDetails" component={MerchantDetails} />
-          <Stack.Screen name="MerchantHomepage" component={MerchantHomepage} />
+          <Stack.Screen
+            name="MerchantSignin"
+            component={MerchantSignin}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MerchantSignup"
+            component={MerchantSignup}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MerchantDetails"
+            component={MerchantDetails}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MerchantHomepage"
+            component={MerchantHomepage}
+            options={{headerShown: false}}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
