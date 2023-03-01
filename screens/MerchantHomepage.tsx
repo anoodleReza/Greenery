@@ -18,6 +18,7 @@ export default function MerchantHomepage({navigation}: {navigation: any}) {
       } else {
         console.log('Error in retrieving user email');
       }
+    } else {
       console.log('Error in retrieving user data');
     }
   }, [user]);
