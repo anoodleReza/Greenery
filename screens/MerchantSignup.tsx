@@ -6,7 +6,30 @@ import {StackActions} from '@react-navigation/native';
 //material ui + form
 import {Button, Text, TextInput} from 'react-native-paper';
 import {Formik} from 'formik';
+<<<<<<< Updated upstream
 import Axios from 'axios';
+=======
+import * as Yup from 'yup';
+//firebase
+import auth from '@react-native-firebase/auth';
+
+export default function MerchantSignup({navigation}: {navigation: any}) {
+  //formik validation
+  const SignupSchema = Yup.object().shape({
+    username: Yup.string()
+      .min(2, 'Too Short!')
+      .max(50, 'Too Long!')
+      .required('Required'),
+    email: Yup.string().email('Invalid email').required('Required'),
+    password: Yup.string()
+      .min(2, 'Too Short!')
+      .max(50, 'Too Long!')
+      .required('Required'),
+    confirmPassword: Yup.string()
+      .required('Required')
+      .oneOf([Yup.ref('password')], 'Must match "password" field value'),
+  });
+>>>>>>> Stashed changes
 
 export default function MerchantSignup({navigation}: {navigation: any}) {
   return (
@@ -18,17 +41,14 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
         confirmPassword: '',
       }}
       onSubmit={values => {
-        console.log(values);
-        //send to server
-        //not sure about the link, maybe we need to make it cloud based? but it works
-        //register
-        Axios.post('http://10.0.2.2:3001/register', {
-          username: values.username,
-          email: values.email,
-          password: values.password,
-        }).then(response => {
-          console.log(response);
-        });
+        //registering user
+        auth()
+          .createUserWithEmailAndPassword(values.email, values.password)
+          .catch(error => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log('error: ', errorCode, ' : ', errorMessage);
+          });
         //next page
         navigation.dispatch(StackActions.replace('MerchantDetails'));
       }}>
@@ -70,6 +90,10 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
             value={values.confirmPassword}
             onChangeText={handleChange('confirmPassword')}
             onBlur={handleBlur('confirmPassword')}
+<<<<<<< Updated upstream
+=======
+            error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+>>>>>>> Stashed changes
           />
 
           {/* Bottom Buttons */}

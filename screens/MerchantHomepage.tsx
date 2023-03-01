@@ -1,45 +1,40 @@
 import {Button} from 'react-native-paper';
 import {StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StackActions} from '@react-navigation/native';
 //user session security
-import * as Keychain from 'react-native-keychain';
+import auth, {firebase} from '@react-native-firebase/auth';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function MerchantHomepage({navigation}: {navigation: any}) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const user = firebase.auth().currentUser;
 
   useEffect(() => {
-    (async () => {
-      try {
-        const credentials = await Keychain.getGenericPassword();
-        if (credentials) {
-          setIsLoggedIn(true);
-          setUsername(credentials.username);
-          console.log('Logged in as ', username);
-        } else {
-          console.log('No credentials stored');
-        }
-      } catch (error) {
-        console.log("Keychain couldn't be accessed!", error);
+    if (user != null) {
+      if (user.email != null) {
+        setEmail(user.email);
+      } else {
+        console.log('Error in retrieving user email');
       }
-    })();
-  });
+      console.log('Error in retrieving user data');
+    }
+  }, [user]);
 
   const handleLogout = async () => {
-    const logout = await Keychain.resetGenericPassword();
-    console.log({logout});
-    if (logout) {
-      setIsLoggedIn(false);
-      setUsername('');
-    }
+    auth()
+      .signOut()
+      .then(() => {
+        setIsLoggedIn(false);
+        setEmail('');
+      });
     navigation.dispatch(StackActions.replace('MerchantSignin'));
   };
 
   return (
     <View style={styles.container}>
-      <Text>Welcome {username}</Text>
+      <Text>Welcome {email}</Text>
       <Button textColor="black" mode="contained" onPress={handleLogout}>
         Log Out
       </Button>
