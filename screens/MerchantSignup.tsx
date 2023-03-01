@@ -6,9 +6,6 @@ import {StackActions} from '@react-navigation/native';
 //material ui + form
 import {Button, Text, TextInput} from 'react-native-paper';
 import {Formik} from 'formik';
-<<<<<<< Updated upstream
-import Axios from 'axios';
-=======
 import * as Yup from 'yup';
 //firebase
 import auth from '@react-native-firebase/auth';
@@ -29,9 +26,7 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
       .required('Required')
       .oneOf([Yup.ref('password')], 'Must match "password" field value'),
   });
->>>>>>> Stashed changes
 
-export default function MerchantSignup({navigation}: {navigation: any}) {
   return (
     <Formik
       initialValues={{
@@ -40,6 +35,8 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
         password: '',
         confirmPassword: '',
       }}
+      //activate validation
+      validationSchema={SignupSchema}
       onSubmit={values => {
         //registering user
         auth()
@@ -52,7 +49,7 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
         //next page
         navigation.dispatch(StackActions.replace('MerchantDetails'));
       }}>
-      {({handleChange, handleBlur, handleSubmit, values}) => (
+      {({handleChange, handleBlur, handleSubmit, values, touched, errors}) => (
         <View style={styles.container}>
           {/* Image section */}
           <Image style={styles.Image} source={require('../assets/logo.png')} />
@@ -64,6 +61,7 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
             onChangeText={handleChange('username')}
             onBlur={handleBlur('username')}
             value={values.username}
+            error={touched.username && Boolean(errors.username)}
           />
           <TextInput
             mode="outlined"
@@ -72,6 +70,7 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
             value={values.email}
             onChangeText={handleChange('email')}
             onBlur={handleBlur('email')}
+            error={touched.email && Boolean(errors.email)}
           />
           <TextInput
             mode="outlined"
@@ -81,6 +80,7 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
             value={values.password}
             onChangeText={handleChange('password')}
             onBlur={handleBlur('password')}
+            error={touched.password && Boolean(errors.password)}
           />
           <TextInput
             mode="outlined"
@@ -90,10 +90,7 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
             value={values.confirmPassword}
             onChangeText={handleChange('confirmPassword')}
             onBlur={handleBlur('confirmPassword')}
-<<<<<<< Updated upstream
-=======
             error={touched.confirmPassword && Boolean(errors.confirmPassword)}
->>>>>>> Stashed changes
           />
 
           {/* Bottom Buttons */}

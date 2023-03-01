@@ -5,8 +5,8 @@ import {StackActions} from '@react-navigation/native';
 //user session security
 import auth, {firebase} from '@react-native-firebase/auth';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function MerchantHomepage({navigation}: {navigation: any}) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [email, setEmail] = useState('');
   const user = firebase.auth().currentUser;

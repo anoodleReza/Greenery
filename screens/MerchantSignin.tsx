@@ -30,23 +30,6 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
       //submit form values
       onSubmit={values => {
         //login
-<<<<<<< Updated upstream
-        Axios.post('http://10.0.2.2:3001/login', {
-          username: values.username,
-          password: values.password,
-        }).then(response => {
-          if (!response.data.message) {
-            //correct user information
-            //set session to data from here
-            handleLogin(response.data[0].username, response.data[0].password);
-          } else {
-            //wrong credentials
-            console.log(response.data.message);
-          }
-        });
-        //next page
-        navigation.dispatch(StackActions.replace('MerchantHomepage'));
-=======
         auth()
           .signInWithEmailAndPassword(values.email, values.password)
           .then(userCredential => {
@@ -59,7 +42,6 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
             console.log(errorCode);
             //wrong credentials
           });
->>>>>>> Stashed changes
       }}>
       {({handleChange, handleBlur, handleSubmit, values, touched, errors}) => (
         <View style={styles.container}>
@@ -109,13 +91,6 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
     </Formik>
   );
 }
-<<<<<<< Updated upstream
-const handleLogin = async (usernameSes: string, passwordSes: string) => {
-  console.log('storing credentials');
-  await Keychain.setGenericPassword(usernameSes, passwordSes);
-};
-=======
->>>>>>> Stashed changes
 
 //we need to make a separate stylesheet file and import it here instead to kkeep the styling normalized for all pages
 const styles = StyleSheet.create({
