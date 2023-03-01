@@ -7,6 +7,8 @@ import {StackActions} from '@react-navigation/native';
 import {Button, Text, TextInput} from 'react-native-paper';
 import {Formik} from 'formik';
 import Axios from 'axios';
+//user session security
+import * as Keychain from 'react-native-keychain';
 
 export default function MerchantSignin({navigation}: {navigation: any}) {
   return (
@@ -16,7 +18,6 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
         password: '',
       }}
       onSubmit={values => {
-        console.log(values);
         //send to server
         //not sure about the link, maybe we need to make it cloud based? but it works
         //login
@@ -24,11 +25,17 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
           username: values.username,
           password: values.password,
         }).then(response => {
-          //console.log(response);
-          console.log('credentials sent');
+          if (!response.data.message) {
+            //correct user information
+            //set session to data from here
+            handleLogin(response.data[0].username, response.data[0].password);
+          } else {
+            //wrong credentials
+            console.log(response.data.message);
+          }
         });
         //next page
-        //navigation.dispatch(StackActions.replace('MerchantHomepage'));
+        navigation.dispatch(StackActions.replace('MerchantHomepage'));
       }}>
       {({handleChange, handleBlur, handleSubmit, values}) => (
         <View style={styles.container}>
@@ -76,7 +83,12 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
     </Formik>
   );
 }
+const handleLogin = async (usernameSes: string, passwordSes: string) => {
+  console.log('storing credentials');
+  await Keychain.setGenericPassword(usernameSes, passwordSes);
+};
 
+//we need to make a separate stylesheet file and import it here instead to kkeep the styling normalized for all pages
 const styles = StyleSheet.create({
   container: {
     flex: 1,
