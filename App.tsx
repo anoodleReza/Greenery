@@ -42,6 +42,15 @@ function App() {
             component={MerchantHomepage}
             options={{headerShown: false}}
           />
+          <Stack.Screen name="MerchantMenu" component={MerchantMenu} />
+          <Stack.Screen
+            name="MerchantEditProfile"
+            component={MerchantEditProfile}
+          />
+          <Stack.Screen
+            name="MerchantTodayPromo"
+            component={MerchantTodayPromo}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

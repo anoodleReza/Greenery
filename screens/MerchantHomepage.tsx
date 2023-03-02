@@ -1,15 +1,10 @@
 /* eslint-disable prettier/prettier */
 import {Button} from 'react-native-paper';
-import {StyleSheet, Text, View, Image, TouchableOpacity, Alert, TextInput} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity, Alert, TextInput, ImageBackground, TouchableHighlight} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {StackActions} from '@react-navigation/native';
 //user session security
 import auth, {firebase} from '@react-native-firebase/auth';
-import React, {useEffect, useState, Component} from 'react';
-import {StackActions} from '@react-navigation/native';
-//user session security
-import ImageButton from 'library/components/ImageButton';
-import { ImageBackground } from 'react-native';
 
 export default function MerchantHomepage({navigation}: {navigation: any}) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -39,28 +34,28 @@ export default function MerchantHomepage({navigation}: {navigation: any}) {
     navigation.dispatch(StackActions.replace('MerchantSignin'));
   };
 
-  
+
 
   // const AppButton = ({ onPress, title }) => (
   //   <TouchableOpacity onPress={onPress} style={styles.appButtonContainer}>
   //     <Text style={styles.appButtonText}>{title}</Text>
   //   </TouchableOpacity>
   // );
-  
+
 
   return (
-    
+
     <View style={{flex:1}}>
 
       <View style={{flexDirection:'row'}}>
         <ImageBackground source={require('../assets/banner.png')} style={{height:119,width:420}}
-        resizeMode='cover'>
+        resizeMode="cover">
           <TextInput style={styles.input} placeholder="Today's agenda..."/>
         </ImageBackground>
-          
+
       </View>
 
-     
+
 
       {/* <View style={styles.container}>
         <Text>Welcome {username}</Text>
@@ -83,22 +78,25 @@ export default function MerchantHomepage({navigation}: {navigation: any}) {
       </View>
 
       <View style={styles.flexButton}>
-        
-        <TouchableOpacity style={{flexDirection:"row",alignItems:'center',justifyContent:'center'}}>
+
+        <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
         <View style={styles.buttonBox}>
-          <Image source={require('../assets/editMenu.png')} resizeMode='cover' style={{flex:1 }} />
-          <Button onPress={()=> { navigation.dispatch(StackActions.replace('MerchantMenu'));}}/>
+          <Image source={require('../assets/editMenu.png')} resizeMode="cover" style={{flex:1 }} />
+          <Button onPress={() => { handleLogout; } } children={undefined}/>
         </View>
         </TouchableOpacity>
 
-       
+
 
         <View style={styles.buttonBox}>
-          <TouchableOpacity style={{flexDirection:"row",alignItems:'center',justifyContent:'center'}}>
-            <Image source={require('../assets/editMerchantProfile.png')} resizeMode='cover' style={{flex:1 }} 
-            onPress={()=> { navigation.dispatch(StackActions.replace('MerchantEditProfile'));
-
-            }}/>
+          <TouchableOpacity 
+            style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}
+            onPress={()=> { navigation.dispatch(StackActions.replace('MerchantEditProfile'))}}
+            >
+            <Image 
+              source={require('../assets/editMerchantProfile.png')}
+              resizeMode="cover" style={{flex:1 }}
+              />
           </TouchableOpacity>
         </View>
       </View>
@@ -110,10 +108,11 @@ export default function MerchantHomepage({navigation}: {navigation: any}) {
 
       <View style={styles.flexButton}>
         <View style={styles.buttonBox}>
-        <TouchableOpacity style={{flexDirection:"row",alignItems:'center',justifyContent:'center'}}>
-          <Image source={require('../assets/editMenu.png')} resizeMode='contain' style={{flex:1 }} 
-          onPress={()=> { navigation.dispatch(StackActions.replace('MerchantMenu'));
-        }}
+        <TouchableOpacity 
+          style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}
+          onPress={()=> { navigation.dispatch(StackActions.replace('MerchantMenu'));}}
+          >
+          <Image source={require('../assets/editMenu.png')} resizeMode="contain" style={{flex:1 }}
           />
         </TouchableOpacity>
         </View>
@@ -122,44 +121,43 @@ export default function MerchantHomepage({navigation}: {navigation: any}) {
       <View style={{justifyContent:'space-around',flexDirection:'row'}}>
         <Text style={styles.buttonTitle}>Check the News</Text>
       </View>
-      
-      <View style={styles.container}>
-      <Button 
-        textColor="#841584"
-        onPress={() => Alert.alert('Simple Button pressed')}
-      />
-      </View>
-      
-      
-       <View style={{flexDirection:'row',justifyContent:'space-around',marginTop: 10, 
-      borderWidth:1,borderColor:'black',padding:30}}>
-       
 
-        {/* <Image source={require('../assets/Home.png')}  style={{width:37,height:46 }} 
+      <View style={styles.container}>
+      <Button
+          textColor="#841584"
+          onPress={() => Alert.alert('Simple Button pressed')} children={undefined}      />
+      </View>
+
+
+       <View style={{flexDirection:'row',justifyContent:'space-around',marginTop: 10,
+      borderWidth:1,borderColor:'black',padding:30}}>
+
+
+        {/* <Image source={require('../assets/Home.png')}  style={{width:37,height:46 }}
           onPress={()=> { navigation.dispatch(StackActions.replace('MerchantHomepage'));
 
         }}/>
 
-        <Image source={require('../assets/News.png')}  style={{width:37,height:46 }} 
+        <Image source={require('../assets/News.png')}  style={{width:37,height:46 }}
           onPress={()=> { navigation.dispatch(StackActions.replace());
 
         }}/>
 
-        <Image source={require('../assets/Search.png')}  style={{flexwidth:37,height:46 }} 
+        <Image source={require('../assets/Search.png')}  style={{flexwidth:37,height:46 }}
           onPress={()=> { navigation.dispatch(StackActions.replace());
 
         }}/>
 
-        <Image source={require('../assets/Profile.png')} style={{width:37,height:46 }} 
+        <Image source={require('../assets/Profile.png')} style={{width:37,height:46 }}
           onPress={()=> { navigation.dispatch(StackActions.replace('MerchantEditProfile'));
 
         }}/>
 
-        <Image source={require('../assets/Settings.png')}  style={{width:37,height:46}} 
+        <Image source={require('../assets/Settings.png')}  style={{width:37,height:46}}
           onPress={()=> { navigation.dispatch(StackActions.replace());
 
         }}/> */}
-        
+
         <TouchableOpacity>
             <Text onPress={() => {
               navigation.dispatch(StackActions.replace('MerchantHomepage'));
@@ -167,23 +165,23 @@ export default function MerchantHomepage({navigation}: {navigation: any}) {
         </TouchableOpacity>
 
         <Text onPress={() => {
-                navigation.dispatch(StackActions.replace());
+                //navigation.dispatch(StackActions.replace(''));
               }}>News</Text>
         <Text onPress={() => {
-                navigation.dispatch(StackActions.replace());
+                //navigation.dispatch(StackActions.replace());
               }}>Search</Text>
         <Text onPress={() => {
                 navigation.dispatch(StackActions.replace('MerchantEditProfile'));
               }}>Profile</Text>
         <Text onPress={() => {
-                navigation.dispatch(StackActions.replace());
+                //navigation.dispatch(StackActions.replace());
               }}>Setting</Text>
-        
-       </View>   
+
+       </View>
     </View>
 
-    
-    
+
+
   );
 }
 
@@ -202,18 +200,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 15, 
+    borderRadius: 15,
     fontSize: 16,
     justifyContent:'center',
     alignItems: 'center',
     marginLeft:45,
-    marginTop:20
+    marginTop:20,
 },
 buttonTitle : {
   fontWeight: 'bold',
   color: 'black',
   marginTop: 3,
-  fontSize: 14
+  fontSize: 14,
 },
 buttonBox: {
   borderWidth:3,
