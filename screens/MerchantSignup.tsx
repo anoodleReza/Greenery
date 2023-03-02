@@ -47,7 +47,7 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
             console.log('error: ', errorCode, ' : ', errorMessage);
           });
         //next page
-        navigation.dispatch(StackActions.replace('MerchantDetails'));
+        navigation.dispatch(StackActions.replace('MerchantSignin'));
       }}>
       {({handleChange, handleBlur, handleSubmit, values, touched, errors}) => (
         <View style={styles.container}>
