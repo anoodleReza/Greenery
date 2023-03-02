@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {Button, StyleSheet, View} from 'react-native';
 import * as React from 'react';
 import {StackActions} from '@react-navigation/native';

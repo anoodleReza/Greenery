@@ -9,6 +9,9 @@ import MerchantSignup from './screens/MerchantSignup';
 import MerchantDetails from './screens/MerchantDetails';
 import MerchantSignin from './screens/MerchantSignin';
 import MerchantHomepage from './screens/MerchantHomepage';
+import MerchantMenu from './screens/MerchantMenu';
+import MerchantEditProfile from './screens/MerchantEditProfile';
+import MerchantTodayPromo from './screens/MerchantTodayPromo';
 //paper meterial ui
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 
@@ -23,6 +26,9 @@ function App() {
           <Stack.Screen name="MerchantSignup" component={MerchantSignup} />
           <Stack.Screen name="MerchantDetails" component={MerchantDetails} />
           <Stack.Screen name="MerchantHomepage" component={MerchantHomepage} />
+          <Stack.Screen name="MerchantMenu" component={MerchantMenu} />
+          <Stack.Screen name="MerchantEditProfile" component={MerchantEditProfile} />
+          <Stack.Screen name="MerchantTodayPromo" component={MerchantTodayPromo} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
