@@ -42,7 +42,11 @@ function App() {
             component={MerchantHomepage}
             options={{headerShown: false}}
           />
-          <Stack.Screen name="MerchantMenu" component={MerchantMenu} />
+          <Stack.Screen
+            name="MerchantMenu"
+            component={MerchantMenu}
+            options={{headerShown: false}}
+          />
           <Stack.Screen
             name="MerchantEditProfile"
             component={MerchantEditProfile}
@@ -50,6 +54,7 @@ function App() {
           <Stack.Screen
             name="MerchantTodayPromo"
             component={MerchantTodayPromo}
+            options={{headerShown: false}}
           />
         </Stack.Navigator>
       </NavigationContainer>

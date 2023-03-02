@@ -5,6 +5,8 @@ import React, {useState, useEffect} from 'react';
 import {StackActions} from '@react-navigation/native';
 //user session security
 import auth, {firebase} from '@react-native-firebase/auth';
+//navigation
+import NavigationBar from './NavigationBar';
 
 export default function MerchantHomepage({navigation}: {navigation: any}) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -50,13 +52,6 @@ export default function MerchantHomepage({navigation}: {navigation: any}) {
           <TextInput style={styles.input} placeholder="Today's agenda..."/>
         </ImageBackground>
       </View>
-
-      {/* <View style={styles.container}>
-        <Text>Welcome {username}</Text>
-        <Button textColor="black" mode="contained" onPress={handleLogout}>
-        Log Out
-        </Button>
-      </View> */}
 
       <View>
         <Text
@@ -161,10 +156,10 @@ export default function MerchantHomepage({navigation}: {navigation: any}) {
               }}>Setting</Text>
 
        </View>
+
+       {/* Separate nav bar */}
+       {/* <NavigationBar /> */}
     </View>
-
-
-
   );
 }
 
