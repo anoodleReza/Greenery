@@ -15,7 +15,7 @@ export default function PartnerSignin({navigation}: {navigation: any}) {
   useEffect(() => {
     if (user) {
       //user is signed in already
-      navigation.dispatch(StackActions.replace('../partner/PartnerHomepage'));
+      navigation.dispatch(StackActions.replace('PartnerHomepage'));
     }
   }, [navigation]);
 
@@ -39,12 +39,12 @@ export default function PartnerSignin({navigation}: {navigation: any}) {
         //login
         auth()
           .signInWithEmailAndPassword(values.email, values.password)
-          .then((userCredential: { user: { email: any; }; }) => {
+          .then((userCredential: {user: {email: any}}) => {
             console.log('signed in as ', userCredential.user.email);
             //next page
             navigation.dispatch(StackActions.replace('PartnerHomepage'));
           })
-          .catch((error: { code: any; }) => {
+          .catch((error: {code: any}) => {
             const errorCode = error.code;
             console.log(errorCode);
             //wrong credentials
@@ -94,10 +94,13 @@ export default function PartnerSignin({navigation}: {navigation: any}) {
             </Text>
           </Text>
           <Text> Return to Homepage?</Text>
-            <Text style={styles.Highlight}
+          <Text
+            style={styles.Highlight}
             onPress={() => {
-              navigation.dispatch(StackActions.replace('Homepage'));}}
-            >Here</Text>
+              navigation.dispatch(StackActions.replace('Homepage'));
+            }}>
+            Here
+          </Text>
         </View>
       )}
     </Formik>

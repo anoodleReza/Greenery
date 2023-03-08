@@ -113,10 +113,13 @@ export default function PartnerSignup({navigation}: {navigation: any}) {
             </Text>
           </Text>
           <Text> Return to Homepage?</Text>
-            <Text style={styles.Highlight}
+          <Text
+            style={styles.Highlight}
             onPress={() => {
-              navigation.dispatch(StackActions.replace('Homepage'));}}
-            >Here</Text>
+              navigation.dispatch(StackActions.replace('Homepage'));
+            }}>
+            Here
+          </Text>
         </View>
       )}
     </Formik>

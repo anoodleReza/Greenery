@@ -4,7 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 //basic react
 import * as React from 'react';
 import 'react-native-gesture-handler';
-//pages
+//merchant
 import MerchantSignup from './screens/MerchantSignup';
 import MerchantDetails from './screens/MerchantDetails';
 import MerchantSignin from './screens/MerchantSignin';
@@ -13,7 +13,9 @@ import MerchantMenu from './screens/MerchantMenu';
 import MerchantEditProfile from './screens/MerchantEditProfile';
 import MerchantTodayPromo from './screens/MerchantTodayPromo';
 import MerchantNavigation from './screens/NavigationBar';
+//main homepage
 import Homepage from './screens/Homepage';
+//partner
 import PartnerSignin from './screens/PartnerSignin';
 import PartnerSignup from './screens/PartnerSignup';
 import PartnerHomepage from './screens/partner/PartnerHomepage';

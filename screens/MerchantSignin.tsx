@@ -1,7 +1,7 @@
 //basic
 import React, {useEffect} from 'react';
 import 'react-native-gesture-handler';
-import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Image} from 'react-native';
 import {StackActions} from '@react-navigation/native';
 //material ui + form
 import {Button, Text, TextInput} from 'react-native-paper';
@@ -27,11 +27,7 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
   });
   //what is displayed
   return (
-<<<<<<< Updated upstream
-=======
-    
     //form setup
->>>>>>> Stashed changes
     <Formik
       initialValues={{
         email: '',
@@ -57,13 +53,6 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
       }}>
       {({handleChange, handleBlur, handleSubmit, values, touched, errors}) => (
         <View style={styles.container}>
-
-          {/* <TouchableOpacity onPress={()=> { navigation.dispatch(StackActions.replace('Homepage'));}}>
-            <View >
-            <Image source={require('../assets/return.png')} />
-            </View>
-          </TouchableOpacity> */}
-
           {/* Image section */}
           <Image style={styles.Image} source={require('../assets/logo.png')} />
           {/* Input section */}
@@ -106,10 +95,13 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
             </Text>
           </Text>
           <Text> Return to Homepage?</Text>
-            <Text style={styles.Highlight}
+          <Text
+            style={styles.Highlight}
             onPress={() => {
-              navigation.dispatch(StackActions.replace('Homepage'));}}
-            >Here</Text>
+              navigation.dispatch(StackActions.replace('Homepage'));
+            }}>
+            Here
+          </Text>
         </View>
       )}
     </Formik>
