@@ -12,6 +12,11 @@ import MerchantHomepage from './screens/MerchantHomepage';
 import MerchantMenu from './screens/MerchantMenu';
 import MerchantEditProfile from './screens/MerchantEditProfile';
 import MerchantTodayPromo from './screens/MerchantTodayPromo';
+import Homepage from './screens/Homepage';
+import PartnerSignin from './screens/PartnerSignin';
+import PartnerSignup from './screens/PartnerSignup';
+import PartnerHomepage from './screens/partner/PartnerHomepage';
+import PartnerProfile from './screens/partner/PartnerProfile';
 //paper meterial ui
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 
@@ -22,6 +27,7 @@ function App() {
     <PaperProvider theme={theme}>
       <NavigationContainer>
         <Stack.Navigator>
+<<<<<<< Updated upstream
           <Stack.Screen name="MerchantSignin" component={MerchantSignin} />
           <Stack.Screen name="MerchantSignup" component={MerchantSignup} />
           <Stack.Screen name="MerchantDetails" component={MerchantDetails} />
@@ -29,6 +35,68 @@ function App() {
           <Stack.Screen name="MerchantMenu" component={MerchantMenu} />
           <Stack.Screen name="MerchantEditProfile" component={MerchantEditProfile} />
           <Stack.Screen name="MerchantTodayPromo" component={MerchantTodayPromo} />
+=======
+          <Stack.Screen
+            name="Homepage"
+            component={Homepage}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MerchantSignin"
+            component={MerchantSignin}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MerchantSignup"
+            component={MerchantSignup}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MerchantDetails"
+            component={MerchantDetails}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MerchantHomepage"
+            component={MerchantHomepage}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MerchantMenu"
+            component={MerchantMenu}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MerchantEditProfile"
+            component={MerchantEditProfile}
+          />
+          <Stack.Screen
+            name="MerchantTodayPromo"
+            component={MerchantTodayPromo}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="PartnerSignin"
+            component={PartnerSignin}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="PartnerSignup"
+            component={PartnerSignup}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+           name="PartnerHomepage"
+           component={PartnerHomepage}
+           options={{headerShown: false}}/>
+
+           <Stack.Screen
+           name="PartnerProfile"
+           component={PartnerProfile}
+           options={{headerShown: false}}/> 
+
+          
+>>>>>>> Stashed changes
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

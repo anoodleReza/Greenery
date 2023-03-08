@@ -1,69 +1,56 @@
 //basic
 import React from 'react';
 import 'react-native-gesture-handler';
-import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Image} from 'react-native';
 import {StackActions} from '@react-navigation/native';
 //material ui + form
 import {Button, Text, TextInput} from 'react-native-paper';
 import {Formik} from 'formik';
-import Axios from 'axios';
-//user session security
-import * as Keychain from 'react-native-keychain';
+import * as Yup from 'yup';
+//firebase
+import auth from '@react-native-firebase/auth';
 
-export default function MerchantSignin({navigation}: {navigation: any}) {
+export default function PartnerSignup({navigation}: {navigation: any}) {
+  //formik validation
+  const SignupSchema = Yup.object().shape({
+    username: Yup.string()
+      .min(2, 'Too Short!')
+      .max(50, 'Too Long!')
+      .required('Required'),
+    email: Yup.string().email('Invalid email').required('Required'),
+    password: Yup.string()
+      .min(6, 'Too Short!')
+      .max(50, 'Too Long!')
+      .required('Required'),
+    confirmPassword: Yup.string()
+      .required('Required')
+      .oneOf([Yup.ref('password')], 'Must match "password" field value'),
+  });
+
   return (
-<<<<<<< Updated upstream
-=======
-    
-    //form setup
->>>>>>> Stashed changes
     <Formik
       initialValues={{
         username: '',
+        email: '',
         password: '',
+        confirmPassword: '',
       }}
+      //activate validation
+      validationSchema={SignupSchema}
       onSubmit={values => {
-        //send to server
-        //not sure about the link, maybe we need to make it cloud based? but it works
-        //login
-<<<<<<< Updated upstream
-        Axios.post('http://10.0.2.2:3001/login', {
-          username: values.username,
-          password: values.password,
-        }).then(response => {
-          if (!response.data.message) {
-            //correct user information
-            //set session to data from here
-            handleLogin(response.data[0].username, response.data[0].password);
-          } else {
-=======
+        //registering user
         auth()
-          .signInWithEmailAndPassword(values.email, values.password)
-          .then((userCredential: { user: { email: any; }; }) => {
-            console.log('signed in as ', userCredential.user.email);
-            //next page
-            navigation.dispatch(StackActions.replace('MerchantHomepage'));
-          })
-          .catch((error: { code: any; }) => {
+          .createUserWithEmailAndPassword(values.email, values.password)
+          .catch(error => {
             const errorCode = error.code;
-            console.log(errorCode);
->>>>>>> Stashed changes
-            //wrong credentials
-            console.log(response.data.message);
-          }
-        });
+            const errorMessage = error.message;
+            console.log('error: ', errorCode, ' : ', errorMessage);
+          });
         //next page
-        navigation.dispatch(StackActions.replace('MerchantHomepage'));
+        navigation.dispatch(StackActions.replace('PartnerSignin'));
       }}>
-      {({handleChange, handleBlur, handleSubmit, values}) => (
+      {({handleChange, handleBlur, handleSubmit, values, touched, errors}) => (
         <View style={styles.container}>
-
-          {/* <TouchableOpacity onPress={()=> { navigation.dispatch(StackActions.replace('Homepage'));}}>
-            <View >
-            <Image source={require('../assets/return.png')} />
-            </View>
-          </TouchableOpacity> */}
-
           {/* Image section */}
           <Image style={styles.Image} source={require('../assets/logo.png')} />
           {/* Input section */}
@@ -74,6 +61,16 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
             onChangeText={handleChange('username')}
             onBlur={handleBlur('username')}
             value={values.username}
+            error={touched.username && Boolean(errors.username)}
+          />
+          <TextInput
+            mode="outlined"
+            placeholder="Enter email address..."
+            style={styles.input}
+            value={values.email}
+            onChangeText={handleChange('email')}
+            onBlur={handleBlur('email')}
+            error={touched.email && Boolean(errors.email)}
           />
           <TextInput
             mode="outlined"
@@ -83,22 +80,34 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
             value={values.password}
             onChangeText={handleChange('password')}
             onBlur={handleBlur('password')}
+            error={touched.password && Boolean(errors.password)}
           />
+          <TextInput
+            mode="outlined"
+            placeholder="Confirm password..."
+            style={styles.input}
+            secureTextEntry
+            value={values.confirmPassword}
+            onChangeText={handleChange('confirmPassword')}
+            onBlur={handleBlur('confirmPassword')}
+            error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+          />
+
           {/* Bottom Buttons */}
           <Button
             style={styles.buttonDefault}
             textColor="black"
             mode="contained"
             onPress={handleSubmit}>
-            Sign In
+            Next
           </Button>
 
           <Text>
-            <Text>Don't have an Accoount? Sign Up </Text>
+            <Text>Already have an account? Sign In </Text>
             <Text
               style={styles.Highlight}
               onPress={() => {
-                navigation.dispatch(StackActions.replace('MerchantSignup'));
+                navigation.dispatch(StackActions.replace('PartnerSignin'));
               }}>
               Here
             </Text>
@@ -113,12 +122,7 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
     </Formik>
   );
 }
-const handleLogin = async (usernameSes: string, passwordSes: string) => {
-  console.log('storing credentials');
-  await Keychain.setGenericPassword(usernameSes, passwordSes);
-};
 
-//we need to make a separate stylesheet file and import it here instead to kkeep the styling normalized for all pages
 const styles = StyleSheet.create({
   container: {
     flex: 1,
