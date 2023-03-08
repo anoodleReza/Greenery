@@ -27,6 +27,30 @@ export default function MerchantHeader() {
   );
 }
 
+export function PartnerHeader() {
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const onChangeSearch = (query: React.SetStateAction<string>) =>
+    setSearchQuery(query);
+  return (
+    <View style={styles.row}>
+      {/* Banner */}
+      <ImageBackground
+        source={require('../assets/banner.png')}
+        style={styles.banner}
+        resizeMode="cover">
+        <Searchbar
+          style={styles.search}
+          placeholder="Today's Agenda..."
+          onChangeText={onChangeSearch}
+          value={searchQuery}
+          inputStyle={styles.searchInput}
+        />
+        <Avatar.Icon size={40} icon="menu" theme={icons} />
+      </ImageBackground>
+    </View>
+    //2 rows, 5 columns
+  );
+}
 const icons = {
   roundness: 40,
   colors: {

@@ -13,9 +13,8 @@ import firestore from '@react-native-firebase/firestore';
 import {Formik} from 'formik';
 
 //import other screens
-import MerchantNavigation from '../NavigationBar';
-import MerchantHeader from '../PageHeader';
-
+import {PartnerNavigation} from '../NavigationBar';
+import { PartnerHeader } from '../PageHeader';
 //Main funcion
 export default function PartnerEditProfile({navigation}: {navigation: any}) {
   const curUser = firebase.auth().currentUser;
@@ -77,7 +76,7 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
     <View>
       <ScrollView>
         {/* Banner */}
-        <MerchantHeader />
+        <PartnerHeader />
 
         {/* Show profile */}
         <View style={styles.container}>
@@ -85,7 +84,6 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
             <Avatar.Icon size={100} icon="folder" />
             <Text style={styles.profileName}>{name}</Text>
           </View>
-          
         </View>
 
         {/* Main Content */}
@@ -176,7 +174,7 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
                   onChangeText={handleChange('Price')}
                   onBlur={handleBlur('Price')}
                 />
-                
+
                 {/* Confirm Button */}
                 <Button
                   style={styles.button}
@@ -186,9 +184,7 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
                   Confirm
                 </Button>
                 <Text style={styles.Subheading}>Driver Picture:</Text>
-                <View style={styles.driverPic}>
-                    
-                </View>
+                <View style={styles.driverPic} />
 
                 <Button
                   style={styles.button}
@@ -200,7 +196,6 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
               </>
             )}
           </Formik>
-          
         </View>
 
         {/* Logout Button */}
@@ -216,7 +211,7 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
         </View>
 
         {/* Navigation Bar */}
-        <MerchantNavigation navigation={navigation} />
+        <PartnerNavigation navigation={navigation} />
       </ScrollView>
     </View>
   );
@@ -304,6 +299,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
   },
   driverPic: {
-    borderWidth:2,borderColor:'black',backgroundColor:'gray',width: 125,height:125,borderRadius:8,marginTop:10,
+    borderWidth: 2,
+    borderColor: 'black',
+    backgroundColor: 'gray',
+    width: 125,
+    height: 125,
+    borderRadius: 8,
+    marginTop: 10,
   },
 });

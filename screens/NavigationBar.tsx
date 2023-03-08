@@ -55,6 +55,58 @@ export default function MerchantNavigation({navigation}: {navigation: any}) {
     //2 rows, 5 columns
   );
 }
+export function PartnerNavigation({navigation}: {navigation: any}) {
+  return (
+    <View style={styles.navContainer}>
+      <Divider />
+      <View style={styles.navigation}>
+        <TouchableOpacity
+          style={styles.col}
+          onPress={() => {
+            navigation.dispatch(StackActions.replace('PartnerHomepage'));
+          }}>
+          <Avatar.Icon size={40} icon="home" theme={navTheme} color="black" />
+          <Text style={styles.navLabel}>Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.col}
+          onPress={() => {
+            console.log('To News');
+          }}>
+          <Avatar.Icon
+            size={40}
+            icon="newspaper-variant"
+            theme={navTheme}
+            color="black"
+          />
+          <Text style={styles.navLabel}>News</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.col}
+          onPress={() => {
+            navigation.dispatch(StackActions.replace('PartnerEditProfile'));
+          }}>
+          <Avatar.Icon
+            size={40}
+            icon="account"
+            theme={navTheme}
+            color="black"
+          />
+          <Text style={styles.navLabel}>Profile</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.col}
+          onPress={() => {
+            console.log('To Settings');
+          }}>
+          <Avatar.Icon size={40} icon="cog" theme={navTheme} color="black" />
+          <Text style={styles.navLabel}>Settings</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+    //2 rows, 5 columns
+  );
+}
 
 const navTheme = {
   colors: {
