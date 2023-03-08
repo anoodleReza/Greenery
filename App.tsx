@@ -13,7 +13,11 @@ import MerchantMenu from './screens/MerchantMenu';
 import MerchantEditProfile from './screens/MerchantEditProfile';
 import MerchantTodayPromo from './screens/MerchantTodayPromo';
 import MerchantNavigation from './screens/NavigationBar';
-
+import Homepage from './screens/Homepage';
+import PartnerSignin from './screens/PartnerSignin';
+import PartnerSignup from './screens/PartnerSignup';
+import PartnerHomepage from './screens/partner/PartnerHomepage';
+import PartnerProfile from './screens/partner/PartnerProfile';
 //paper meterial ui
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 
@@ -24,6 +28,13 @@ function App() {
     <PaperProvider theme={theme}>
       <NavigationContainer>
         <Stack.Navigator>
+          {/* Homepage of entire app */}
+          <Stack.Screen
+            name="Homepage"
+            component={Homepage}
+            options={{headerShown: false}}
+          />
+          {/* merchant stuff */}
           <Stack.Screen
             name="MerchantSignin"
             component={MerchantSignin}
@@ -61,6 +72,27 @@ function App() {
           <Stack.Screen
             name="MerchantNavigation"
             component={MerchantNavigation}
+            options={{headerShown: false}}
+          />
+          {/* Partner */}
+          <Stack.Screen
+            name="PartnerSignin"
+            component={PartnerSignin}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="PartnerSignup"
+            component={PartnerSignup}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="PartnerHomepage"
+            component={PartnerHomepage}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="PartnerProfile"
+            component={PartnerProfile}
             options={{headerShown: false}}
           />
         </Stack.Navigator>
