@@ -3,10 +3,12 @@ import React from 'react';
 import 'react-native-gesture-handler';
 import {StyleSheet, View, Image} from 'react-native';
 import {StackActions} from '@react-navigation/native';
+
 //material ui + form
 import {Button, Text, TextInput} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
+
 //firebase
 import auth from '@react-native-firebase/auth';
 

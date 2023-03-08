@@ -1,33 +1,91 @@
+import {StackActions} from '@react-navigation/native';
 import * as React from 'react';
-import {BottomNavigation, Text} from 'react-native-paper';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {Avatar, Divider} from 'react-native-paper';
 
-const MusicRoute = () => <Text>Music</Text>;
-
-const AlbumsRoute = () => <Text>Albums</Text>;
-
-const RecentsRoute = () => <Text>Recents</Text>;
-
-const NavigationBar = () => {
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    {key: 'music', title: 'Music', icon: 'queue-music'},
-    {key: 'albums', title: 'Albums', icon: 'album'},
-    {key: 'recents', title: 'Recents', icon: 'history'},
-  ]);
-
-  const renderScene = BottomNavigation.SceneMap({
-    music: MusicRoute,
-    albums: AlbumsRoute,
-    recents: RecentsRoute,
-  });
-
+export default function MerchantNavigation({navigation}: {navigation: any}) {
   return (
-    <BottomNavigation
-      navigationState={{index, routes}}
-      onIndexChange={setIndex}
-      renderScene={renderScene}
-    />
+    <View style={styles.navContainer}>
+      <Divider />
+      <View style={styles.navigation}>
+        <TouchableOpacity
+          style={styles.col}
+          onPress={() => {
+            navigation.dispatch(StackActions.replace('MerchantHomepage'));
+          }}>
+          <Avatar.Icon size={40} icon="home" theme={navTheme} color="black" />
+          <Text style={styles.navLabel}>Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.col}
+          onPress={() => {
+            console.log('To News');
+          }}>
+          <Avatar.Icon
+            size={40}
+            icon="newspaper-variant"
+            theme={navTheme}
+            color="black"
+          />
+          <Text style={styles.navLabel}>News</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.col}
+          onPress={() => {
+            navigation.dispatch(StackActions.replace('MerchantEditProfile'));
+          }}>
+          <Avatar.Icon
+            size={40}
+            icon="account"
+            theme={navTheme}
+            color="black"
+          />
+          <Text style={styles.navLabel}>Profile</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.col}
+          onPress={() => {
+            console.log('To Settings');
+          }}>
+          <Avatar.Icon size={40} icon="cog" theme={navTheme} color="black" />
+          <Text style={styles.navLabel}>Settings</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+    //2 rows, 5 columns
   );
+}
+
+const navTheme = {
+  colors: {
+    primary: '#f2f2f2',
+    accent: 'black',
+  },
 };
 
-export default NavigationBar;
+const styles = StyleSheet.create({
+  navLabel: {
+    color: 'black',
+  },
+  navContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+  },
+  navigation: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  col: {
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginVertical: 0,
+    paddingBottom: 5,
+    marginTop: 10,
+  },
+  iconButton: {
+    margin: 0,
+  },
+});

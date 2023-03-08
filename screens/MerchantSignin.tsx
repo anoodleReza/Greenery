@@ -9,14 +9,15 @@ import {Formik} from 'formik';
 import * as Yup from 'yup';
 //user session security
 import auth, {firebase} from '@react-native-firebase/auth';
-const user = firebase.auth().currentUser;
 
 export default function MerchantSignin({navigation}: {navigation: any}) {
   useEffect(() => {
-    if (user) {
-      //user is signed in already
-      navigation.dispatch(StackActions.replace('MerchantHomepage'));
-    }
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        console.log('user already signed in');
+        navigation.dispatch(StackActions.replace('MerchantHomepage'));
+      }
+    });
   }, [navigation]);
 
   //formik validation

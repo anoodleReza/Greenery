@@ -1,12 +1,15 @@
 /* eslint-disable prettier/prettier */
 import {Button} from 'react-native-paper';
-import {StyleSheet, Text, View, Image, TouchableOpacity, Alert, TextInput, ImageBackground} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {StackActions} from '@react-navigation/native';
+
 //user session security
 import auth, {firebase} from '@react-native-firebase/auth';
-//navigation
+
+//import other pages
 import NavigationBar from './NavigationBar';
+import MerchantHeader from './PageHeader';
 
 export default function MerchantHomepage({navigation}: {navigation: any}) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -37,22 +40,9 @@ export default function MerchantHomepage({navigation}: {navigation: any}) {
     navigation.dispatch(StackActions.replace('MerchantSignin'));
   };
 
-  // const AppButton = ({ onPress, title }) => (
-  //   <TouchableOpacity onPress={onPress} style={styles.appButtonContainer}>
-  //     <Text style={styles.appButtonText}>{title}</Text>
-  //   </TouchableOpacity>
-  // );
-
   return (
-
     <View style={styles.flexContainer}>
-      <View style={styles.row}>
-        <ImageBackground source={require('../assets/banner.png')} style={styles.cover}
-        resizeMode="cover">
-          <TextInput style={styles.input} placeholder="Today's agenda..."/>
-        </ImageBackground>
-      </View>
-
+      <MerchantHeader />
       <View>
         <Text
           style={styles.text}>
@@ -103,62 +93,8 @@ export default function MerchantHomepage({navigation}: {navigation: any}) {
         <Text style={styles.buttonTitle}>Check the News</Text>
       </View>
 
-      <View style={styles.container}>
-      <Button
-          textColor="#841584"
-          onPress={() => Alert.alert('Simple Button pressed')} children={undefined}      />
-      </View>
-
-       <View style={styles.bottomSomething}>
-
-        {/* <Image source={require('../assets/Home.png')}  style={{width:37,height:46 }}
-          onPress={()=> { navigation.dispatch(StackActions.replace('MerchantHomepage'));
-
-        }}/>
-
-        <Image source={require('../assets/News.png')}  style={{width:37,height:46 }}
-          onPress={()=> { navigation.dispatch(StackActions.replace());
-
-        }}/>
-
-        <Image source={require('../assets/Search.png')}  style={{flexwidth:37,height:46 }}
-          onPress={()=> { navigation.dispatch(StackActions.replace());
-
-        }}/>
-
-        <Image source={require('../assets/Profile.png')} style={{width:37,height:46 }}
-          onPress={()=> { navigation.dispatch(StackActions.replace('MerchantEditProfile'));
-
-        }}/>
-
-        <Image source={require('../assets/Settings.png')}  style={{width:37,height:46}}
-          onPress={()=> { navigation.dispatch(StackActions.replace());
-
-        }}/> */}
-
-        <TouchableOpacity>
-            <Text onPress={() => {
-              navigation.dispatch(StackActions.replace('MerchantHomepage'));
-            }}>Home</Text>
-        </TouchableOpacity>
-
-        <Text onPress={() => {
-                //navigation.dispatch(StackActions.replace(''));
-              }}>News</Text>
-        <Text onPress={() => {
-                //navigation.dispatch(StackActions.replace());
-              }}>Search</Text>
-        <Text onPress={() => {
-                navigation.dispatch(StackActions.replace('MerchantEditProfile'));
-              }}>Profile</Text>
-        <Text onPress={() => {
-                //navigation.dispatch(StackActions.replace());
-              }}>Setting</Text>
-
-       </View>
-
        {/* Separate nav bar */}
-       {/* <NavigationBar /> */}
+       <NavigationBar navigation={navigation} />
     </View>
   );
 }

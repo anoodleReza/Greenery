@@ -1,39 +1,70 @@
-import {Button, Searchbar, Avatar} from 'react-native-paper';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+//building the screen
+import {Button, Avatar} from 'react-native-paper';
+import {StyleSheet, Text, View, TextInput} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {StackActions} from '@react-navigation/native';
-//user session security
-import {ImageBackground, ScrollView} from 'react-native';
+
+//firebase stuff
+import {ScrollView} from 'react-native';
 import auth, {firebase} from '@react-native-firebase/auth';
-//navigation bar
+import firestore from '@react-native-firebase/firestore';
 
+//form
+import {Formik} from 'formik';
+
+//import other screens
+import MerchantNavigation from './NavigationBar';
+import MerchantHeader from './PageHeader';
+
+//Main funcion
 export default function MerchantEditProfile({navigation}: {navigation: any}) {
+  const curUser = firebase.auth().currentUser;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [email, setEmail] = useState('');
-  const user = firebase.auth().currentUser;
 
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const onChangeSearch = (query: React.SetStateAction<string>) =>
-    setSearchQuery(query);
+  //user data
+  const [name, setname] = useState('');
+  const [category, setcategory] = useState('');
+  const [price, setprice] = useState('');
+  const [address, setaddress] = useState('');
+  const [opening, setopening] = useState('');
+  const [closing, setclosing] = useState('');
 
-  useEffect(() => {
-    if (user != null) {
-      if (user.email != null) {
-        setEmail(user.email);
-      } else {
-        console.log('Error in retrieving user email');
-      }
-    } else {
-      console.log('Error in retrieving user data');
+  //Fetch data from firestore
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const fetchUserInfo = async () => {
+    if (curUser?.uid) {
+      console.log('Accessing documents as ', curUser?.uid);
+      firestore()
+        .collection('merchant')
+        .doc(curUser?.uid)
+        .get()
+        .then(documentSnapshot => {
+          // Document fields
+          const userDetails = documentSnapshot.data();
+          // All the document related data
+          setname(userDetails?.Name);
+          setcategory(userDetails?.Category);
+          setprice(userDetails?.Price);
+          setaddress(userDetails?.Address);
+          setopening(userDetails?.Opening);
+          setclosing(userDetails?.Closing);
+        });
     }
-  }, [user, email]);
+  };
 
+  //Fetch user data on start
+  useEffect(() => {
+    if (!isLoggedIn) {
+      if (curUser) {
+        fetchUserInfo();
+        setIsLoggedIn(true);
+      } else {
+        console.log('Error in retrieving user data');
+      }
+    }
+  }, [curUser, fetchUserInfo, isLoggedIn]);
+
+  //Used for logout
   const handleLogout = async () => {
     auth()
       .signOut()
@@ -41,28 +72,33 @@ export default function MerchantEditProfile({navigation}: {navigation: any}) {
     setIsLoggedIn(false);
     navigation.dispatch(StackActions.replace('MerchantSignin'));
   };
+
   return (
     <View>
       <ScrollView>
         {/* Banner */}
-        <ImageBackground
-          source={require('../assets/banner.png')}
-          style={styles.banner}
-          resizeMode="cover">
-          <Searchbar
-            style={styles.search}
-            placeholder="Today's Agenda..."
-            onChangeText={onChangeSearch}
-            value={searchQuery}
-            inputStyle={styles.searchInput}
-          />
-          <Avatar.Icon size={40} icon="menu" theme={icons} />
-        </ImageBackground>
+        <MerchantHeader />
+
+        {/* Show profile */}
+        <View style={styles.container}>
+          <View style={styles.containerrow}>
+            <Avatar.Icon size={100} icon="folder" />
+            <Text style={styles.profileName}>{name}</Text>
+          </View>
+          <View style={styles.container}>
+            <Text style={styles.profileText}>Category: {category}</Text>
+            <Text style={styles.profileText}>Address: {address}</Text>
+            <Text style={styles.profileText}>$$$: {price}</Text>
+            <Text style={styles.profileText}>
+              Open: {opening} - {closing}
+            </Text>
+          </View>
+        </View>
 
         {/* Main Content */}
         <View style={styles.container}>
           {/* Profile */}
-          <Text style={styles.Subheading}>Profile:</Text>
+          <Text style={styles.Subheading}>Login Information:</Text>
           <TextInput style={styles.input} placeholder="Change username..." />
           <TextInput
             style={styles.input}
@@ -90,20 +126,100 @@ export default function MerchantEditProfile({navigation}: {navigation: any}) {
           </Button>
 
           {/* Details */}
-          <Text style={styles.Subheading}>Restaurant Details:</Text>
-          <TextInput style={styles.input} placeholder="Restaurant Name..." />
-          <TextInput
-            style={styles.input}
-            placeholder="Restaurant Category..."
-          />
-          <TextInput style={styles.input} placeholder="Price Range..." />
-          <TextInput style={styles.input} placeholder="Address..." />
-          <TextInput style={styles.input} placeholder="Operating Hours..." />
-
-          <Button style={styles.button} textColor="black" mode="contained">
-            Confirm
-          </Button>
+          <Formik
+            initialValues={{
+              Name: '',
+              Category: '',
+              Price: '',
+              Address: '',
+              Opening: '',
+              Closing: '',
+            }}
+            onSubmit={values => {
+              if (firestore().collection('merchant').doc(curUser?.uid)) {
+                //user data found found
+                console.log('user data found');
+                firestore()
+                  .collection('merchant')
+                  .doc(curUser?.uid)
+                  .set({
+                    Name: values.Name,
+                    Category: values.Category,
+                    Price: values.Price,
+                    Address: values.Address,
+                    Opening: values.Opening,
+                    Closing: values.Closing,
+                  })
+                  .then(() => {
+                    console.log('User updated!');
+                  });
+              }
+            }}>
+            {({handleChange, handleBlur, handleSubmit, values}) => (
+              <>
+                <Text style={styles.Subheading}>Restaurant Details:</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Restaurant Name..."
+                  id="RestoName"
+                  value={values.Name}
+                  onChangeText={handleChange('Name')}
+                  onBlur={handleBlur('Name')}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Restaurant Category..."
+                  id="Category"
+                  value={values.Category}
+                  onChangeText={handleChange('Category')}
+                  onBlur={handleBlur('Category')}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Price Range..."
+                  id="Price"
+                  value={values.Price}
+                  onChangeText={handleChange('Price')}
+                  onBlur={handleBlur('Price')}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Address..."
+                  id="Address"
+                  value={values.Address}
+                  onChangeText={handleChange('Address')}
+                  onBlur={handleBlur('Address')}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Opening Time..."
+                  id="Opening"
+                  value={values.Opening}
+                  onChangeText={handleChange('Opening')}
+                  onBlur={handleBlur('Opening')}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Closing Time..."
+                  id="Closing"
+                  value={values.Closing}
+                  onChangeText={handleChange('Closing')}
+                  onBlur={handleBlur('Closing')}
+                />
+                {/* Confirm Button */}
+                <Button
+                  style={styles.button}
+                  textColor="black"
+                  mode="contained"
+                  onPress={handleSubmit}>
+                  Confirm
+                </Button>
+              </>
+            )}
+          </Formik>
         </View>
+
+        {/* Logout Button */}
         <View style={styles.container}>
           <Text>Want to log out?</Text>
           <Button
@@ -114,96 +230,30 @@ export default function MerchantEditProfile({navigation}: {navigation: any}) {
             Log Out
           </Button>
         </View>
-        {/* Bottom Navigation Bar */}
-        <View style={styles.bottomSomething}>
-          {/*
-          <Image
-            source={require('../assets/Home.png')}
-            style={{width: 37, height: 46}}
-            onPress={() => {
-              navigation.dispatch(StackActions.replace('MerchantHomepage'));
-            }}
-          />
 
-          <Image
-            source={require('../assets/News.png')}
-            style={{width: 37, height: 46}}
-            onPress={() => {
-              navigation.dispatch(StackActions.replace());
-            }}
-          />
-
-          <Image
-            source={require('../assets/Search.png')}
-            style={{flexwidth: 37, height: 46}}
-            onPress={() => {
-              navigation.dispatch(StackActions.replace());
-            }}
-          />
-
-          <Image
-            source={require('../assets/Profile.png')}
-            style={{width: 37, height: 46}}
-            onPress={() => {
-              navigation.dispatch(StackActions.replace('MerchantEditProfile'));
-            }}
-          />
-
-          <Image
-            source={require('../assets/Settings.png')}
-            style={{width: 37, height: 46}}
-            onPress={() => {
-              navigation.dispatch(StackActions.replace());
-            }}
-          /> */}
-          <TouchableOpacity>
-            <Text
-              onPress={() => {
-                navigation.dispatch(StackActions.replace('MerchantHomepage'));
-              }}>
-              Home
-            </Text>
-          </TouchableOpacity>
-
-          <Text
-            onPress={() => {
-              //navigation.dispatch(StackActions.replace(''));
-            }}>
-            News
-          </Text>
-          <Text
-            onPress={() => {
-              //navigation.dispatch(StackActions.replace());
-            }}>
-            Search
-          </Text>
-          <Text
-            onPress={() => {
-              navigation.dispatch(StackActions.replace('MerchantEditProfile'));
-            }}>
-            Profile
-          </Text>
-          <Text
-            onPress={() => {
-              //navigation.dispatch(StackActions.replace());
-            }}>
-            Setting
-          </Text>
-        </View>
+        {/* Navigation Bar */}
+        <MerchantNavigation navigation={navigation} />
       </ScrollView>
     </View>
   );
 }
 
-const icons = {
-  roundness: 40,
-  colors: {
-    primary: '#ffffff',
-    accent: '#f1c40f',
-  },
-};
-
 const styles = StyleSheet.create({
+  profileName: {
+    fontFamily: 'Inter',
+    fontWeight: 'bold',
+    fontSize: 32,
+    color: 'black',
+    marginHorizontal: 20,
+  },
+  profileText: {
+    fontFamily: 'Inter',
+    fontSize: 15,
+    color: 'black',
+  },
+  sticky: {
+    position: 'absolute',
+  },
   bottomSomething: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -211,32 +261,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'black',
     padding: 30,
-  },
-  searchInput: {
-    height: 40,
-    margin: 0,
-    padding: 0,
-    paddingBottom: 4,
-  },
-  banner: {
-    height: 119,
-    width: 420,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    flex: 1,
-  },
-  search: {
-    width: 300,
-    height: 40,
-    backgroundColor: '#fff',
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 15,
-    fontSize: 12,
-    justifyContent: 'center',
-    marginRight: 20,
-    marginLeft: -10,
   },
   Subheading: {
     fontWeight: 'bold',
@@ -287,5 +311,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 20,
     flexDirection: 'column',
+  },
+  containerrow: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingHorizontal: 40,
+    justifyContent: 'space-evenly',
   },
 });
