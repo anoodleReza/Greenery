@@ -13,8 +13,8 @@ import firestore from '@react-native-firebase/firestore';
 import {Formik} from 'formik';
 
 //import other screens
-import MerchantNavigation from './NavigationBar';
-import MerchantHeader from './PageHeader';
+import MerchantHeader from '../PageHeader';
+import MerchantNavigation from '../NavigationBar';
 
 //Main funcion
 export default function MerchantEditProfile({navigation}: {navigation: any}) {

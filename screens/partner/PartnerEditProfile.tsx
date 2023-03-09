@@ -14,7 +14,8 @@ import {Formik} from 'formik';
 
 //import other screens
 import {PartnerNavigation} from '../NavigationBar';
-import { PartnerHeader } from '../PageHeader';
+import {PartnerHeader} from '../PageHeader';
+import { styles } from '../Style';
 //Main funcion
 export default function PartnerEditProfile({navigation}: {navigation: any}) {
   const curUser = firebase.auth().currentUser;
@@ -69,7 +70,7 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
       .signOut()
       .then(() => console.log('User signed out!'));
     setIsLoggedIn(false);
-    navigation.dispatch(StackActions.replace('MerchantSignin'));
+    navigation.dispatch(StackActions.replace('PartnerSignin'));
   };
 
   return (
@@ -77,17 +78,8 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
       <ScrollView>
         {/* Banner */}
         <PartnerHeader />
-
-        {/* Show profile */}
-        <View style={styles.container}>
-          <View style={styles.containerrow}>
-            <Avatar.Icon size={100} icon="folder" />
-            <Text style={styles.profileName}>{name}</Text>
-          </View>
-        </View>
-
         {/* Main Content */}
-        <View style={styles.container}>
+        <View style={styles.centeredContainer}>
           {/* Profile */}
           <Text style={styles.Subheading}>Profile</Text>
           <TextInput style={styles.input} placeholder="Change username..." />
@@ -216,95 +208,3 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  profileName: {
-    fontFamily: 'Inter',
-    fontWeight: 'bold',
-    fontSize: 32,
-    color: 'black',
-    marginHorizontal: 20,
-  },
-  profileText: {
-    fontFamily: 'Inter',
-    fontSize: 15,
-    color: 'black',
-  },
-  sticky: {
-    position: 'absolute',
-  },
-  bottomSomething: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: 'black',
-    padding: 30,
-  },
-  Subheading: {
-    fontWeight: 'bold',
-    fontSize: 26,
-    color: 'black',
-    marginTop: 20,
-  },
-  input: {
-    width: 300,
-    height: 40,
-    backgroundColor: '#fff',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 15,
-    fontSize: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  button: {
-    backgroundColor: '#A9FDAC',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 8,
-    borderColor: 'black',
-    borderWidth: 1,
-    marginVertical: 20,
-    width: 300,
-    height: 40,
-  },
-  logoutButton: {
-    backgroundColor: '#A9FDAC',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 8,
-    borderColor: 'black',
-    borderWidth: 1,
-    marginTop: 10,
-    width: 300,
-    height: 40,
-    marginBottom: 40,
-  },
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-    flexDirection: 'column',
-  },
-  containerrow: {
-    flex: 1,
-    alignItems: 'center',
-    flexDirection: 'row',
-    paddingHorizontal: 40,
-    justifyContent: 'space-evenly',
-  },
-  driverPic: {
-    borderWidth: 2,
-    borderColor: 'black',
-    backgroundColor: 'gray',
-    width: 125,
-    height: 125,
-    borderRadius: 8,
-    marginTop: 10,
-  },
-});

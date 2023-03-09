@@ -41,6 +41,15 @@ export default function Homepage({navigation}: {navigation: any}) {
           mode="contained">
           User Log In
         </Button>
+        <Button
+          onPress={() => {
+            navigation.dispatch(StackActions.replace('PartnerSignupDetails'));
+          }}
+          style={styles.buttonDefault}
+          textColor="black"
+          mode="contained">
+          Dev: Partner Details
+        </Button>
       </View>
     </View>
   );

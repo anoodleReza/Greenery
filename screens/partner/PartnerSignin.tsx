@@ -1,23 +1,26 @@
 //basic
 import React, {useEffect} from 'react';
 import 'react-native-gesture-handler';
-import {StyleSheet, View, Image} from 'react-native';
+import {View, Image} from 'react-native';
 import {StackActions} from '@react-navigation/native';
+
 //material ui + form
 import {Button, Text, TextInput} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
+import {styles} from '../authStyles';
+
 //user session security
 import auth, {firebase} from '@react-native-firebase/auth';
+const user = firebase.auth().currentUser;
 
-export default function MerchantSignin({navigation}: {navigation: any}) {
+export default function PartnerSignin({navigation}: {navigation: any}) {
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(function (user) {
-      if (user) {
-        console.log('user already signed in');
-        navigation.dispatch(StackActions.replace('MerchantHomepage'));
-      }
-    });
+    if (user?.uid) {
+      //user is signed in already
+      console.log('user already signed in');
+      navigation.dispatch(StackActions.replace('PartnerHomepage'));
+    }
   }, [navigation]);
 
   //formik validation
@@ -40,12 +43,12 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
         //login
         auth()
           .signInWithEmailAndPassword(values.email, values.password)
-          .then(userCredential => {
+          .then((userCredential: {user: {email: any}}) => {
             console.log('signed in as ', userCredential.user.email);
             //next page
-            navigation.dispatch(StackActions.replace('MerchantHomepage'));
+            navigation.dispatch(StackActions.replace('PartnerHomepage'));
           })
-          .catch(error => {
+          .catch((error: {code: any}) => {
             const errorCode = error.code;
             console.log(errorCode);
             //wrong credentials
@@ -54,12 +57,15 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
       {({handleChange, handleBlur, handleSubmit, values, touched, errors}) => (
         <View style={styles.container}>
           {/* Image section */}
-          <Image style={styles.Image} source={require('../assets/logo.png')} />
+          <Image
+            style={styles.Image}
+            source={require('../../assets/logo.png')}
+          />
           {/* Input section */}
           <TextInput
             mode="outlined"
             placeholder="Enter Email..."
-            style={styles.input}
+            style={styles.paperinput}
             onChangeText={handleChange('email')}
             onBlur={handleBlur('email')}
             value={values.email}
@@ -68,7 +74,7 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
           <TextInput
             mode="outlined"
             placeholder="Enter password..."
-            style={styles.input}
+            style={styles.paperinput}
             secureTextEntry
             value={values.password}
             onChangeText={handleChange('password')}
@@ -89,7 +95,7 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
             <Text
               style={styles.Highlight}
               onPress={() => {
-                navigation.dispatch(StackActions.replace('MerchantSignup'));
+                navigation.dispatch(StackActions.replace('PartnerSignup'));
               }}>
               Here
             </Text>
@@ -107,34 +113,3 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
     </Formik>
   );
 }
-
-//we need to make a separate stylesheet file and import it here instead to kkeep the styling normalized for all pages
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-  },
-  Highlight: {
-    color: '#0066FF',
-    textDecorationLine: 'underline',
-  },
-  input: {
-    width: 280,
-    margin: 4,
-  },
-  buttonDefault: {
-    margin: 10,
-  },
-  surface: {
-    padding: 8,
-    margin: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 4,
-  },
-  Image: {
-    width: 200,
-    height: 200,
-  },
-});

@@ -55,6 +55,7 @@ export default function MerchantNavigation({navigation}: {navigation: any}) {
     //2 rows, 5 columns
   );
 }
+
 export function PartnerNavigation({navigation}: {navigation: any}) {
   return (
     <View style={styles.navContainer}>
@@ -84,7 +85,7 @@ export function PartnerNavigation({navigation}: {navigation: any}) {
         <TouchableOpacity
           style={styles.col}
           onPress={() => {
-            navigation.dispatch(StackActions.replace('PartnerEditProfile'));
+            navigation.dispatch(StackActions.replace('PartnerProfile'));
           }}>
           <Avatar.Icon
             size={40}

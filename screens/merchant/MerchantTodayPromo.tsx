@@ -23,7 +23,7 @@ export default function MerchantTodayPromo({navigation}: {navigation: any}) {
       <ScrollView>
         <View style={{flexDirection: 'row'}}>
           <ImageBackground
-            source={require('../assets/banner.png')}
+            source={require('../../assets/banner.png')}
             style={{height: 119, width: 420}}
             resizeMode="cover">
             <TextInput style={styles.input} placeholder="Today's agenda..." />

@@ -5,22 +5,24 @@ import {createStackNavigator} from '@react-navigation/stack';
 import * as React from 'react';
 import 'react-native-gesture-handler';
 //merchant
-import MerchantSignup from './screens/MerchantSignup';
-import MerchantDetails from './screens/MerchantDetails';
-import MerchantSignin from './screens/MerchantSignin';
-import MerchantHomepage from './screens/MerchantHomepage';
-import MerchantMenu from './screens/MerchantMenu';
-import MerchantEditProfile from './screens/MerchantEditProfile';
-import MerchantTodayPromo from './screens/MerchantTodayPromo';
+import MerchantSignup from './screens/merchant/MerchantSignup';
+import MerchantDetails from './screens/merchant/MerchantDetails';
+import MerchantSignin from './screens/merchant/MerchantSignin';
+import MerchantHomepage from './screens/merchant/MerchantHomepage';
+import MerchantMenu from './screens/merchant/MerchantMenu';
+import MerchantEditProfile from './screens/merchant/MerchantEditProfile';
+import MerchantTodayPromo from './screens/merchant/MerchantTodayPromo';
 import MerchantNavigation from './screens/NavigationBar';
 //main homepage
 import Homepage from './screens/Homepage';
 //partner
-import PartnerSignin from './screens/PartnerSignin';
-import PartnerSignup from './screens/PartnerSignup';
+import PartnerSignin from './screens/partner/PartnerSignin';
+import PartnerSignup from './screens/partner/PartnerSignup';
 import PartnerHomepage from './screens/partner/PartnerHomepage';
 import PartnerProfile from './screens/partner/PartnerProfile';
 import PartnerEditProfile from './screens/partner/PartnerEditProfile';
+import PartnerSignupDetails from './screens/partner/PartnerSignupDetails';
+
 //paper meterial ui
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 
@@ -101,6 +103,11 @@ function App() {
           <Stack.Screen
             name="PartnerEditProfile"
             component={PartnerEditProfile}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="PartnerSignupDetails"
+            component={PartnerSignupDetails}
             options={{headerShown: false}}
           />
         </Stack.Navigator>

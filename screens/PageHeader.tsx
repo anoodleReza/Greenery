@@ -34,10 +34,7 @@ export function PartnerHeader() {
   return (
     <View style={styles.row}>
       {/* Banner */}
-      <ImageBackground
-        source={require('../assets/banner.png')}
-        style={styles.banner}
-        resizeMode="cover">
+      <View style={styles.banner}>
         <Searchbar
           style={styles.search}
           placeholder="Today's Agenda..."
@@ -46,7 +43,7 @@ export function PartnerHeader() {
           inputStyle={styles.searchInput}
         />
         <Avatar.Icon size={40} icon="menu" theme={icons} />
-      </ImageBackground>
+      </View>
     </View>
     //2 rows, 5 columns
   );
@@ -61,12 +58,12 @@ const icons = {
 
 const styles = StyleSheet.create({
   banner: {
-    height: 119,
-    width: 420,
+    height: 80,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
     flex: 1,
+    backgroundColor: '#0ec167',
   },
   search: {
     width: 300,

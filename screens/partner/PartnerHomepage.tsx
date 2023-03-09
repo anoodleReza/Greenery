@@ -1,20 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect} from 'react';
+import React from 'react';
 import 'react-native-gesture-handler';
-import {
-  StyleSheet,
-  View,
-  Image,
-  TouchableOpacity,
-  ImageBackground,
-} from 'react-native';
+import {View, Image, TouchableOpacity} from 'react-native';
 import {StackActions} from '@react-navigation/native';
+import {styles} from '../Style';
 //material ui + form
-import {Button, Text, TextInput} from 'react-native-paper';
-import {Formik} from 'formik';
-import * as Yup from 'yup';
+import {Text} from 'react-native-paper';
 import {PartnerNavigation} from '../NavigationBar';
-import { PartnerHeader } from '../PageHeader';
+import {PartnerHeader} from '../PageHeader';
 
 export default function PartnerHomepage({navigation}: {navigation: any}) {
   const ButtonBox = props => {
@@ -75,70 +68,3 @@ export default function PartnerHomepage({navigation}: {navigation: any}) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  contentBox: {
-    height: '70%',
-    marginTop: 20,
-  },
-  flexContainer: {
-    flex: 1,
-  },
-  cover: {
-    height: 119,
-    width: 420,
-  },
-  row: {
-    flexDirection: 'row',
-  },
-  input: {
-    width: 300,
-    height: 20,
-    backgroundColor: '#fff',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 40,
-    fontSize: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 45,
-    marginTop: 30,
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: '900',
-    marginTop: 24,
-    marginLeft: 15,
-    color: 'black',
-  },
-  buttonTitle: {
-    fontWeight: 'bold',
-    color: 'black',
-    marginTop: 20,
-    fontSize: 16,
-  },
-  buttonBox: {
-    borderWidth: 3,
-    width: 108,
-    height: 107,
-    backgroundColor: '#E9BA8B',
-    borderRadius: 8,
-  },
-  flexButton: {
-    borderColor: 'black',
-    justifyContent: 'space-around',
-    flexDirection: 'row',
-    marginTop: 80,
-  },
-  touchButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  ImgPlacement: {
-    width: 88,
-    height: 88,
-  },
-});

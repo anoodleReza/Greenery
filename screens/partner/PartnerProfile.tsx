@@ -1,21 +1,27 @@
-import React, {useEffect} from 'react';
+/* eslint-disable react-native/no-inline-styles */
+import React from 'react';
 import 'react-native-gesture-handler';
-import {StyleSheet, View, Image, TouchableOpacity, ImageBackground} from 'react-native';
+import {View, Image, TouchableOpacity, Text} from 'react-native';
 import {StackActions} from '@react-navigation/native';
 //material ui + form
-import {Button, Text, TextInput} from 'react-native-paper';
+import {Divider} from 'react-native-paper';
+import {PartnerHeader} from '../PageHeader';
+import {PartnerNavigation} from '../NavigationBar';
+import {styles} from '../Style';
 
 export default function PartnerProfile({navigation}: {navigation: any}) {
   return (
-    <View>
-      <View style={{flexDirection:'row'}}>
-            <ImageBackground source={require('../../assets/banner.png')} style={{height:119,width:420}}
-            resizeMode='cover'>
-                <TextInput style={styles.input} placeholder="Today's agenda..."/>
-            </ImageBackground>
-        </View>
-
-        <View style={{marginTop: 20, alignItems: 'center', justifyContent: 'center'}}>
+    <View style={styles.containerUncentered}>
+      {/* Screen Header */}
+      <PartnerHeader />
+      {/* Page Content */}
+      <View style={styles.profilePage}>
+        <View
+          style={{
+            marginTop: 40,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
           <View style={styles.picture}>
             <Image source={require('../../assets/scooter.png')} />
           </View>
@@ -25,72 +31,26 @@ export default function PartnerProfile({navigation}: {navigation: any}) {
 
         <View style={{alignItems: 'center', justifyContent: 'center'}}>
           <View style={styles.box}>
-            <Text style={styles.text}>Reviews</Text>
+            <Text style={styles.textBasic}>Reviews</Text>
           </View>
 
           <View style={styles.box}>
-            <Text style={styles.text}>Activity</Text>
+            <Text style={styles.textBasic}>Activity</Text>
           </View>
 
           <View style={styles.box}>
-            <TouchableOpacity onPress={() => {
+            <TouchableOpacity
+              onPress={() => {
                 navigation.dispatch(StackActions.replace('PartnerEditProfile'));
-                }}>
-                  <Text style={styles.text}>Edit Profile</Text>
+              }}>
+              <Text style={styles.textBasic}>Edit Profile</Text>
             </TouchableOpacity>
-            
           </View>
         </View>
-        <Text onPress={()=>{navigation.dispatch(StackActions.replace('PartnerHomepage'));}}>return</Text>
-
-    </View> 
-  )
+      </View>
+      <Divider />
+      {/* Screen Navigation */}
+      <PartnerNavigation navigation={navigation} />
+    </View>
+  );
 }
-
-const styles = StyleSheet.create({
-  input: {
-    width: 300,
-    height: 20,
-    backgroundColor: '#fff',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 40,
-    fontSize: 16,
-    justifyContent:'center',
-    alignItems: 'center',
-    marginLeft:45,
-    marginTop:30,
-  },
-  picture: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    borderWidth: 2,
-    borderColor: 'black',
-    backgroundColor: '#E9BA8B',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 10,
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start'
-  },
-  box: {
-    width: 300,
-    height: 50,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: 'black',
-    backgroundColor: '#E9BA8B',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 20,
-
-  }
-})

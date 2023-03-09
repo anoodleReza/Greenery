@@ -8,8 +8,8 @@ import {StackActions} from '@react-navigation/native';
 import auth, {firebase} from '@react-native-firebase/auth';
 
 //import other pages
-import NavigationBar from './NavigationBar';
-import MerchantHeader from './PageHeader';
+import MerchantHeader from '../PageHeader';
+import MerchantNavigation from '../NavigationBar';
 
 export default function MerchantHomepage({navigation}: {navigation: any}) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -54,7 +54,7 @@ export default function MerchantHomepage({navigation}: {navigation: any}) {
 
         <TouchableOpacity style={styles.touchButton}>
         <View style={styles.buttonBox}>
-          <Image source={require('../assets/editMenu.png')} resizeMode="cover" style={styles.flexContainer} />
+          <Image source={require('../../assets/editMenu.png')} resizeMode="cover" style={styles.flexContainer} />
           <Button onPress={() => { handleLogout; } } children={undefined}/>
         </View>
         </TouchableOpacity>
@@ -65,7 +65,7 @@ export default function MerchantHomepage({navigation}: {navigation: any}) {
             onPress={()=> { navigation.dispatch(StackActions.replace('MerchantEditProfile'));}}
             >
             <Image
-              source={require('../assets/editMerchantProfile.png')}
+              source={require('../../assets/editMerchantProfile.png')}
               resizeMode="cover" style={styles.flexContainer}
               />
           </TouchableOpacity>
@@ -83,7 +83,7 @@ export default function MerchantHomepage({navigation}: {navigation: any}) {
           style={styles.buttonBox}
           onPress={()=> { navigation.dispatch(StackActions.replace('MerchantMenu'));}}
           >
-          <Image source={require('../assets/editMenu.png')} resizeMode="contain" style={styles.flexContainer}
+          <Image source={require('../../assets/editMenu.png')} resizeMode="contain" style={styles.flexContainer}
           />
         </TouchableOpacity>
         </View>
@@ -94,7 +94,7 @@ export default function MerchantHomepage({navigation}: {navigation: any}) {
       </View>
 
        {/* Separate nav bar */}
-       <NavigationBar navigation={navigation} />
+       <MerchantNavigation navigation={navigation} />
     </View>
   );
 }

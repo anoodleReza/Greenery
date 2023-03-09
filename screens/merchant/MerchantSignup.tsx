@@ -1,16 +1,19 @@
 //basic
 import React from 'react';
 import 'react-native-gesture-handler';
-import {StyleSheet, View, Image} from 'react-native';
+import {View, Image} from 'react-native';
 import {StackActions} from '@react-navigation/native';
+
 //material ui + form
 import {Button, Text, TextInput} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
+import {styles} from '../authStyles';
+
 //firebase
 import auth from '@react-native-firebase/auth';
 
-export default function PartnerSignup({navigation}: {navigation: any}) {
+export default function MerchantSignup({navigation}: {navigation: any}) {
   //formik validation
   const SignupSchema = Yup.object().shape({
     username: Yup.string()
@@ -47,12 +50,15 @@ export default function PartnerSignup({navigation}: {navigation: any}) {
             console.log('error: ', errorCode, ' : ', errorMessage);
           });
         //next page
-        navigation.dispatch(StackActions.replace('PartnerSignin'));
+        navigation.dispatch(StackActions.replace('MerchantSignin'));
       }}>
       {({handleChange, handleBlur, handleSubmit, values, touched, errors}) => (
         <View style={styles.container}>
           {/* Image section */}
-          <Image style={styles.Image} source={require('../assets/logo.png')} />
+          <Image
+            style={styles.Image}
+            source={require('../../assets/logo.png')}
+          />
           {/* Input section */}
           <TextInput
             mode="outlined"
@@ -107,51 +113,13 @@ export default function PartnerSignup({navigation}: {navigation: any}) {
             <Text
               style={styles.Highlight}
               onPress={() => {
-                navigation.dispatch(StackActions.replace('PartnerSignin'));
+                navigation.dispatch(StackActions.replace('MerchantSignin'));
               }}>
               Here
             </Text>
-          </Text>
-          <Text> Return to Homepage?</Text>
-          <Text
-            style={styles.Highlight}
-            onPress={() => {
-              navigation.dispatch(StackActions.replace('Homepage'));
-            }}>
-            Here
           </Text>
         </View>
       )}
     </Formik>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-  },
-  Highlight: {
-    color: '#0066FF',
-    textDecorationLine: 'underline',
-  },
-  input: {
-    width: 280,
-    margin: 4,
-  },
-  buttonDefault: {
-    margin: 10,
-  },
-  surface: {
-    padding: 8,
-    margin: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 4,
-  },
-  Image: {
-    width: 200,
-    height: 200,
-  },
-});
