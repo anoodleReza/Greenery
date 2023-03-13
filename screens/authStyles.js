@@ -12,6 +12,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
   },
+  segmentButton: {
+    width: 280,
+    margin: 4,
+    backgroundColor: '#f2f2f2',
+    borderRadius: 15,
+    fontSize: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   Highlight: {
     color: '#0066FF',
     textDecorationLine: 'underline',
@@ -27,6 +36,16 @@ const styles = StyleSheet.create({
   buttonDefault: {
     margin: 10,
   },
+  button: {
+    backgroundColor: '#A9FDAC',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+    borderWidth: 1,
+    marginVertical: 20,
+    width: 300,
+    height: 40,
+  },
   surface: {
     padding: 8,
     margin: 10,
@@ -37,6 +56,11 @@ const styles = StyleSheet.create({
   Image: {
     width: 200,
     height: 200,
+  },
+  ImageS: {
+    width: 200,
+    height: 100,
+    marginTop: 25,
   },
 });
 

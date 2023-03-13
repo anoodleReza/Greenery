@@ -3,10 +3,12 @@ import React from 'react';
 import 'react-native-gesture-handler';
 import {View, Image} from 'react-native';
 import {StackActions} from '@react-navigation/native';
+
 //material ui + form
 import {Button, Text, TextInput} from 'react-native-paper';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
+
 //firebase
 import auth from '@react-native-firebase/auth';
 import {styles} from '../authStyles';
@@ -14,10 +16,6 @@ import {styles} from '../authStyles';
 export default function PartnerSignup({navigation}: {navigation: any}) {
   //formik validation
   const SignupSchema = Yup.object().shape({
-    username: Yup.string()
-      .min(2, 'Too Short!')
-      .max(50, 'Too Long!')
-      .required('Required'),
     email: Yup.string().email('Invalid email').required('Required'),
     password: Yup.string()
       .min(6, 'Too Short!')
@@ -31,7 +29,6 @@ export default function PartnerSignup({navigation}: {navigation: any}) {
   return (
     <Formik
       initialValues={{
-        username: '',
         email: '',
         password: '',
         confirmPassword: '',
@@ -68,15 +65,6 @@ export default function PartnerSignup({navigation}: {navigation: any}) {
           />
           {/* Input section */}
           <>
-            <TextInput
-              mode="outlined"
-              placeholder="Enter Username..."
-              style={styles.input}
-              onChangeText={handleChange('username')}
-              onBlur={handleBlur('username')}
-              value={values.username}
-              error={touched.username && Boolean(errors.username)}
-            />
             <TextInput
               mode="outlined"
               placeholder="Enter email address..."

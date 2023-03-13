@@ -12,8 +12,9 @@ import {styles} from '../Style';
 export default function PartnerProfile({navigation}: {navigation: any}) {
   return (
     <View style={styles.containerUncentered}>
+      {/* <PartnerSidebar /> */}
       {/* Screen Header */}
-      <PartnerHeader />
+      <PartnerHeader navigation={navigation} />
       {/* Page Content */}
       <View style={styles.profilePage}>
         <View

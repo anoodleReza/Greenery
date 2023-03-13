@@ -1,34 +1,12 @@
 import * as React from 'react';
-import {StyleSheet, View, ImageBackground} from 'react-native';
-import {Searchbar, Avatar} from 'react-native-paper';
+import {StyleSheet, View, TouchableOpacity} from 'react-native';
+import {Searchbar, IconButton, Portal} from 'react-native-paper';
+import PartnerSidebar, {MerchantSidebar} from './Sidebar';
 
-export default function MerchantHeader() {
+export default function MerchantHeader({navigation}: {navigation: any}) {
   const [searchQuery, setSearchQuery] = React.useState('');
-  const onChangeSearch = (query: React.SetStateAction<string>) =>
-    setSearchQuery(query);
-  return (
-    <View style={styles.row}>
-      {/* Banner */}
-      <ImageBackground
-        source={require('../assets/banner.png')}
-        style={styles.banner}
-        resizeMode="cover">
-        <Searchbar
-          style={styles.search}
-          placeholder="Today's Agenda..."
-          onChangeText={onChangeSearch}
-          value={searchQuery}
-          inputStyle={styles.searchInput}
-        />
-        <Avatar.Icon size={40} icon="menu" theme={icons} />
-      </ImageBackground>
-    </View>
-    //2 rows, 5 columns
-  );
-}
+  const [shouldShow, setShouldShow] = React.useState(false);
 
-export function PartnerHeader() {
-  const [searchQuery, setSearchQuery] = React.useState('');
   const onChangeSearch = (query: React.SetStateAction<string>) =>
     setSearchQuery(query);
   return (
@@ -42,10 +20,66 @@ export function PartnerHeader() {
           value={searchQuery}
           inputStyle={styles.searchInput}
         />
-        <Avatar.Icon size={40} icon="menu" theme={icons} />
+        <IconButton
+          style={styles.iconbutton}
+          size={25}
+          icon="menu"
+          theme={icons}
+          onPress={() => setShouldShow(!shouldShow)}
+        />
       </View>
+      <Portal>
+        {shouldShow ? (
+          <View>
+            <TouchableOpacity
+              style={styles.dim}
+              onPress={() => setShouldShow(!shouldShow)}
+            />
+            <MerchantSidebar navigation={navigation} />
+          </View>
+        ) : null}
+      </Portal>
     </View>
-    //2 rows, 5 columns
+  );
+}
+
+export function PartnerHeader({navigation}: {navigation: any}) {
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [shouldShow, setShouldShow] = React.useState(false);
+
+  const onChangeSearch = (query: React.SetStateAction<string>) =>
+    setSearchQuery(query);
+  return (
+    <View style={styles.row}>
+      {/* Banner */}
+      <View style={styles.banner}>
+        <Searchbar
+          style={styles.search}
+          placeholder="Today's Agenda..."
+          onChangeText={onChangeSearch}
+          value={searchQuery}
+          inputStyle={styles.searchInput}
+        />
+        <IconButton
+          style={styles.iconbutton}
+          size={25}
+          icon="menu"
+          theme={icons}
+          onPress={() => setShouldShow(!shouldShow)}
+        />
+      </View>
+      <Portal>
+        {shouldShow ? (
+          <View>
+            <TouchableOpacity
+              style={styles.dim}
+              onPress={() => setShouldShow(!shouldShow)}
+            />
+            <PartnerSidebar navigation={navigation} />
+          </View>
+        ) : null}
+      </Portal>
+    </View>
   );
 }
 const icons = {
@@ -57,6 +91,11 @@ const icons = {
 };
 
 const styles = StyleSheet.create({
+  dim: {
+    width: '85%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+  },
   banner: {
     height: 80,
     alignItems: 'center',
@@ -74,8 +113,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     fontSize: 12,
     justifyContent: 'center',
-    marginRight: 20,
-    marginLeft: -10,
+    marginRight: 10,
   },
   row: {
     flex: 1,
@@ -83,8 +121,8 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     height: 40,
-    margin: 0,
-    padding: 0,
-    paddingBottom: 4,
+  },
+  iconbutton: {
+    backgroundColor: '#fff',
   },
 });

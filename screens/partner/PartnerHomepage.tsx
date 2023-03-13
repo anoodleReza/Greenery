@@ -9,7 +9,9 @@ import {Text} from 'react-native-paper';
 import {PartnerNavigation} from '../NavigationBar';
 import {PartnerHeader} from '../PageHeader';
 
+//main
 export default function PartnerHomepage({navigation}: {navigation: any}) {
+  // eslint-disable-next-line react/no-unstable-nested-components
   const ButtonBox = props => {
     return (
       <View style={styles.buttonBox}>
@@ -22,49 +24,53 @@ export default function PartnerHomepage({navigation}: {navigation: any}) {
   };
 
   return (
-    <View style={styles.flexContainer}>
-      {/* Banner */}
-      <PartnerHeader />
-      {/* Content */}
-      <View style={styles.contentBox}>
-        <View>
-          <Text style={styles.text}>What would you like to do today?</Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-            marginTop: 20,
-          }}>
-          <ButtonBox
-            image={require('../../assets/motorbike.png')}
-            name="Go On Duty!"
-          />
+    <View style={{flex: 1}}>
+      <View style={styles.containerUncentered}>
+        {/* Banner */}
+        <PartnerHeader navigation={navigation} />
+        {/* Content */}
+        <View style={styles.contentBox}>
+          <View>
+            <Text style={styles.homepagetext}>
+              What would you like to do today?
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              marginTop: 20,
+            }}>
+            <ButtonBox
+              image={require('../../assets/motorbike.png')}
+              name="Go On Duty!"
+            />
 
-          <ButtonBox
-            image={require('../../assets/photo.png')}
-            name="Profile"
-            navigation={() => {
-              navigation.dispatch(StackActions.replace('PartnerProfile'));
-            }}
-          />
-        </View>
+            <ButtonBox
+              image={require('../../assets/photo.png')}
+              name="Profile"
+              navigation={() => {
+                navigation.dispatch(StackActions.replace('PartnerProfile'));
+              }}
+            />
+          </View>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-            marginTop: 80,
-          }}>
-          <ButtonBox
-            image={require('../../assets/wallet.png')}
-            name="MyWallet"
-          />
-          <ButtonBox image={require('../../assets/map.png')} name="Map" />
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              marginTop: 80,
+            }}>
+            <ButtonBox
+              image={require('../../assets/wallet.png')}
+              name="MyWallet"
+            />
+            <ButtonBox image={require('../../assets/map.png')} name="Map" />
+          </View>
         </View>
+        {/* Navigation */}
+        <PartnerNavigation navigation={navigation} />
       </View>
-      {/* Navigation */}
-      <PartnerNavigation navigation={navigation} />
     </View>
   );
 }

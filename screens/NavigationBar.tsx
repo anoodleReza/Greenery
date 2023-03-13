@@ -32,7 +32,7 @@ export default function MerchantNavigation({navigation}: {navigation: any}) {
         <TouchableOpacity
           style={styles.col}
           onPress={() => {
-            navigation.dispatch(StackActions.replace('MerchantEditProfile'));
+            navigation.dispatch(StackActions.replace('MerchantProfile'));
           }}>
           <Avatar.Icon
             size={40}
@@ -74,13 +74,8 @@ export function PartnerNavigation({navigation}: {navigation: any}) {
           onPress={() => {
             console.log('To News');
           }}>
-          <Avatar.Icon
-            size={40}
-            icon="newspaper-variant"
-            theme={navTheme}
-            color="black"
-          />
-          <Text style={styles.navLabel}>News</Text>
+          <Avatar.Icon size={40} icon="wallet" theme={navTheme} color="black" />
+          <Text style={styles.navLabel}>Wallet</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.col}
@@ -111,7 +106,7 @@ export function PartnerNavigation({navigation}: {navigation: any}) {
 
 const navTheme = {
   colors: {
-    primary: '#f2f2f2',
+    primary: '#fff',
     accent: 'black',
   },
 };
@@ -124,6 +119,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-around',
+    backgroundColor: '#fff',
   },
   navigation: {
     flex: 1,

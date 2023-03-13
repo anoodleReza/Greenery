@@ -12,16 +12,22 @@ import {styles} from '../authStyles';
 
 //user session security
 import auth, {firebase} from '@react-native-firebase/auth';
-const user = firebase.auth().currentUser;
+import {useIsFocused} from '@react-navigation/native';
 
 export default function PartnerSignin({navigation}: {navigation: any}) {
+  const isFocused = useIsFocused();
+
   useEffect(() => {
-    if (user?.uid) {
-      //user is signed in already
-      console.log('user already signed in');
-      navigation.dispatch(StackActions.replace('PartnerHomepage'));
+    // Call only when screen open or when back on screen
+    if (isFocused) {
+      if (firebase.auth().currentUser != null) {
+        console.log('Partner Sign in: user logged');
+        navigation.dispatch(StackActions.replace('PartnerHomepage'));
+      } else {
+        console.log('Partner Sign in: No user signed in data saved');
+      }
     }
-  }, [navigation]);
+  }, [isFocused, navigation]);
 
   //formik validation
   const SignupSchema = Yup.object().shape({

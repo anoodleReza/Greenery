@@ -13,8 +13,11 @@ import MerchantMenu from './screens/merchant/MerchantMenu';
 import MerchantEditProfile from './screens/merchant/MerchantEditProfile';
 import MerchantTodayPromo from './screens/merchant/MerchantTodayPromo';
 import MerchantNavigation from './screens/NavigationBar';
+import MerchantProfile from './screens/merchant/MerchantProfile';
+
 //main homepage
 import Homepage from './screens/Homepage';
+
 //partner
 import PartnerSignin from './screens/partner/PartnerSignin';
 import PartnerSignup from './screens/partner/PartnerSignup';
@@ -66,8 +69,14 @@ function App() {
             options={{headerShown: false}}
           />
           <Stack.Screen
+            name="MerchantProfile"
+            component={MerchantProfile}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
             name="MerchantEditProfile"
             component={MerchantEditProfile}
+            options={{headerShown: false}}
           />
           <Stack.Screen
             name="MerchantTodayPromo"

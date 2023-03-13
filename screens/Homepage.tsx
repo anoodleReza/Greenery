@@ -43,12 +43,12 @@ export default function Homepage({navigation}: {navigation: any}) {
         </Button>
         <Button
           onPress={() => {
-            navigation.dispatch(StackActions.replace('PartnerSignupDetails'));
+            navigation.dispatch(StackActions.replace('MerchantDetails'));
           }}
           style={styles.buttonDefault}
           textColor="black"
           mode="contained">
-          Dev: Partner Details
+          Dev: Merchant Details
         </Button>
       </View>
     </View>

@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 //building the screen
-import {Button, Avatar} from 'react-native-paper';
-import {StyleSheet, Text, View, TextInput} from 'react-native';
+import {Button, SegmentedButtons} from 'react-native-paper';
+import {Text, View, TextInput} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {StackActions} from '@react-navigation/native';
 
@@ -15,7 +16,8 @@ import {Formik} from 'formik';
 //import other screens
 import {PartnerNavigation} from '../NavigationBar';
 import {PartnerHeader} from '../PageHeader';
-import { styles } from '../Style';
+import {styles} from '../Style';
+
 //Main funcion
 export default function PartnerEditProfile({navigation}: {navigation: any}) {
   const curUser = firebase.auth().currentUser;
@@ -30,46 +32,25 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
   const [closing, setclosing] = useState('');
 
   //Fetch data from firestore
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const fetchUserInfo = async () => {
-    if (curUser?.uid) {
-      console.log('Accessing documents as ', curUser?.uid);
-      firestore()
-        .collection('merchant')
-        .doc(curUser?.uid)
-        .get()
-        .then(documentSnapshot => {
-          // Document fields
-          const userDetails = documentSnapshot.data();
-          // All the document related data
-          setname(userDetails?.Name);
-          setcategory(userDetails?.Category);
-          setprice(userDetails?.Price);
-          setaddress(userDetails?.Address);
-          setopening(userDetails?.Opening);
-          setclosing(userDetails?.Closing);
-        });
-    }
-  };
 
   //Fetch user data on start
   useEffect(() => {
     if (!isLoggedIn) {
       if (curUser) {
-        fetchUserInfo();
         setIsLoggedIn(true);
       } else {
         console.log('Error in retrieving user data');
       }
     }
-  }, [curUser, fetchUserInfo, isLoggedIn]);
+  }, [curUser, isLoggedIn]);
 
   //Used for logout
   const handleLogout = async () => {
     auth()
       .signOut()
-      .then(() => console.log('User signed out!'));
+      .then(() => navigation.dispatch(StackActions.replace('PartnerSignin')));
     setIsLoggedIn(false);
+    //just in case
     navigation.dispatch(StackActions.replace('PartnerSignin'));
   };
 
@@ -77,7 +58,7 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
     <View>
       <ScrollView>
         {/* Banner */}
-        <PartnerHeader />
+        <PartnerHeader navigation={navigation} />
         {/* Main Content */}
         <View style={styles.centeredContainer}>
           {/* Profile */}
@@ -112,59 +93,82 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
           {/* Details */}
           <Formik
             initialValues={{
-              Name: '',
-              Category: '',
-              Price: '',
-              Address: '',
-              Opening: '',
-              Closing: '',
+              VehicleType: '',
+              VehicleDescription: '',
+              VehiclePlateNumber: '',
             }}
             onSubmit={values => {
-              if (firestore().collection('merchant').doc(curUser?.uid)) {
-                //user data found found
-                console.log('user data found');
-                firestore()
-                  .collection('merchant')
-                  .doc(curUser?.uid)
-                  .set({
-                    Name: values.Name,
-                    Category: values.Category,
-                    Price: values.Price,
-                    Address: values.Address,
-                    Opening: values.Opening,
-                    Closing: values.Closing,
-                  })
-                  .then(() => {
-                    console.log('User updated!');
-                  });
-              }
+              console.log('new values: ', values);
+              //**change this to send the form data to the partner database
+              // if (firestore().collection('merchant').doc(curUser?.uid)) {
+              //   //user data found found
+              //   console.log('user data found');
+              //   //change this to send the 'change vehicle detils'
+              //   firestore()
+              //     .collection('merchant')
+              //     .doc(curUser?.uid)
+              //     .set({
+              //       Name: values.Name,
+              //       Category: values.Category,
+              //       Price: values.Price,
+              //       Address: values.Address,
+              //       Opening: values.Opening,
+              //       Closing: values.Closing,
+              //     })
+              //     .then(() => {
+              //       console.log('User updated!');
+              //     });
+              // }
             }}>
             {({handleChange, handleBlur, handleSubmit, values}) => (
               <>
                 <Text style={styles.Subheading}>Change Vehicle Details:</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Vehicle Type..."
-                  id="RestoName"
-                  value={values.Name}
-                  onChangeText={handleChange('Name')}
-                  onBlur={handleBlur('Name')}
+                <SegmentedButtons
+                  style={styles.segmentButton}
+                  value={values.VehicleType}
+                  onValueChange={handleChange('VehicleType')}
+                  theme={buttons}
+                  buttons={[
+                    {
+                      value: 'Motorcycle',
+                      label: 'Motorcycle',
+                      style: {
+                        borderWidth: 0,
+                        borderRadius: 15,
+                        backgroundColor:
+                          values.VehicleType === 'Motorcycle'
+                            ? buttons.colors.primary
+                            : buttons.colors.background,
+                      },
+                    },
+                    {
+                      value: 'Car',
+                      label: 'Car',
+                      style: {
+                        borderWidth: 0,
+                        borderRadius: 15,
+                        backgroundColor:
+                          values.VehicleType === 'Car'
+                            ? buttons.colors.primary
+                            : buttons.colors.background,
+                      },
+                    },
+                  ]}
                 />
                 <TextInput
                   style={styles.input}
                   placeholder="Vehicle Description..."
-                  id="Category"
-                  value={values.Category}
-                  onChangeText={handleChange('Category')}
-                  onBlur={handleBlur('Category')}
+                  value={values.VehicleDescription}
+                  onChangeText={handleChange('VehicleDescription')}
+                  onBlur={handleBlur('VehicleDescription')}
                 />
                 <TextInput
                   style={styles.input}
-                  placeholder="Vehicle Type..."
+                  placeholder="Vehicle Vehicle Plate Number..."
                   id="Price"
-                  value={values.Price}
-                  onChangeText={handleChange('Price')}
-                  onBlur={handleBlur('Price')}
+                  value={values.VehiclePlateNumber}
+                  onChangeText={handleChange('VehiclePlateNumber')}
+                  onBlur={handleBlur('VehiclePlateNumber')}
                 />
 
                 {/* Confirm Button */}
@@ -182,7 +186,9 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
                   style={styles.button}
                   textColor="black"
                   mode="contained"
-                  onPress={handleSubmit}>
+                  onPress={() => {
+                    console.log('driver picture');
+                  }}>
                   Confirm
                 </Button>
               </>
@@ -208,3 +214,12 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
     </View>
   );
 }
+
+const buttons = {
+  roundness: 5,
+  colors: {
+    primary: '#A9FDAC',
+    accent: '#f1c40f',
+    background: '#f2f2f2',
+  },
+};

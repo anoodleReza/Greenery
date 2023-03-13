@@ -10,16 +10,22 @@ import * as Yup from 'yup';
 //user session security
 import auth, {firebase} from '@react-native-firebase/auth';
 import {styles} from '../authStyles';
+import {useIsFocused} from '@react-navigation/native';
 
 export default function MerchantSignin({navigation}: {navigation: any}) {
+  const isFocused = useIsFocused();
+
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(function (user) {
-      if (user?.uid) {
-        console.log('user already signed in');
+    // Call only when screen open or when back on screen
+    if (isFocused) {
+      if (firebase.auth().currentUser != null) {
+        console.log('Merchant Sign in: user logged');
         navigation.dispatch(StackActions.replace('MerchantHomepage'));
+      } else {
+        console.log('Merchant Sign in: No user signed in data saved');
       }
-    });
-  }, [navigation]);
+    }
+  }, [isFocused, navigation]);
 
   //formik validation
   const SignupSchema = Yup.object().shape({
