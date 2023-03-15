@@ -224,6 +224,43 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 10,
   },
+  RestaurantBoxOutside: {
+    width: 112,
+    height: 106,
+    borderWidth:2,
+    borderColor: 'black',
+    backgroundColor: '#D9D9D9',
+    borderRadius: 8,
+    marginLeft:10,
+  },
+  RestaurantBoxInside: {
+    width: 108,
+    height: 86,
+    borderColor: 'black',
+    backgroundColor: '#A9FDAC',
+    borderRadius: 8,
+    borderBottomWidth: 2,
+  },
+  textInput: {
+    borderColor: 'gray',
+    borderWidth: 1,
+  },
+  resultContainer: {
+    flexDirection: 'row',
+    padding: 10,
+  },
+  container2: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  checkboxWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 5,
+  },
+
 });
 
 export {styles};

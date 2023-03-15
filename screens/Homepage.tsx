@@ -34,7 +34,7 @@ export default function Homepage({navigation}: {navigation: any}) {
 
         <Button
           onPress={() => {
-            navigation.dispatch(StackActions.replace(''));
+            navigation.dispatch(StackActions.replace('UserSignin'));
           }}
           style={styles.buttonDefault}
           textColor="black"
@@ -50,6 +50,9 @@ export default function Homepage({navigation}: {navigation: any}) {
           mode="contained">
           Dev: Merchant Details
         </Button>
+
+
+
       </View>
     </View>
   );

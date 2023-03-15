@@ -26,8 +26,19 @@ import PartnerProfile from './screens/partner/PartnerProfile';
 import PartnerEditProfile from './screens/partner/PartnerEditProfile';
 import PartnerSignupDetails from './screens/partner/PartnerSignupDetails';
 
+//user
+
+
 //paper meterial ui
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
+import UserSignin from './screens/user/UserSignin';
+import UserSignup from './screens/user/UserSignup';
+import UserHomepage from './screens/user/UserHomepage';
+import BestSeller from './screens/user/BestSeller';
+import RestaurantPage from './screens/user/RestaurantPage';
+import UserProfile from './screens/user/UserProfile';
+import UserEditProfile from './screens/user/UserEditProfile';
+import UserDetails from './screens/user/UserDetails';
 
 const Stack = createStackNavigator();
 
@@ -118,6 +129,46 @@ function App() {
             name="PartnerSignupDetails"
             component={PartnerSignupDetails}
             options={{headerShown: false}}
+          />
+          <Stack.Screen
+          name="UserSignin"
+          component={UserSignin}
+          options={{headerShown: false}}
+          />
+          <Stack.Screen
+          name="UserSignup"
+          component={UserSignup}
+          options={{headerShown: false}}
+          />
+          <Stack.Screen
+          name="UserHomepage"
+          component={UserHomepage}
+          options={{headerShown: false}}
+          />
+          <Stack.Screen
+          name="BestSeller"
+          component={BestSeller}
+          options={{headerShown: false}}
+          />
+          <Stack.Screen
+          name="RestaurantPage"
+          component={RestaurantPage}
+          options={{headerShown: false}}
+          />
+           <Stack.Screen
+          name="UserProfile"
+          component={UserProfile}
+          options={{headerShown: false}}
+          />
+          <Stack.Screen
+          name="UserEditProfile"
+          component={UserEditProfile}
+          options={{headerShown: false}}
+          />
+          <Stack.Screen
+          name="UserDetails"
+          component={UserDetails}
+          options={{headerShown: false}}
           />
         </Stack.Navigator>
       </NavigationContainer>
