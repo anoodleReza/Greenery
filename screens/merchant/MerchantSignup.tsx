@@ -14,6 +14,8 @@ import {styles} from '../authStyles';
 import auth from '@react-native-firebase/auth';
 
 export default function MerchantSignup({navigation}: {navigation: any}) {
+  const [isvalid, setisvalid] = React.useState(true);
+
   //formik validation
   const SignupSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Required'),
@@ -39,26 +41,28 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
         //registering user
         auth()
           .createUserWithEmailAndPassword(values.email, values.password)
-          .then(() => {
-            //login in user for details
-            auth()
-              .signInWithEmailAndPassword(values.email, values.password)
-              .then(() => {
-                console.log('to merchant details');
-                navigation.dispatch(StackActions.replace('MerchantDetails'));
-              })
-              .catch((error: {code: any}) => {
-                const errorCode = error.code;
-                console.log(errorCode);
-                //wrong credentials
-              });
-          })
           .catch(error => {
             const errorCode = error.code;
             const errorMessage = error.message;
             console.log('error: ', errorCode, ' : ', errorMessage);
+            setisvalid(false);
+          })
+          .then(() => {
+            if (isvalid) {
+              //login in user for details
+              auth()
+                .signInWithEmailAndPassword(values.email, values.password)
+                .then(() => {
+                  console.log('to merchant details');
+                  navigation.dispatch(StackActions.replace('MerchantDetails'));
+                })
+                .catch((error: {code: any}) => {
+                  const errorCode = error.code;
+                  console.log(errorCode);
+                  //wrong credentials
+                });
+            }
           });
-        console.log('user created');
       }}>
       {({handleChange, handleBlur, handleSubmit, values, touched, errors}) => (
         <View style={styles.container}>
@@ -99,6 +103,13 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
           />
 
           {/* Bottom Buttons */}
+          {!isvalid ? (
+            <View>
+              <Text style={styles.errorText}>Email already taken</Text>
+            </View>
+          ) : (
+            <Text> </Text>
+          )}
           <Button
             style={styles.buttonDefault}
             textColor="black"

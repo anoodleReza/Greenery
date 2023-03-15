@@ -1,14 +1,26 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 //building the screen
-import {Button, SegmentedButtons} from 'react-native-paper';
-import {Text, View, TextInput} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {Button, IconButton, SegmentedButtons} from 'react-native-paper';
+import {
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  Platform,
+  Image,
+} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
 import {StackActions} from '@react-navigation/native';
 
 //firebase stuff
 import {ScrollView} from 'react-native';
 import auth, {firebase} from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
+
+//images
+import * as ImagePicker from 'react-native-image-picker';
+const includeExtra = true;
 
 //form
 import {Formik} from 'formik';
@@ -31,19 +43,6 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
   const [opening, setopening] = useState('');
   const [closing, setclosing] = useState('');
 
-  //Fetch data from firestore
-
-  //Fetch user data on start
-  useEffect(() => {
-    if (!isLoggedIn) {
-      if (curUser) {
-        setIsLoggedIn(true);
-      } else {
-        console.log('Error in retrieving user data');
-      }
-    }
-  }, [curUser, isLoggedIn]);
-
   //Used for logout
   const handleLogout = async () => {
     auth()
@@ -53,6 +52,19 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
     //just in case
     navigation.dispatch(StackActions.replace('PartnerSignin'));
   };
+
+  //used for profile picture
+  const [response, setResponse] = React.useState<any>(null);
+  const onImageSelect = React.useCallback((type: any, options: any) => {
+    if (type === 'capture') {
+      ImagePicker.launchCamera(options, setResponse);
+    } else {
+      ImagePicker.launchImageLibrary(options, setResponse);
+    }
+  }, []);
+
+  //upload to firebase
+  const [pfpUri, setpfpUri] = useState(null);
 
   return (
     <View>
@@ -179,21 +191,88 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
                   onPress={handleSubmit}>
                   Confirm
                 </Button>
-                <Text style={styles.Subheading}>Driver Picture:</Text>
-                <View style={styles.driverPic} />
-
-                <Button
-                  style={styles.button}
-                  textColor="black"
-                  mode="contained"
-                  onPress={() => {
-                    console.log('driver picture');
-                  }}>
-                  Confirm
-                </Button>
               </>
             )}
           </Formik>
+          <>
+            <Text style={styles.Subheading}>Driver Picture:</Text>
+            {/* Image Selection */}
+            <View>
+              {actions.map(({title, type, options}) => {
+                return (
+                  <Button
+                    style={styles.button}
+                    textColor="black"
+                    mode="contained"
+                    key={title}
+                    onPress={() => {
+                      onImageSelect(type, options);
+                    }}>
+                    {title}
+                  </Button>
+                );
+              })}
+            </View>
+            {/* Show response */}
+            {response?.assets &&
+              response?.assets[0].uri &&
+              response?.assets.map(({uri}: {uri: string}) => (
+                <View style={styles.container} key={uri}>
+                  <Image
+                    resizeMode="cover"
+                    resizeMethod="scale"
+                    // eslint-disable-next-line react-native/no-inline-styles
+                    style={{
+                      height: 200,
+                      width: 200,
+                      borderColor: 'black',
+                      borderWidth: 2,
+                    }}
+                    source={{uri: uri}}
+                  />
+                  <Button
+                    style={styles.button}
+                    textColor="black"
+                    mode="contained"
+                    onPress={async () => {
+                      //assign variable the uri
+                      setpfpUri(response.assets[0].uri);
+                      console.log('file: ', pfpUri);
+                      const filename = 'ProfilePicture:' + curUser?.uid;
+                      //change uri link if needed
+                      if (pfpUri != null) {
+                        const uploadUri =
+                          Platform.OS === 'ios'
+                            ? pfpUri.replace('file://', '')
+                            : pfpUri;
+                        //check if there is a pfp already (if there is an image url)
+                        const fullpath = '/profile/' + filename;
+                        if (storage().ref(fullpath).getDownloadURL() != null) {
+                          storage().ref(fullpath).delete();
+                        }
+                        //put file on storage
+                        const task = storage()
+                          .ref('/profile/' + filename)
+                          .putFile(uploadUri);
+                        try {
+                          await task;
+                        } catch (e) {
+                          console.error(e);
+                        }
+                        //success
+                        Alert.alert(
+                          'Photo uploaded!',
+                          'Your photo has been uploaded to Firebase Cloud Storage!',
+                        );
+                        setpfpUri(null);
+                      
+                      }
+                    }}>
+                    Upload image
+                  </Button>
+                </View>
+              ))}
+          </>
         </View>
 
         {/* Logout Button */}
@@ -223,3 +302,22 @@ const buttons = {
     background: '#f2f2f2',
   },
 };
+
+interface Action {
+  title: string;
+  type: 'capture' | 'library';
+  options: ImagePicker.CameraOptions | ImagePicker.ImageLibraryOptions;
+}
+
+const actions: Action[] = [
+  {
+    title: 'Select Image',
+    type: 'library',
+    options: {
+      selectionLimit: 1,
+      mediaType: 'photo',
+      includeBase64: false,
+      includeExtra,
+    },
+  },
+];

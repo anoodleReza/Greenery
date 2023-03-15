@@ -11,6 +11,7 @@ import {styles} from '../Style';
 //firebase stuff
 import {firebase} from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 
 export default function MercantProfile({navigation}: {navigation: any}) {
   const curUser = firebase.auth().currentUser;
@@ -45,6 +46,21 @@ export default function MercantProfile({navigation}: {navigation: any}) {
         });
     }
   };
+  //Profile picture
+  const fullpath = '/merchant/' + 'ProfilePicture:' + curUser?.uid;
+  const [imageUrl, setImageUrl] = useState('');
+  const [isPfp, setisPfp] = React.useState(false);
+
+  useEffect(() => {
+    storage()
+      .ref(fullpath) //name in storage in firebase console
+      .getDownloadURL()
+      .then(url => {
+        setImageUrl(url);
+        setisPfp(true);
+      })
+      .catch(e => console.log('Errors while downloading => ', e));
+  }, [fullpath]);
 
   //Fetch user data on start
   useEffect(() => {
@@ -71,7 +87,16 @@ export default function MercantProfile({navigation}: {navigation: any}) {
             justifyContent: 'center',
           }}>
           <View style={styles.picture}>
-            <Image source={require('../../assets/scooter.png')} />
+            {isPfp ? (
+              <View>
+                <Image
+                  style={{height: 200, width: 200, borderRadius: 100}}
+                  source={{uri: imageUrl}}
+                />
+              </View>
+            ) : (
+              <Image source={require('../../assets/scooter.png')} />
+            )}
           </View>
           <Text style={styles.text}>{name}</Text>
           <Text>Category: {category}</Text>

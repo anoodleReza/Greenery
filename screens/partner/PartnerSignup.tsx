@@ -14,6 +14,8 @@ import auth from '@react-native-firebase/auth';
 import {styles} from '../authStyles';
 
 export default function PartnerSignup({navigation}: {navigation: any}) {
+  const [isvalid, setisvalid] = React.useState(true);
+
   //formik validation
   const SignupSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Required'),
@@ -43,18 +45,21 @@ export default function PartnerSignup({navigation}: {navigation: any}) {
             const errorCode = error.code;
             const errorMessage = error.message;
             console.log('error: ', errorCode, ' : ', errorMessage);
+            setisvalid(false);
           });
         //login in user for details
-        auth()
-          .signInWithEmailAndPassword(values.email, values.password)
-          .then(() => {
-            navigation.dispatch(StackActions.replace('PartnerSignupDetails'));
-          })
-          .catch((error: {code: any}) => {
-            const errorCode = error.code;
-            console.log(errorCode);
-            //wrong credentials
-          });
+        if (isvalid) {
+          auth()
+            .signInWithEmailAndPassword(values.email, values.password)
+            .then(() => {
+              navigation.dispatch(StackActions.replace('PartnerSignupDetails'));
+            })
+            .catch((error: {code: any}) => {
+              const errorCode = error.code;
+              console.log(errorCode);
+              //wrong credentials
+            });
+        }
       }}>
       {({handleChange, handleBlur, handleSubmit, values, touched, errors}) => (
         <View style={styles.container}>
@@ -96,6 +101,13 @@ export default function PartnerSignup({navigation}: {navigation: any}) {
             />
           </>
           {/* Bottom Buttons */}
+          {!isvalid ? (
+            <View>
+              <Text style={styles.errorText}>Email already taken</Text>
+            </View>
+          ) : (
+            <Text> </Text>
+          )}
           <Button
             style={styles.buttonDefault}
             textColor="black"

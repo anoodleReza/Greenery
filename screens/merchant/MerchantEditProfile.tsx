@@ -1,6 +1,6 @@
 //building the screen
 import {Button, SegmentedButtons} from 'react-native-paper';
-import {Text, View, TextInput} from 'react-native';
+import {Text, View, TextInput, Alert, Platform, Image} from 'react-native';
 import React, {useState} from 'react';
 import {StackActions} from '@react-navigation/native';
 
@@ -8,6 +8,11 @@ import {StackActions} from '@react-navigation/native';
 import {ScrollView} from 'react-native';
 import auth, {firebase} from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
+
+//images
+import * as ImagePicker from 'react-native-image-picker';
+const includeExtra = true;
 
 //form
 import {Formik} from 'formik';
@@ -33,6 +38,18 @@ export default function MerchantEditProfile({navigation}: {navigation: any}) {
     navigation.dispatch(StackActions.replace('MerchantSignin'));
   };
 
+  //used for profile picture
+  const [response, setResponse] = React.useState<any>(null);
+  const onImageSelect = React.useCallback((type: any, options: any) => {
+    if (type === 'capture') {
+      ImagePicker.launchCamera(options, setResponse);
+    } else {
+      ImagePicker.launchImageLibrary(options, setResponse);
+    }
+  }, []);
+
+  //upload to firebase
+  const [pfpUri, setpfpUri] = useState(null);
   return (
     <View>
       <ScrollView>
@@ -193,6 +210,80 @@ export default function MerchantEditProfile({navigation}: {navigation: any}) {
               </>
             )}
           </Formik>
+          <>
+            <Text style={styles.Subheading}>Restaurant Picture:</Text>
+            {/* Image Selection */}
+            <View>
+              {actions.map(({title, type, options}) => {
+                return (
+                  <Button
+                    style={styles.button}
+                    textColor="black"
+                    mode="contained"
+                    key={title}
+                    onPress={() => {
+                      onImageSelect(type, options);
+                    }}>
+                    {title}
+                  </Button>
+                );
+              })}
+            </View>
+            {/* Show response */}
+            {response?.assets &&
+              response?.assets[0].uri &&
+              response?.assets.map(({uri}: {uri: string}) => (
+                <View style={styles.container} key={uri}>
+                  <Image
+                    resizeMode="cover"
+                    resizeMethod="scale"
+                    // eslint-disable-next-line react-native/no-inline-styles
+                    style={{
+                      height: 200,
+                      width: 200,
+                      borderColor: 'black',
+                      borderWidth: 2,
+                    }}
+                    source={{uri: uri}}
+                  />
+                  <Button
+                    style={styles.button}
+                    textColor="black"
+                    mode="contained"
+                    onPress={async () => {
+                      setpfpUri(response.assets[0].uri);
+                      console.log('file: ', pfpUri);
+                      const filename = 'ProfilePicture:' + curUser?.uid;
+                      if (pfpUri != null) {
+                        const uploadUri =
+                          Platform.OS === 'ios'
+                            ? pfpUri.replace('file://', '')
+                            : pfpUri;
+                        //check if there is a pfp already
+                        const fullpath = '/merchant/' + filename;
+                        if (storage().ref(fullpath).getDownloadURL() != null) {
+                          storage().ref(fullpath).delete();
+                        }
+                        const task = storage()
+                          .ref('/merchant/' + filename)
+                          .putFile(uploadUri);
+                        try {
+                          await task;
+                        } catch (e) {
+                          console.error(e);
+                        }
+                        Alert.alert(
+                          'Photo uploaded!',
+                          'Your photo has been uploaded to Firebase Cloud Storage!',
+                        );
+                        setpfpUri(null);
+                      }
+                    }}>
+                    Upload image
+                  </Button>
+                </View>
+              ))}
+          </>
         </View>
 
         {/* Logout Button */}
@@ -222,3 +313,22 @@ const buttons = {
     background: '#f2f2f2',
   },
 };
+
+interface Action {
+  title: string;
+  type: 'capture' | 'library';
+  options: ImagePicker.CameraOptions | ImagePicker.ImageLibraryOptions;
+}
+
+const actions: Action[] = [
+  {
+    title: 'Select Image',
+    type: 'library',
+    options: {
+      selectionLimit: 1,
+      mediaType: 'photo',
+      includeBase64: false,
+      includeExtra,
+    },
+  },
+];

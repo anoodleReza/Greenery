@@ -1,6 +1,9 @@
 import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
+  errorText: {
+    color: 'red',
+  },
   Subheading: {
     fontWeight: 'bold',
     fontSize: 26,

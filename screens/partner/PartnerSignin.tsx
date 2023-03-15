@@ -16,6 +16,7 @@ import {useIsFocused} from '@react-navigation/native';
 
 export default function PartnerSignin({navigation}: {navigation: any}) {
   const isFocused = useIsFocused();
+  const [isvalid, setisvalid] = React.useState(true);
 
   useEffect(() => {
     // Call only when screen open or when back on screen
@@ -57,6 +58,7 @@ export default function PartnerSignin({navigation}: {navigation: any}) {
           .catch((error: {code: any}) => {
             const errorCode = error.code;
             console.log(errorCode);
+            setisvalid(false);
             //wrong credentials
           });
       }}>
@@ -88,6 +90,15 @@ export default function PartnerSignin({navigation}: {navigation: any}) {
             error={touched.password && Boolean(errors.password)}
           />
           {/* Bottom Buttons */}
+          {!isvalid ? (
+            <View>
+              <Text style={{color: 'red'}}>
+                Invalid Email-Password Combination
+              </Text>
+            </View>
+          ) : (
+            <Text> </Text>
+          )}
           <Button
             style={styles.buttonDefault}
             textColor="black"
