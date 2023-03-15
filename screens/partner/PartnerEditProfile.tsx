@@ -17,6 +17,7 @@ import {StackActions} from '@react-navigation/native';
 import {ScrollView} from 'react-native';
 import auth, {firebase} from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
 
 //images
 import * as ImagePicker from 'react-native-image-picker';
@@ -34,14 +35,6 @@ import {styles} from '../Style';
 export default function PartnerEditProfile({navigation}: {navigation: any}) {
   const curUser = firebase.auth().currentUser;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  //user data
-  const [name, setname] = useState('');
-  const [category, setcategory] = useState('');
-  const [price, setprice] = useState('');
-  const [address, setaddress] = useState('');
-  const [opening, setopening] = useState('');
-  const [closing, setclosing] = useState('');
 
   //Used for logout
   const handleLogout = async () => {
@@ -112,22 +105,22 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
             onSubmit={values => {
               console.log('new values: ', values);
               //**change this to send the form data to the partner database
-                 if (firestore().collection('partner').doc(curUser?.uid)) {
-              //user data found found
-                   console.log('user data found');
-              //   //change this to send the 'change vehicle detils'
-                   firestore()
-                     .collection('partner')
-                     .doc(curUser?.uid)
-                     .set({
-                       VehicleType: values.VehicleType,
-                       VehicleDescription: values.VehicleDescription,
-                       VehiclePlateNumber: values.VehiclePlateNumber,
-                     })
-                     .then(() => {
-                       console.log('User updated!');
-                     });
-                 }
+              if (firestore().collection('partner').doc(curUser?.uid)) {
+                //user data found found
+                console.log('user data found');
+                //   //change this to send the 'change vehicle detils'
+                firestore()
+                  .collection('partner')
+                  .doc(curUser?.uid)
+                  .set({
+                    VehicleType: values.VehicleType,
+                    VehicleDescription: values.VehicleDescription,
+                    VehiclePlateNumber: values.VehiclePlateNumber,
+                  })
+                  .then(() => {
+                    console.log('User updated!');
+                  });
+              }
             }}>
             {({handleChange, handleBlur, handleSubmit, values}) => (
               <>
@@ -243,13 +236,13 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
                             ? pfpUri.replace('file://', '')
                             : pfpUri;
                         //check if there is a pfp already (if there is an image url)
-                        const fullpath = '/profile/' + filename;
+                        const fullpath = '/driverProfile/' + filename;
                         if (storage().ref(fullpath).getDownloadURL() != null) {
                           storage().ref(fullpath).delete();
                         }
                         //put file on storage
                         const task = storage()
-                          .ref('/profile/' + filename)
+                          .ref('/driverProfile/' + filename)
                           .putFile(uploadUri);
                         try {
                           await task;
@@ -262,7 +255,6 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
                           'Your photo has been uploaded to Firebase Cloud Storage!',
                         );
                         setpfpUri(null);
-                      
                       }
                     }}>
                     Upload image

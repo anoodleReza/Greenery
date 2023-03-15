@@ -14,6 +14,8 @@ import {styles} from '../authStyles';
 import auth from '@react-native-firebase/auth';
 
 export default function UserSignup({navigation}: {navigation: any}) {
+  const [isvalid, setisvalid] = React.useState(true);
+
   //formik validation
   const SignupSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Required'),
@@ -37,28 +39,36 @@ export default function UserSignup({navigation}: {navigation: any}) {
       validationSchema={SignupSchema}
       onSubmit={values => {
         //registering user
+        setisvalid(true);
         auth()
           .createUserWithEmailAndPassword(values.email, values.password)
           .then(() => {
-            //login in user for details
-            auth()
-              .signInWithEmailAndPassword(values.email, values.password)
-              .then(() => {
-                console.log('to user details');
-                navigation.dispatch(StackActions.replace('UserDetails'));
-              })
-              .catch((error: {code: any}) => {
-                const errorCode = error.code;
-                console.log(errorCode);
-                //wrong credentials
-              });
+            console.log('user registered');
+            setisvalid(true);
           })
           .catch(error => {
             const errorCode = error.code;
             const errorMessage = error.message;
             console.log('error: ', errorCode, ' : ', errorMessage);
+            setisvalid(false);
+          })
+          .then(() => {
+            //login in user for details
+            console.log(isvalid);
+            if (isvalid === true) {
+              //signin user
+              auth()
+                .signInWithEmailAndPassword(values.email, values.password)
+                .then(() => {
+                  navigation.dispatch(StackActions.replace('UserDetails'));
+                })
+                .catch((error: {code: any}) => {
+                  const errorCode = error.code;
+                  console.log(errorCode);
+                  //wrong credentials
+                });
+            }
           });
-        console.log('user created');
       }}>
       {({handleChange, handleBlur, handleSubmit, values, touched, errors}) => (
         <View style={styles.container}>
@@ -99,6 +109,13 @@ export default function UserSignup({navigation}: {navigation: any}) {
           />
 
           {/* Bottom Buttons */}
+          {!isvalid ? (
+            <View>
+              <Text style={styles.errorText}>Email already taken</Text>
+            </View>
+          ) : (
+            <Text> </Text>
+          )}
           <Button
             style={styles.buttonDefault}
             textColor="black"

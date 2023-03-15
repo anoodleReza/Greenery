@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     height: 40,
   },
   logoutButton: {
-    backgroundColor: '#A9FDAC',
+    backgroundColor: '#d70000',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 8,
@@ -177,6 +177,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'column',
     backgroundColor: '#fff',
+  },
+  containerLogout: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+    paddingTop: 20,
+    marginTop: 20,
   },
   containerUncentered: {
     flex: 1,
@@ -227,11 +236,11 @@ const styles = StyleSheet.create({
   RestaurantBoxOutside: {
     width: 112,
     height: 106,
-    borderWidth:2,
+    borderWidth: 2,
     borderColor: 'black',
     backgroundColor: '#D9D9D9',
     borderRadius: 8,
-    marginLeft:10,
+    marginLeft: 10,
   },
   RestaurantBoxInside: {
     width: 108,
@@ -253,14 +262,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#FFFFFF',
   },
   checkboxWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 5,
   },
-
 });
 
 export {styles};

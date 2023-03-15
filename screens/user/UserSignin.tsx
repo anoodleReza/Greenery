@@ -16,6 +16,7 @@ import {useIsFocused} from '@react-navigation/native';
 
 export default function UserSignin({navigation}: {navigation: any}) {
   const isFocused = useIsFocused();
+  const [isvalid, setisvalid] = React.useState(true);
 
   useEffect(() => {
     // Call only when screen open or when back on screen
@@ -58,6 +59,7 @@ export default function UserSignin({navigation}: {navigation: any}) {
             const errorCode = error.code;
             console.log(errorCode);
             //wrong credentials
+            setisvalid(false);
           });
       }}>
       {({handleChange, handleBlur, handleSubmit, values, touched, errors}) => (
@@ -88,6 +90,15 @@ export default function UserSignin({navigation}: {navigation: any}) {
             error={touched.password && Boolean(errors.password)}
           />
           {/* Bottom Buttons */}
+          {!isvalid ? (
+            <View>
+              <Text style={styles.errorText}>
+                Invalid Email-Password Combination
+              </Text>
+            </View>
+          ) : (
+            <Text> </Text>
+          )}
           <Button
             style={styles.buttonDefault}
             textColor="black"

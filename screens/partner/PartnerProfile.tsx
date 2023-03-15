@@ -14,7 +14,7 @@ import {firebase} from '@react-native-firebase/auth';
 
 export default function PartnerProfile({navigation}: {navigation: any}) {
   const curUser = firebase.auth().currentUser;
-  const fullpath = '/profile/' + 'ProfilePicture:' + curUser?.uid;
+  const fullpath = '/driverProfile/' + 'ProfilePicture:' + curUser?.uid;
   const [imageUrl, setImageUrl] = useState('');
   const [isPfp, setisPfp] = React.useState(false);
 
@@ -28,6 +28,7 @@ export default function PartnerProfile({navigation}: {navigation: any}) {
       })
       .catch(e => console.log('Errors while downloading => ', e));
   }, [fullpath]);
+
   return (
     <View style={styles.containerUncentered}>
       {/* <PartnerSidebar /> */}

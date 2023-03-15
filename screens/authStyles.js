@@ -65,6 +65,21 @@ const styles = StyleSheet.create({
     height: 100,
     marginTop: 25,
   },
+  resultContainer: {
+    flexDirection: 'row',
+    padding: 10,
+  },
+  container2: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  checkboxWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 5,
+  },
 });
 
 export {styles};

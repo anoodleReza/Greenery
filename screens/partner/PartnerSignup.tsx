@@ -39,6 +39,7 @@ export default function PartnerSignup({navigation}: {navigation: any}) {
       validationSchema={SignupSchema}
       onSubmit={values => {
         //registering user
+        setisvalid(true);
         auth()
           .createUserWithEmailAndPassword(values.email, values.password)
           .catch(error => {
@@ -46,20 +47,24 @@ export default function PartnerSignup({navigation}: {navigation: any}) {
             const errorMessage = error.message;
             console.log('error: ', errorCode, ' : ', errorMessage);
             setisvalid(false);
+          })
+          .then(() => {
+            //login in user for details
+            if (isvalid) {
+              auth()
+                .signInWithEmailAndPassword(values.email, values.password)
+                .then(() => {
+                  navigation.dispatch(
+                    StackActions.replace('PartnerSignupDetails'),
+                  );
+                })
+                .catch((error: {code: any}) => {
+                  const errorCode = error.code;
+                  console.log(errorCode);
+                  //wrong credentials
+                });
+            }
           });
-        //login in user for details
-        if (isvalid) {
-          auth()
-            .signInWithEmailAndPassword(values.email, values.password)
-            .then(() => {
-              navigation.dispatch(StackActions.replace('PartnerSignupDetails'));
-            })
-            .catch((error: {code: any}) => {
-              const errorCode = error.code;
-              console.log(errorCode);
-              //wrong credentials
-            });
-        }
       }}>
       {({handleChange, handleBlur, handleSubmit, values, touched, errors}) => (
         <View style={styles.container}>

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {Searchbar, IconButton, Portal} from 'react-native-paper';
-import PartnerSidebar, {MerchantSidebar} from './Sidebar';
+import PartnerSidebar, {MerchantSidebar, UserSidebar} from './Sidebar';
 
 export default function MerchantHeader({navigation}: {navigation: any}) {
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -82,6 +82,47 @@ export function PartnerHeader({navigation}: {navigation: any}) {
     </View>
   );
 }
+
+export function UserHeader({navigation}: {navigation: any}) {
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [shouldShow, setShouldShow] = React.useState(false);
+
+  const onChangeSearch = (query: React.SetStateAction<string>) =>
+    setSearchQuery(query);
+  return (
+    <View style={styles.row}>
+      {/* Banner */}
+      <View style={styles.banner}>
+        <Searchbar
+          style={styles.search}
+          placeholder="Today's Agenda..."
+          onChangeText={onChangeSearch}
+          value={searchQuery}
+          inputStyle={styles.searchInput}
+        />
+        <IconButton
+          style={styles.iconbutton}
+          size={25}
+          icon="menu"
+          theme={icons}
+          onPress={() => setShouldShow(!shouldShow)}
+        />
+      </View>
+      <Portal>
+        {shouldShow ? (
+          <View>
+            <TouchableOpacity
+              style={styles.dim}
+              onPress={() => setShouldShow(!shouldShow)}
+            />
+            <UserSidebar navigation={navigation} />
+          </View>
+        ) : null}
+      </Portal>
+    </View>
+  );
+}
+
 const icons = {
   roundness: 40,
   colors: {

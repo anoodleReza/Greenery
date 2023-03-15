@@ -92,7 +92,7 @@ export default function PartnerSignin({navigation}: {navigation: any}) {
           {/* Bottom Buttons */}
           {!isvalid ? (
             <View>
-              <Text style={{color: 'red'}}>
+              <Text style={styles.errorText}>
                 Invalid Email-Password Combination
               </Text>
             </View>

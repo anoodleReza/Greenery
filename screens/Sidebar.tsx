@@ -38,6 +38,39 @@ export function MerchantSidebar({navigation}: {navigation: any}) {
   );
 }
 
+export function UserSidebar({navigation}: {navigation: any}) {
+  const handleLogout = async () => {
+    console.log('Sidebar: Logout triggered');
+    auth()
+      .signOut()
+      .then(() => navigation.dispatch(StackActions.replace('UserSignin')));
+    //just in case
+    navigation.dispatch(StackActions.replace('UserSignin'));
+  };
+  return (
+    <View style={styles.container}>
+      <View>
+        <Drawer.CollapsedItem
+          focusedIcon="account"
+          unfocusedIcon="account-outline"
+          label="Profile"
+        />
+        <Drawer.CollapsedItem
+          focusedIcon="bell"
+          unfocusedIcon="bell-outline"
+          label="Notif"
+        />
+      </View>
+      <Drawer.CollapsedItem
+        focusedIcon="logout"
+        unfocusedIcon="logout"
+        label="Logout"
+        onPress={handleLogout}
+      />
+    </View>
+  );
+}
+
 const PartnerSidebar = ({navigation}: {navigation: any}) => {
   const handleLogout = async () => {
     console.log('Sidebar: Logout triggered');

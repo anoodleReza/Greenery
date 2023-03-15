@@ -31,8 +31,8 @@ export default function MerchantDetails({navigation}: {navigation: any}) {
       .required('Required'),
     Opening: Yup.number()
       .typeError('must be a number')
-      .min(1, 'Too Short!')
-      .max(2, 'Too Long!')
+      .min(0, 'Too Short!')
+      .max(24, 'Too Long!')
       .positive('time must be greater than zero')
       .required('Required'),
     Closing: Yup.number()

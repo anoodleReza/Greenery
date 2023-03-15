@@ -39,6 +39,7 @@ export default function MerchantSignup({navigation}: {navigation: any}) {
       validationSchema={SignupSchema}
       onSubmit={values => {
         //registering user
+        setisvalid(true);
         auth()
           .createUserWithEmailAndPassword(values.email, values.password)
           .catch(error => {

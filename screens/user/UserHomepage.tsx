@@ -6,8 +6,8 @@ import {StackActions} from '@react-navigation/native';
 import {styles} from '../Style';
 //material ui + form
 import {Text} from 'react-native-paper';
-import {PartnerNavigation, UserNavigation} from '../NavigationBar';
-import {PartnerHeader} from '../PageHeader';
+import {UserNavigation} from '../NavigationBar';
+import {UserHeader} from '../PageHeader';
 
 //main
 export default function UserHomepage({navigation}: {navigation: any}) {
@@ -27,7 +27,7 @@ export default function UserHomepage({navigation}: {navigation: any}) {
     <View style={{flex: 1}}>
       <View style={styles.containerUncentered}>
         {/* Banner */}
-        <PartnerHeader navigation={navigation} />
+        <UserHeader navigation={navigation} />
         {/* Content */}
         <View style={styles.contentBox}>
           <View>
@@ -52,7 +52,6 @@ export default function UserHomepage({navigation}: {navigation: any}) {
             <ButtonBox
               image={require('../../assets/Map2.png')}
               name="Near Me"
-              
             />
           </View>
 
@@ -66,9 +65,10 @@ export default function UserHomepage({navigation}: {navigation: any}) {
               image={require('../../assets/TodayPromo.png')}
               name="Promo"
             />
-            <ButtonBox 
-              image={require('../../assets/stars.png')} 
-              name="Most Popular" />
+            <ButtonBox
+              image={require('../../assets/stars.png')}
+              name="Most Popular"
+            />
           </View>
         </View>
         {/* Navigation */}
