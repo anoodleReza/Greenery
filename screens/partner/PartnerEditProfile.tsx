@@ -112,25 +112,22 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
             onSubmit={values => {
               console.log('new values: ', values);
               //**change this to send the form data to the partner database
-              // if (firestore().collection('merchant').doc(curUser?.uid)) {
-              //   //user data found found
-              //   console.log('user data found');
+                 if (firestore().collection('partner').doc(curUser?.uid)) {
+              //user data found found
+                   console.log('user data found');
               //   //change this to send the 'change vehicle detils'
-              //   firestore()
-              //     .collection('merchant')
-              //     .doc(curUser?.uid)
-              //     .set({
-              //       Name: values.Name,
-              //       Category: values.Category,
-              //       Price: values.Price,
-              //       Address: values.Address,
-              //       Opening: values.Opening,
-              //       Closing: values.Closing,
-              //     })
-              //     .then(() => {
-              //       console.log('User updated!');
-              //     });
-              // }
+                   firestore()
+                     .collection('partner')
+                     .doc(curUser?.uid)
+                     .set({
+                       VehicleType: values.VehicleType,
+                       VehicleDescription: values.VehicleDescription,
+                       VehiclePlateNumber: values.VehiclePlateNumber,
+                     })
+                     .then(() => {
+                       console.log('User updated!');
+                     });
+                 }
             }}>
             {({handleChange, handleBlur, handleSubmit, values}) => (
               <>
