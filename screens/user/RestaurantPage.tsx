@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
 import {View, Image, TouchableOpacity, ScrollView} from 'react-native';
 import {StackActions} from '@react-navigation/native';
@@ -10,10 +10,47 @@ import {styles} from '../Style';
 import {Divider, Text} from 'react-native-paper';
 import {UserNavigation} from '../NavigationBar';
 import {UserHeader} from '../PageHeader';
+//firebase
+import firestore from '@react-native-firebase/firestore';
+
+let nextId = 0;
+interface FoodData {
+  key: number;
+  restoID: string;
+  name: string;
+  category: string;
+  image: string;
+  description: string;
+  price: number;
+  calorie: number;
+}
 
 //main
 export default function RestaurantPage({navigation}: {navigation: any}) {
-  const Menu = props => {
+  const [item, setItem] = useState<FoodData[]>([]);
+
+  //retrieve restaurant information
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      const querySnapshot = await firestore()
+        .collection('fooditems')
+        .where('restoID', '==', 'nameAddress')
+        .get();
+      const fetchedRestaurants = querySnapshot.docs.map(
+        doc => doc.data() as FoodData,
+      );
+      setItem(fetchedRestaurants);
+    };
+    fetchRestaurants();
+  }, []);
+
+  //Menu Item Component
+  const Menu = (props: {
+    MenuName: string;
+    CalorieIntake: number;
+    Price: number;
+    Image: string;
+  }) => {
     return (
       <View
         style={{
@@ -25,15 +62,15 @@ export default function RestaurantPage({navigation}: {navigation: any}) {
         <View>
           <Text>{props.MenuName}</Text>
           <Text>Nutritional details:</Text>
-          <Text>{props.CalorieIntake}</Text>
+          <Text>{props.CalorieIntake} kcal</Text>
         </View>
 
         <View>
-          <Text>{props.Price}</Text>
+          <Text>IDR {props.Price}</Text>
         </View>
 
         <View>
-          <View
+          <Image
             style={{
               borderWidth: 1,
               borderColor: 'black',
@@ -42,8 +79,8 @@ export default function RestaurantPage({navigation}: {navigation: any}) {
               width: 60,
               height: 60,
             }}
+            source={{uri: props.Image}}
           />
-
           <View
             style={{
               borderWidth: 0.5,
@@ -65,9 +102,35 @@ export default function RestaurantPage({navigation}: {navigation: any}) {
     );
   };
 
-  const RestaurantBlock = props => {
+  const RestoList = () => {
+    return item.map(element => {
+      return (
+        <View key={element.key}>
+          <Menu
+            MenuName={element.name}
+            CalorieIntake={element.calorie}
+            Price={element.price}
+            Image={element.image}
+          />
+        </View>
+      );
+    });
+  };
+
+  const RestaurantBlock = (props: {
+    RestaurantName: string;
+    FoodCategory: string;
+    Rating: number;
+    Distance: number;
+  }) => {
     return (
-      <View style={{flexDirection: 'row', marginLeft: 25, marginBottom: 15}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          marginLeft: 25,
+          marginBottom: 15,
+          marginTop: 25,
+        }}>
         <View
           style={{
             borderWidth: 2,
@@ -113,48 +176,47 @@ export default function RestaurantPage({navigation}: {navigation: any}) {
 
   return (
     <View style={{flex: 1}}>
-      <View style={styles.containerUncentered}>
-        {/* Banner */}
-        <UserHeader navigation={navigation} />
-        {/* Content */}
-        <RestaurantBlock
-          RestaurantName="Restaurant Name"
-          FoodCategory="Italian, Spaghetti, Pasta"
-          Rating="4.5"
-          Distance="3.0 km"
-        />
+      <ScrollView>
+        <View style={styles.containerUncentered}>
+          {/* Banner */}
+          <UserHeader navigation={navigation} />
+          {/* Content */}
+          <RestaurantBlock
+            RestaurantName="Restaurant Name"
+            FoodCategory="Italian, Spaghetti, Pasta"
+            Rating="4.5"
+            Distance="3.0 km"
+          />
 
-        <View>
-          <Text style={{fontSize: 30, marginLeft: 40}}>Promo</Text>
-          <Divider style={{width: '80%', marginTop: 10}} />
+          <View>
+            <Text
+              style={{
+                fontSize: 30,
+                marginLeft: 40,
+                justifyContent: 'space-around',
+              }}>
+              Promo
+            </Text>
+            <Divider style={{width: '80%', marginTop: 10}} />
+          </View>
+
+          <Menu
+            MenuName="Nasi Goreng w/ Seafood"
+            CalorieIntake={318}
+            Price={5}
+            Image="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
+          />
+
+          <View>
+            <Text style={{fontSize: 30, marginLeft: 40}}>Recommended</Text>
+            <Divider style={{width: '80%', marginTop: 10}} />
+          </View>
+          <View style={{marginBottom: 25}}>{RestoList()}</View>
+
+          {/* Navigation */}
+          <UserNavigation navigation={navigation} />
         </View>
-
-        <Menu
-          MenuName="Nasi Goreng w/ Seafood"
-          CalorieIntake="318 kcal"
-          Price="$5"
-        />
-
-        <View>
-          <Text style={{fontSize: 30, marginLeft: 40}}>Recommended</Text>
-          <Divider style={{width: '80%', marginTop: 10}} />
-        </View>
-
-        <Menu
-          MenuName="Nasi Goreng w/ Seafood"
-          CalorieIntake="318 kcal"
-          Price="$5"
-        />
-
-        <Menu
-          MenuName="Nasi Goreng w/ Seafood"
-          CalorieIntake="318 kcal"
-          Price="$5"
-        />
-
-        {/* Navigation */}
-        <UserNavigation navigation={navigation} />
-      </View>
+      </ScrollView>
     </View>
   );
 }

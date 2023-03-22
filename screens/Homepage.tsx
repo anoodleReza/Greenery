@@ -9,6 +9,7 @@ import {Button} from 'react-native-paper';
 export default function Homepage({navigation}: {navigation: any}) {
   return (
     <View style={styles.container}>
+      <View style={styles.banner} />
       <Image style={styles.Image} source={require('../assets/logo.png')} />
 
       <View>
@@ -59,6 +60,11 @@ export default function Homepage({navigation}: {navigation: any}) {
 }
 
 const styles = StyleSheet.create({
+  banner: {
+    backgroundColor: '#00BF63',
+    height: 78,
+    width: '100%',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',

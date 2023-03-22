@@ -276,6 +276,18 @@ export default function MerchantEditProfile({navigation}: {navigation: any}) {
                           'Photo uploaded!',
                           'Your photo has been uploaded to Firebase Cloud Storage!',
                         );
+                        const uriFirebase = await storage()
+                          .ref(fullpath) //name in storage in firebase console
+                          .getDownloadURL();
+                        await firestore()
+                          .collection('merchant')
+                          .doc(curUser?.uid)
+                          .update({
+                            image: uriFirebase,
+                          })
+                          .then(() => {
+                            console.log('pfp updated!');
+                          });
                         setpfpUri(null);
                       }
                     }}>

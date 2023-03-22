@@ -4,6 +4,11 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
   },
+  banner: {
+    backgroundColor: '#00BF63',
+    height: 78,
+    width: '100%',
+  },
   Subheading: {
     fontWeight: 'bold',
     fontSize: 26,
@@ -57,12 +62,13 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   Image: {
-    width: 200,
-    height: 200,
+    width: 250,
+    height: 150,
+    marginTop: 50,
   },
   ImageS: {
-    width: 200,
-    height: 100,
+    width: 250,
+    height: 125,
     marginTop: 25,
   },
   resultContainer: {

@@ -168,6 +168,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-around',
     backgroundColor: '#fff',
+    height: 75,
   },
   navigation: {
     flex: 1,

@@ -224,6 +224,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  banner: {
+    backgroundColor: '#00BF63',
+    height: 78,
+    width: '100%',
+  },
   box: {
     width: 300,
     height: 40,

@@ -63,6 +63,7 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
       {({handleChange, handleBlur, handleSubmit, values, touched, errors}) => (
         <View style={styles.container}>
           {/* Image section */}
+          <View style={styles.banner} />
           <Image
             style={styles.Image}
             source={require('../../assets/logo.png')}

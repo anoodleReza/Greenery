@@ -23,6 +23,7 @@ const initialState = {
   LowCarb: false,
   LowCal: false,
 };
+
 export default function UserDetails({navigation}: {navigation: any}) {
   const curUser = firebase.auth().currentUser;
   //formik validation
