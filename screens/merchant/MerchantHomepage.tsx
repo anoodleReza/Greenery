@@ -42,6 +42,9 @@ export default function MerchantHomepage({navigation}: {navigation: any}) {
           <ButtonBox
             image={require('../../assets/editMenu.png')}
             name="Edit Menu"
+            navigation={() => {
+              navigation.dispatch(StackActions.replace('MerchantMenu'));
+            }}
           />
 
           <ButtonBox

@@ -14,6 +14,11 @@ import MerchantEditProfile from './screens/merchant/MerchantEditProfile';
 import MerchantTodayPromo from './screens/merchant/MerchantTodayPromo';
 import MerchantNavigation from './screens/NavigationBar';
 import MerchantProfile from './screens/merchant/MerchantProfile';
+import MerchantAddMenu from './screens/merchant/MerchantAddMenu';
+import MerchantAppetizer from './screens/merchant/MerchantAppetizer';
+import MerchantUserView from './screens/merchant/MerchantUserView';
+import MerchantMainCourse from './screens/merchant/MerchantMainCourse';
+import MerchantDessert from './screens/merchant/MerchantDessert';
 
 //main homepage
 import Homepage from './screens/Homepage';
@@ -96,6 +101,31 @@ function App() {
           <Stack.Screen
             name="MerchantNavigation"
             component={MerchantNavigation}
+            options={{headerShown: false}}
+          />
+           <Stack.Screen
+            name="MerchantAddMenu"
+            component={MerchantAddMenu}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MerchantAppetizer"
+            component={MerchantAppetizer}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MerchantUserView"
+            component={MerchantUserView}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MerchantMainCourse"
+            component={MerchantMainCourse}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MerchantDessert"
+            component={MerchantDessert}
             options={{headerShown: false}}
           />
           {/* Partner */}

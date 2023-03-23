@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   TextInput,
+  ScrollView,
 } from 'react-native';
 
 import React, {useEffect, useState, Component} from 'react';
@@ -14,142 +15,75 @@ import {StackActions} from '@react-navigation/native';
 //user session security
 import * as Keychain from 'react-native-keychain';
 import {ImageBackground} from 'react-native';
+import {styles} from '../Style';
+import MerchantNavigation from '../NavigationBar';
+import MerchantHeader from '../PageHeader';
 
 export default function MerchantMenu({navigation}: {navigation: any}) {
   //   const [isLoggedIn, setIsLoggedIn] = useState(false);
   //   const [username, setUsername] = useState('');
 
-  return (
-    <View>
-      <View style={{flexDirection: 'row'}}>
-        <ImageBackground
-          source={require('../../assets/banner.png')}
-          style={{height: 119, width: 420}}
-          resizeMode="cover">
-          <TextInput style={styles.input} placeholder="Today's agenda..." />
-        </ImageBackground>
+  const ButtonBox = props => {
+    return (
+      <View style={styles.buttonBox}>
+        <TouchableOpacity style={styles.touchButton} onPress={props.navigation}>
+          <Image source={props.image} style={styles.ImgPlacement} />
+        </TouchableOpacity>
+        <Text style={styles.buttonTitle}>{props.name}</Text>
       </View>
+    );
+  };
 
-      <Text
-        style={{
-          fontSize: 28,
-          marginTop: 15,
-          marginLeft: 15,
-          color: 'black',
-          fontWeight: 'bold',
-        }}>
+  return (
+    <View style={styles.containerUncentered}>
+      <ScrollView>
+      
+    {/* Banner */}
+    <MerchantHeader navigation={navigation} />
+    {/* Content */}
+    
+
+    
+    <View style={styles.contentBox}>
+      <View style={{flexDirection: 'row',justifyContent:'space-between'}}>
+      <Text style={styles.homepagetext}>
         Menu:
       </Text>
 
-      <View style={styles.flexButton}>
-        <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <View style={styles.buttonBox}>
-            <Image
-              source={require('../../assets/TodayPromo.png')}
-              resizeMode="contain"
-              style={{flex: 1}}
-            />
-            <Button
-              onPress={() => {
-                navigation.dispatch(StackActions.replace('MerchantTodayPromo'));
-              }}
-            />
-          </View>
-        </TouchableOpacity>
-
-        <View style={styles.buttonBox}>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Image
-              source={require('../../assets/BestSeller.png')}
-              resizeMode="cover"
-              style={{flex: 1}}
-              onPress={() => {
-                navigation.dispatch(StackActions.replace('MerchantMenu'));
-              }}
-            />
-          </TouchableOpacity>
-        </View>
+      <View style={{flexDirection:'row',justifyContent:'flex-start'}}>
+        <Text style={{fontWeight:'bold',color:'black',marginTop:30,marginRight:5}}
+        onPress={() => {
+          navigation.dispatch(StackActions.replace('MerchantAddMenu'));
+        }}>
+        Add New Menu
+        </Text>
+        <Image source={require('../../assets/Add.png')}
+        style={{marginTop:32,marginRight:50}}/>
       </View>
 
-      <View style={{justifyContent: 'space-around', flexDirection: 'row'}}>
-        <Text style={styles.buttonTitle}>Today's Promo</Text>
-        <Text style={styles.buttonTitle}>Bestselling</Text>
       </View>
+      
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+          marginTop: 20,
+        }}>
+        <ButtonBox
+          image={require('../../assets/TodayPromo.png')}
+          name="Today's Promo"
+          navigation={() => {
+            navigation.dispatch(StackActions.replace('MerchantMenu'));
+          }}
+        />
 
-      <View style={styles.flexButton}>
-        <View style={styles.buttonBox}>
-          <TouchableOpacity style={styles.flexOpacity}>
-            <Image
-              source={require('../../assets/Appetizer.png')}
-              resizeMode="contain"
-              style={{flex: 1}}
-              onPress={() => {
-                navigation.dispatch(StackActions.replace('MerchantMenu'));
-              }}
-            />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.buttonBox}>
-          <TouchableOpacity style={styles.flexOpacity}>
-            <Image
-              source={require('../../assets/MainCourse.png')}
-              resizeMode="contain"
-              style={{flex: 1}}
-              onPress={() => {
-                navigation.dispatch(StackActions.replace('MerchantMenu'));
-              }}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={{justifyContent: 'space-around', flexDirection: 'row'}}>
-        <Text style={styles.buttonTitle}>Appetizer</Text>
-        <Text style={styles.buttonTitle}>Main Course</Text>
-      </View>
-
-      <View style={styles.flexButton}>
-        <View style={styles.buttonBox}>
-          <TouchableOpacity style={styles.flexOpacity}>
-            <Image
-              source={require('../../assets/Dessert.png')}
-              resizeMode="contain"
-              style={{flex: 1}}
-              onPress={() => {
-                navigation.dispatch(StackActions.replace('MerchantMenu'));
-              }}
-            />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.buttonBox}>
-          <TouchableOpacity style={styles.flexOpacity}>
-            <Image
-              source={require('../../assets/Extra.png')}
-              resizeMode="contain"
-              style={{flex: 1}}
-              onPress={() => {
-                navigation.dispatch(StackActions.replace('MerchantMenu'));
-              }}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={{justifyContent: 'space-around', flexDirection: 'row'}}>
-        <Text style={styles.buttonTitle}>Dessert</Text>
-        <Text style={styles.buttonTitle}>Extra</Text>
+        <ButtonBox
+          image={require('../../assets/BestSeller.png')}
+          name="Bestselling"
+          navigation={() => {
+            navigation.dispatch(StackActions.replace('MerchantProfile'));
+          }}
+        />
       </View>
 
       <View
@@ -157,113 +91,49 @@ export default function MerchantMenu({navigation}: {navigation: any}) {
           flexDirection: 'row',
           justifyContent: 'space-around',
           marginTop: 80,
-          paddingBottom: 100,
-          borderWidth: 1,
-          borderColor: 'black',
-          padding: 30,
         }}>
-        {/* <Image source={require('../assets/Home.png')}  style={{width:37,height:46 }}
-          onPress={()=> { navigation.dispatch(StackActions.replace());
+        <ButtonBox
+          image={require('../../assets/Appetizer.png')}
+          name="Appetizer"
+          navigation={() => {
+            navigation.dispatch(StackActions.replace('MerchantAppetizer'));
+          }}
+        />
+        <ButtonBox
+          image={require('../../assets/MainCourse.png')}
+          name="Main Course"
+          navigation={() => {
+            navigation.dispatch(StackActions.replace('MerchantMainCourse'));
+          }}
+        />
+      </View>
 
-        }}/>
-
-        <Image source={require('../assets/News.png')}  style={{width:37,height:46 }}
-          onPress={()=> { navigation.dispatch(StackActions.replace());
-
-        }}/>
-
-        <Image source={require('../assets/Search.png')}  style={{flexwidth:37,height:46 }}
-          onPress={()=> { navigation.dispatch(StackActions.replace());
-
-        }}/>
-
-        <Image source={require('../assets/Profile.png')} style={{width:37,height:46 }}
-          onPress={()=> { navigation.dispatch(StackActions.replace());
-
-        }}/>
-
-        <Image source={require('../assets/Settings.png')}  style={{width:37,height:46}}
-          onPress={()=> { navigation.dispatch(StackActions.replace());
-
-        }}/> */}
-
-        <Text
-          onPress={() => {
-            navigation.dispatch(StackActions.replace('MerchantHomepage'));
-          }}>
-          Home
-        </Text>
-        <Text
-          onPress={() => {
-            navigation.dispatch(StackActions.replace());
-          }}>
-          News
-        </Text>
-        <Text
-          onPress={() => {
-            navigation.dispatch(StackActions.replace());
-          }}>
-          Search
-        </Text>
-        <Text
-          onPress={() => {
-            navigation.dispatch(StackActions.replace('MerchantEditProfile'));
-          }}>
-          Profile
-        </Text>
-        <Text
-          onPress={() => {
-            navigation.dispatch(StackActions.replace());
-          }}>
-          Setting
-        </Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+          marginTop: 80,
+          marginBottom: 80,
+        }}>
+        <ButtonBox
+          image={require('../../assets/Dessert.png')}
+          name="Dessert"
+          navigation={() => {
+            navigation.dispatch(StackActions.replace('MerchantDessert'));
+          }}
+        />
+        <ButtonBox
+          image={require('../../assets/Extra.png')}
+          name="Extras"
+        />
       </View>
     </View>
+    
+    {/* Navigation */}
+    <MerchantNavigation navigation={navigation} />
+    </ScrollView>
+  </View>
   );
 }
 
-const styles = StyleSheet.create({
-  input: {
-    width: 300,
-    height: 40,
-    backgroundColor: '#fff',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 15,
-    fontSize: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 45,
-    marginTop: 20,
-  },
 
-  buttonTitle: {
-    fontWeight: 'bold',
-    color: 'black',
-    marginTop: 3,
-    fontSize: 14,
-  },
-
-  flexButton: {
-    borderColor: 'black',
-    justifyContent: 'space-around',
-    flexDirection: 'row',
-    marginTop: 30,
-  },
-
-  buttonBox: {
-    borderWidth: 3,
-    width: 108,
-    height: 107,
-    backgroundColor: '#E9BA8B',
-    borderRadius: 8,
-  },
-
-  flexOpacity: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
