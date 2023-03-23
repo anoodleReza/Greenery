@@ -66,7 +66,7 @@ export default function UserProfile({navigation}: {navigation: any}) {
           <View style={styles.box}>
             <TouchableOpacity
               onPress={() => {
-                navigation.dispatch(StackActions.replace('UserEditProfile'));
+                navigation.push('UserEditProfile');
               }}>
               <Text style={styles.textBasic}>Edit Profile</Text>
             </TouchableOpacity>

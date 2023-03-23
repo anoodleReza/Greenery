@@ -130,7 +130,7 @@ export default function UserSignup({navigation}: {navigation: any}) {
             <Text
               style={styles.Highlight}
               onPress={() => {
-                navigation.dispatch(StackActions.replace('UserSignin'));
+                navigation.push('UserSignin');
               }}>
               Here
             </Text>

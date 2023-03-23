@@ -111,7 +111,7 @@ export default function MerchantSignin({navigation}: {navigation: any}) {
             <Text
               style={styles.Highlight}
               onPress={() => {
-                navigation.dispatch(StackActions.replace('MerchantSignup'));
+                navigation.push('MerchantSignup');
               }}>
               Here
             </Text>

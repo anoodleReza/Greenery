@@ -48,7 +48,7 @@ export default function MerchantHomepage({navigation}: {navigation: any}) {
             image={require('../../assets/editMerchantProfile.png')}
             name="Edit Profile"
             navigation={() => {
-              navigation.dispatch(StackActions.replace('MerchantProfile'));
+              navigation.push('MerchantProfile');
             }}
           />
         </View>

@@ -127,7 +127,7 @@ export default function PartnerSignup({navigation}: {navigation: any}) {
             <Text
               style={styles.Highlight}
               onPress={() => {
-                navigation.dispatch(StackActions.replace('PartnerSignin'));
+                navigation.push('PartnerSignin');
               }}>
               Here
             </Text>

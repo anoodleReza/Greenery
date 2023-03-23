@@ -45,7 +45,7 @@ export default function UserHomepage({navigation}: {navigation: any}) {
               image={require('../../assets/BestSeller.png')}
               name="Bestsellers"
               navigation={() => {
-                navigation.dispatch(StackActions.replace('BestSeller'));
+                navigation.push('BestSeller');
               }}
             />
 

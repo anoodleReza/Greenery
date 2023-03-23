@@ -11,7 +11,7 @@ export default function MerchantNavigation({navigation}: {navigation: any}) {
         <TouchableOpacity
           style={styles.col}
           onPress={() => {
-            navigation.dispatch(StackActions.replace('MerchantHomepage'));
+            navigation.push('MerchantHomepage');
           }}>
           <Avatar.Icon size={40} icon="home" theme={navTheme} color="black" />
           <Text style={styles.navLabel}>Home</Text>
@@ -32,7 +32,7 @@ export default function MerchantNavigation({navigation}: {navigation: any}) {
         <TouchableOpacity
           style={styles.col}
           onPress={() => {
-            navigation.dispatch(StackActions.replace('MerchantProfile'));
+            navigation.push('MerchantProfile');
           }}>
           <Avatar.Icon
             size={40}
@@ -128,7 +128,7 @@ export function UserNavigation({navigation}: {navigation: any}) {
         <TouchableOpacity
           style={styles.col}
           onPress={() => {
-            navigation.dispatch(StackActions.replace('UserProfile')); // user profile
+            navigation.push('UserProfile'); // user profile
           }}>
           <Avatar.Icon
             size={40}

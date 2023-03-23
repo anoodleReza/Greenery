@@ -70,7 +70,7 @@ export default function PartnerProfile({navigation}: {navigation: any}) {
           <View style={styles.box}>
             <TouchableOpacity
               onPress={() => {
-                navigation.dispatch(StackActions.replace('PartnerEditProfile'));
+                navigation.push('PartnerEditProfile');
               }}>
               <Text style={styles.textBasic}>Edit Profile</Text>
             </TouchableOpacity>

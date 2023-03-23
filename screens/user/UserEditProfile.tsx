@@ -58,7 +58,7 @@ export default function UserEditProfile({navigation}: {navigation: any}) {
       .then(() => navigation.dispatch(StackActions.replace('UserSignin')));
     setIsLoggedIn(false);
     //just in case
-    navigation.dispatch(StackActions.replace('UserSignin'));
+    navigation.push('UserSignin');
   };
   //used for profile picture
   const [response, setResponse] = React.useState<any>(null);

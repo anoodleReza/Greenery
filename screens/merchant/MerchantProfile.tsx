@@ -111,9 +111,7 @@ export default function MercantProfile({navigation}: {navigation: any}) {
           <View style={styles.box}>
             <TouchableOpacity
               onPress={() => {
-                navigation.dispatch(
-                  StackActions.replace('MerchantEditProfile'),
-                );
+                navigation.push('MerchantEditProfile');
               }}>
               <Text style={styles.textBasic}>Edit Profile</Text>
             </TouchableOpacity>

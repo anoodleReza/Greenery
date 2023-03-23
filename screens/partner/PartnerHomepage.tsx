@@ -50,7 +50,7 @@ export default function PartnerHomepage({navigation}: {navigation: any}) {
               image={require('../../assets/photo.png')}
               name="Profile"
               navigation={() => {
-                navigation.dispatch(StackActions.replace('PartnerProfile'));
+                navigation.push('PartnerProfile');
               }}
             />
           </View>

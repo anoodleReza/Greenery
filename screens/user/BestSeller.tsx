@@ -2,7 +2,13 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState, useCallback} from 'react';
 import 'react-native-gesture-handler';
-import {View, Image, TouchableOpacity, ScrollView} from 'react-native';
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  GestureResponderEvent,
+} from 'react-native';
 import {StackActions} from '@react-navigation/native';
 import {styles} from '../Style';
 //material ui + form
@@ -18,7 +24,47 @@ interface RestoData {
   restoID: string;
   Name: string;
   Category: string;
+  image: string;
+  Address: string;
 }
+// Restaurant cards
+const Restaurant = (props: {
+  navigation: any;
+  RestaurantName: string;
+  FoodCategory: string;
+  eta: number;
+  distance: number;
+  image: string;
+}) => {
+  return (
+    <View style={{flexDirection: 'row', marginLeft: 15, marginBottom: 25}}>
+      <TouchableOpacity style={styles.touchButton} onPress={props.navigation}>
+        {props.image !== null ? (
+          <View style={styles.RestaurantBoxOutside}>
+            <Image
+              style={styles.RestaurantBoxInside}
+              source={{
+                uri: props.image,
+              }}
+            />
+          </View>
+        ) : (
+          <View style={styles.RestaurantBoxOutside}>
+            <View style={styles.RestaurantBoxInside} />
+          </View>
+        )}
+      </TouchableOpacity>
+      <View style={{justifyContent: 'center', marginLeft: 15}}>
+        <Text style={styles.buttonTitle}>{props.RestaurantName}</Text>
+        <Text>{props.FoodCategory}</Text>
+        <View style={{flexDirection: 'row'}}>
+          <Text>{props.eta} mins - </Text>
+          <Text>{props.distance} km </Text>
+        </View>
+      </View>
+    </View>
+  );
+};
 
 //main
 export default function BestSeller({navigation}: {navigation: any}) {
@@ -36,28 +82,6 @@ export default function BestSeller({navigation}: {navigation: any}) {
     fetchRestaurants();
   }, []);
 
-  // Restaurant cards
-  // eslint-disable-next-line react/no-unstable-nested-components
-  const Restaurant = props => {
-    return (
-      <View style={{flexDirection: 'row', marginLeft: 15, marginBottom: 25}}>
-        <TouchableOpacity style={styles.touchButton} onPress={props.navigation}>
-          <View style={styles.RestaurantBoxOutside}>
-            <View style={styles.RestaurantBoxInside} />
-          </View>
-        </TouchableOpacity>
-        <View style={{justifyContent: 'center', marginLeft: 15}}>
-          <Text style={styles.buttonTitle}>{props.RestaurantName}</Text>
-          <Text>{props.FoodCategory}</Text>
-          <View style={{flexDirection: 'row'}}>
-            <Text>{props.eta}</Text>
-            <Text>{props.distance}</Text>
-          </View>
-        </View>
-      </View>
-    );
-  };
-
   // Map restaurant array into the components
   const RestoList = () => {
     return resto.map(element => {
@@ -65,12 +89,20 @@ export default function BestSeller({navigation}: {navigation: any}) {
         <View key={element.key}>
           <Restaurant
             navigation={() => {
-              navigation.dispatch(StackActions.replace('RestaurantPage'));
+              navigation.dispatch(
+                navigation.push('RestaurantPage', {
+                  restoName: element.Name,
+                  restoAddress: element.Address,
+                  restoCategory: element.Category,
+                  restoImage: element.image,
+                }),
+              );
             }}
             RestaurantName={element.Name}
             FoodCategory={element.Category}
-            eta="30 mins"
-            distance="1.5 km"
+            eta={30}
+            distance={1.5}
+            image={element.image}
           />
         </View>
       );
