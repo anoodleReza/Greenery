@@ -2,7 +2,6 @@
 import React from 'react';
 import 'react-native-gesture-handler';
 import {View, Image, TouchableOpacity} from 'react-native';
-import {StackActions} from '@react-navigation/native';
 import {styles} from '../Style';
 //material ui + form
 import {Text} from 'react-native-paper';
@@ -43,7 +42,7 @@ export default function MerchantHomepage({navigation}: {navigation: any}) {
             image={require('../../assets/editMenu.png')}
             name="Edit Menu"
             navigation={() => {
-              navigation.dispatch(StackActions.replace('MerchantMenu'));
+              navigation.push('MerchantMenu');
             }}
           />
 

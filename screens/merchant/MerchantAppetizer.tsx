@@ -27,15 +27,25 @@ interface FoodData {
 }
 
 //main
-export default function MerchantAppetizer({navigation}: {navigation: any}) {
+export default function MerchantAppetizer({
+  route,
+  navigation,
+}: {
+  route: any;
+  navigation: any;
+}) {
   const [item, setItem] = useState<FoodData[]>([]);
+
+  //resto info
+  const resto = JSON.stringify(route.params.resto).replace(/"/g, '');
 
   //retrieve restaurant information
   useEffect(() => {
     const fetchRestaurants = async () => {
       const querySnapshot = await firestore()
         .collection('fooditems')
-        .where('restoID', '==', 'nameAddress')
+        .where('restoID', '==', resto)
+        .where('category', '==', 'Appetizer')
         .get();
       const fetchedRestaurants = querySnapshot.docs.map(
         doc => doc.data() as FoodData,
@@ -43,7 +53,7 @@ export default function MerchantAppetizer({navigation}: {navigation: any}) {
       setItem(fetchedRestaurants);
     };
     fetchRestaurants();
-  }, []);
+  }, [resto]);
 
   //Menu Item Component
   const Menu = (props: {
@@ -125,7 +135,7 @@ export default function MerchantAppetizer({navigation}: {navigation: any}) {
             Image={element.image}
             Stock={element.stock}
             Navigate={() => {
-              navigation.dispatch(StackActions.replace('MerchantAddMenu'));
+              navigation.push('MerchantAddMenu');
             }}
           />
         </View>
@@ -153,7 +163,7 @@ export default function MerchantAppetizer({navigation}: {navigation: any}) {
             </Text>
             <Text
               onPress={() => {
-                navigation.dispatch(StackActions.replace('MerchantUserView'));
+                navigation.push('MerchantUserView');
               }}
               style={{
                 fontWeight: 'bold',
@@ -166,18 +176,7 @@ export default function MerchantAppetizer({navigation}: {navigation: any}) {
             <Divider style={{width: '80%', marginTop: 10}} />
           </View>
 
-          <Menu
-            MenuName="Nasi Goreng w/ Seafood"
-            CalorieIntake={318}
-            Price={5}
-            Image="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-            Stock={78}
-            Navigate={() => {
-              navigation.dispatch(StackActions.replace('MerchantAddMenu'));
-            }}
-          />
-
-          <View style={{marginBottom: 25}}>{RestoList()}</View>
+          <View style={{marginBottom: 25, minHeight: 420}}>{RestoList()}</View>
 
           {/* Navigation */}
           <MerchantNavigation navigation={navigation} />

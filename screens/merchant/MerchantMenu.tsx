@@ -1,9 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Text, View, Image, TouchableOpacity, ScrollView} from 'react-native';
+import React, { useEffect, useState } from 'react';
 
-import React from 'react';
-import {StackActions} from '@react-navigation/native';
-//user session security
+//user session
+import {firebase} from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+
+//others
 import {styles} from '../Style';
 import MerchantNavigation from '../NavigationBar';
 import MerchantHeader from '../PageHeader';
@@ -20,6 +23,42 @@ const ButtonBox = props => {
 };
 
 export default function MerchantMenu({navigation}: {navigation: any}) {
+  const curUser = firebase.auth().currentUser;
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const [name, setname] = useState('');
+  const [address, setaddress] = useState('');
+  var restoID = name + address;
+
+  //#region AUTHENTICATION
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const fetchUserInfo = async () => {
+    if (curUser?.uid) {
+      firestore()
+        .collection('merchant')
+        .doc(curUser?.uid)
+        .get()
+        .then(documentSnapshot => {
+          const userDetails = documentSnapshot.data();
+          setname(userDetails?.Name);
+          setaddress(userDetails?.Address);
+        });
+    }
+  };
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      if (curUser) {
+        fetchUserInfo();
+        setIsLoggedIn(true);
+      } else {
+        console.log('Error in retrieving user data');
+      }
+    }
+  }, [curUser, fetchUserInfo, isLoggedIn]);
+  //#endregion
+
+  console.log(restoID);
   return (
     <View style={styles.containerUncentered}>
       <ScrollView>
@@ -40,7 +79,7 @@ export default function MerchantMenu({navigation}: {navigation: any}) {
                   marginRight: 5,
                 }}
                 onPress={() => {
-                  navigation.dispatch(StackActions.replace('MerchantAddMenu'));
+                  navigation.push('MerchantAddMenu');
                 }}>
                 Add New Menu
               </Text>
@@ -60,17 +99,11 @@ export default function MerchantMenu({navigation}: {navigation: any}) {
             <ButtonBox
               image={require('../../assets/TodayPromo.png')}
               name="Today's Promo"
-              navigation={() => {
-                navigation.dispatch(StackActions.replace('MerchantMenu'));
-              }}
             />
 
             <ButtonBox
               image={require('../../assets/BestSeller.png')}
               name="Bestselling"
-              navigation={() => {
-                navigation.dispatch(StackActions.replace('MerchantProfile'));
-              }}
             />
           </View>
 
@@ -84,14 +117,14 @@ export default function MerchantMenu({navigation}: {navigation: any}) {
               image={require('../../assets/Appetizer.png')}
               name="Appetizer"
               navigation={() => {
-                navigation.dispatch(StackActions.replace('MerchantAppetizer'));
+                navigation.push('MerchantAppetizer', {resto: restoID});
               }}
             />
             <ButtonBox
               image={require('../../assets/MainCourse.png')}
               name="Main Course"
               navigation={() => {
-                navigation.dispatch(StackActions.replace('MerchantMainCourse'));
+                navigation.push('MerchantMainCourse', {resto: restoID});
               }}
             />
           </View>
@@ -107,7 +140,7 @@ export default function MerchantMenu({navigation}: {navigation: any}) {
               image={require('../../assets/Dessert.png')}
               name="Dessert"
               navigation={() => {
-                navigation.dispatch(StackActions.replace('MerchantDessert'));
+                navigation.push('MerchantDessert', {resto: restoID});
               }}
             />
             <ButtonBox

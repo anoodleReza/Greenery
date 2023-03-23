@@ -1,15 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
-import {
-  View,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-} from 'react-native';
-import {StackActions} from '@react-navigation/native';
+import {View, Image, TouchableOpacity, ScrollView} from 'react-native';
 import {styles} from '../Style';
 //material ui + form
 import {Divider, Text} from 'react-native-paper';

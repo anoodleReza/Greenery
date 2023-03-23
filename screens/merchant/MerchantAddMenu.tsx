@@ -34,8 +34,8 @@ const initialState = {
 //Main funcion
 export default function MerchantAddMenu({navigation}: {navigation: any}) {
   const curUser = firebase.auth().currentUser;
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   //checkbox
   const [state, setState] = React.useState(initialState);
 
@@ -73,7 +73,7 @@ export default function MerchantAddMenu({navigation}: {navigation: any}) {
         {/* Main Content */}
 
         <View style={styles.container}>
-          {/* Profile */}
+          {/* Menu Information */}
           <Text style={styles.Subheading}>Menu Information</Text>
           <>
             <Text style={styles.Subheading}>Menu Picture:</Text>
@@ -102,6 +102,7 @@ export default function MerchantAddMenu({navigation}: {navigation: any}) {
                   <Image
                     resizeMode="cover"
                     resizeMethod="scale"
+                    // eslint-disable-next-line react-native/no-inline-styles
                     style={{
                       height: 200,
                       width: 200,
@@ -214,6 +215,7 @@ export default function MerchantAddMenu({navigation}: {navigation: any}) {
                     rightButtonBackgroundColor="#EA3788"
                     leftButtonBackgroundColor="#E56B70"
                     rounded
+                    iconStyle={{color: 'black'}}
                   />
                 </View>
 

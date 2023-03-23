@@ -1,15 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
-import {
-  View,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  GestureResponderEvent,
-} from 'react-native';
-import {StackActions} from '@react-navigation/native';
+import {View, Image, TouchableOpacity, ScrollView} from 'react-native';
 import {styles} from '../Style';
 //material ui + form
 import {Text} from 'react-native-paper';
@@ -17,8 +9,6 @@ import {UserNavigation} from '../NavigationBar';
 import {UserHeader} from '../PageHeader';
 //firebase
 import firestore from '@react-native-firebase/firestore';
-
-let nextId = 0;
 interface RestoData {
   key: number;
   restoID: string;

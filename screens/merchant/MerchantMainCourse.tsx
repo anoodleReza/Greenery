@@ -1,19 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
 import {View, Image, TouchableOpacity, ScrollView} from 'react-native';
-import {StackActions} from '@react-navigation/native';
 import {styles} from '../Style';
 //material ui + form
 import {Divider, Text} from 'react-native-paper';
-import MerchantNavigation, {UserNavigation} from '../NavigationBar';
-import MerchantHeader, {UserHeader} from '../PageHeader';
+import MerchantNavigation from '../NavigationBar';
+import MerchantHeader from '../PageHeader';
 //firebase
 import firestore from '@react-native-firebase/firestore';
-
-let nextId = 0;
 interface FoodData {
   stock: number;
   key: number;
@@ -26,16 +21,93 @@ interface FoodData {
   calorie: number;
 }
 
+//Menu Item Component
+const Menu = (props: {
+  MenuName: string;
+  CalorieIntake: number;
+  Price: number;
+  Image: string;
+  Stock: number;
+  Navigate: any;
+}) => {
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        marginLeft: 15,
+        justifyContent: 'space-around',
+        marginTop: 10,
+      }}>
+      <View>
+        <Text>{props.MenuName}</Text>
+        <View style={{flexDirection: 'row'}}>
+          <Text>Nutritional details:</Text>
+          <Text> {props.CalorieIntake} kcal</Text>
+        </View>
+
+        <View style={{flexDirection: 'row'}}>
+          <Text>Stocks left: </Text>
+          <Text>{props.Stock}</Text>
+        </View>
+
+        <Text style={styles.Highlight}>Customer Insights</Text>
+      </View>
+
+      <View>
+        <Text>IDR {props.Price}</Text>
+      </View>
+
+      <View>
+        <Image
+          style={{
+            borderWidth: 1,
+            borderColor: 'black',
+            borderRadius: 8,
+            backgroundColor: '#A9FDAC',
+            width: 60,
+            height: 60,
+          }}
+          source={{uri: props.Image}}
+        />
+        <View
+          style={{
+            borderWidth: 0.5,
+            borderColor: 'black',
+            borderRadius: 50,
+            backgroundColor: 'white',
+            width: 65,
+            height: 18,
+            alignItems: 'center',
+            marginTop: 5,
+          }}>
+          <TouchableOpacity onPress={props.Navigate}>
+            {/* edit button */}
+            <Text>Edit</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
+};
 //main
-export default function MerchantMainCourse({navigation}: {navigation: any}) {
+export default function MerchantMainCourse({
+  route,
+  navigation,
+}: {
+  reoute: any;
+  navigation: any;
+}) {
   const [item, setItem] = useState<FoodData[]>([]);
 
+  //#region  RESTO INFO
+  const resto = JSON.stringify(route.params.resto).replace(/"/g, '');
   //retrieve restaurant information
   useEffect(() => {
     const fetchRestaurants = async () => {
       const querySnapshot = await firestore()
         .collection('fooditems')
-        .where('restoID', '==', 'nameAddress')
+        .where('restoID', '==', resto)
+        .where('category', '==', 'MainCourse')
         .get();
       const fetchedRestaurants = querySnapshot.docs.map(
         doc => doc.data() as FoodData,
@@ -43,76 +115,8 @@ export default function MerchantMainCourse({navigation}: {navigation: any}) {
       setItem(fetchedRestaurants);
     };
     fetchRestaurants();
-  }, []);
-
-  //Menu Item Component
-  const Menu = (props: {
-    MenuName: string;
-    CalorieIntake: number;
-    Price: number;
-    Image: string;
-    Stock: number;
-    Navigate: any;
-  }) => {
-    return (
-      <View
-        style={{
-          flexDirection: 'row',
-          marginLeft: 15,
-          justifyContent: 'space-around',
-          marginTop: 10,
-        }}>
-        <View>
-          <Text>{props.MenuName}</Text>
-          <View style={{flexDirection: 'row'}}>
-            <Text>Nutritional details:</Text>
-            <Text> {props.CalorieIntake} kcal</Text>
-          </View>
-
-          <View style={{flexDirection: 'row'}}>
-            <Text>Stocks left: </Text>
-            <Text>{props.Stock}</Text>
-          </View>
-
-          <Text style={styles.Highlight}>Customer Insights</Text>
-        </View>
-
-        <View>
-          <Text>IDR {props.Price}</Text>
-        </View>
-
-        <View>
-          <Image
-            style={{
-              borderWidth: 1,
-              borderColor: 'black',
-              borderRadius: 8,
-              backgroundColor: '#A9FDAC',
-              width: 60,
-              height: 60,
-            }}
-            source={{uri: props.Image}}
-          />
-          <View
-            style={{
-              borderWidth: 0.5,
-              borderColor: 'black',
-              borderRadius: 50,
-              backgroundColor: 'white',
-              width: 65,
-              height: 18,
-              alignItems: 'center',
-              marginTop: 5,
-            }}>
-            <TouchableOpacity onPress={props.Navigate}>
-              {/* edit button */}
-              <Text>Edit</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    );
-  };
+  }, [resto]);
+  //#endregion
 
   const RestoList = () => {
     return item.map(element => {
@@ -124,6 +128,9 @@ export default function MerchantMainCourse({navigation}: {navigation: any}) {
             Price={element.price}
             Image={element.image}
             Stock={element.stock}
+            Navigate={() => {
+              navigation.push('MerchantAddMenu');
+            }}
           />
         </View>
       );
@@ -137,7 +144,6 @@ export default function MerchantMainCourse({navigation}: {navigation: any}) {
           {/* Banner */}
           <MerchantHeader navigation={navigation} />
           {/* Content */}
-
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text
               style={{
@@ -150,7 +156,7 @@ export default function MerchantMainCourse({navigation}: {navigation: any}) {
             </Text>
             <Text
               onPress={() => {
-                navigation.dispatch(StackActions.replace('MerchantUserView'));
+                navigation.push('MerchantUserView');
               }}
               style={{
                 fontWeight: 'bold',
@@ -163,18 +169,7 @@ export default function MerchantMainCourse({navigation}: {navigation: any}) {
             <Divider style={{width: '80%', marginTop: 10}} />
           </View>
 
-          <Menu
-            MenuName="Nasi Goreng w/ Seafood"
-            CalorieIntake={318}
-            Price={5}
-            Image="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-            Stock={78}
-            Navigate={() => {
-              navigation.dispatch(StackActions.replace('MerchantAddMenu'));
-            }}
-          />
-
-          <View style={{marginBottom: 25}}>{RestoList()}</View>
+          <View style={{marginBottom: 25, minHeight: 420}}>{RestoList()}</View>
 
           {/* Navigation */}
           <MerchantNavigation navigation={navigation} />
