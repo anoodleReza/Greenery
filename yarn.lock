@@ -7287,7 +7287,7 @@ react-native-fs@^2.20.0:
     base-64 "^0.1.0"
     utf8 "^3.0.0"
 
-react-native-gesture-handler@^2.9.0, "react-native-gesture-handler@>= 1.0.0":
+"react-native-gesture-handler@>= 1.0.0":
   version "2.9.0"
   resolved "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-2.9.0.tgz"
   integrity sha512-a0BcH3Qb1tgVqUutc6d3VuWQkI1AM3+fJx8dkxzZs9t06qA27QgURYFoklpabuWpsUTzuKRpxleykp25E8m7tg==
@@ -7391,7 +7391,7 @@ react-native-vector-icons@*, react-native-vector-icons@^9.*, react-native-vector
     prop-types "^15.7.2"
     yargs "^16.1.1"
 
-react-native@*, react-native@^0.71.4, "react-native@>= 0.62", react-native@>=0.47, react-native@>0.57.0:
+react-native@*, react-native@^0.71.3, "react-native@>= 0.62", react-native@>=0.47, react-native@>0.57.0:
   version "0.71.4"
   resolved "https://registry.npmjs.org/react-native/-/react-native-0.71.4.tgz"
   integrity sha512-3hSYqvWrOdKhpV3HpEKp1/CkWx8Sr/N/miCrmUIAsVTSJUR7JW0VvIsrV9urDhUj/s6v2WF4n7qIEEJsmTCrPw==

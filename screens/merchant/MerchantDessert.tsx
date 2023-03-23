@@ -64,18 +64,17 @@ export default function MerchantDessert({navigation}: {navigation: any}) {
         }}>
         <View>
           <Text>{props.MenuName}</Text>
-          <View style={{flexDirection:'row'}}>
+          <View style={{flexDirection: 'row'}}>
             <Text>Nutritional details:</Text>
             <Text> {props.CalorieIntake} kcal</Text>
           </View>
-          
-          <View style={{flexDirection:'row'}}>
+
+          <View style={{flexDirection: 'row'}}>
             <Text>Stocks left: </Text>
             <Text>{props.Stock}</Text>
           </View>
 
           <Text style={styles.Highlight}>Customer Insights</Text>
-          
         </View>
 
         <View>
@@ -125,13 +124,14 @@ export default function MerchantDessert({navigation}: {navigation: any}) {
             Price={element.price}
             Image={element.image}
             Stock={element.stock}
+            Navigate={() => {
+              navigation.dispatch(StackActions.replace('MerchantAddMenu'));
+            }}
           />
         </View>
       );
     });
   };
-
-  
 
   return (
     <View style={{flex: 1}}>
@@ -141,7 +141,7 @@ export default function MerchantDessert({navigation}: {navigation: any}) {
           <MerchantHeader navigation={navigation} />
           {/* Content */}
 
-          <View style={{flexDirection: 'row',alignItems:'center'}}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text
               style={{
                 fontSize: 30,
@@ -151,9 +151,17 @@ export default function MerchantDessert({navigation}: {navigation: any}) {
               }}>
               Appetizer Menu
             </Text>
-            <Text  onPress={() => {navigation.dispatch(StackActions.replace('MerchantUserView'));}}
-            style={{fontWeight: 'bold', fontSize: 16,marginTop: 20,marginLeft: 60}}>
-                User View
+            <Text
+              onPress={() => {
+                navigation.dispatch(StackActions.replace('MerchantUserView'));
+              }}
+              style={{
+                fontWeight: 'bold',
+                fontSize: 16,
+                marginTop: 20,
+                marginLeft: 60,
+              }}>
+              User View
             </Text>
             <Divider style={{width: '80%', marginTop: 10}} />
           </View>
@@ -164,10 +172,10 @@ export default function MerchantDessert({navigation}: {navigation: any}) {
             Price={5}
             Image="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
             Stock={78}
-            Navigate={() => {navigation.dispatch(StackActions.replace('MerchantAddMenu'));}}
+            Navigate={() => {
+              navigation.dispatch(StackActions.replace('MerchantAddMenu'));
+            }}
           />
-          
-          
 
           <View style={{marginBottom: 25}}>{RestoList()}</View>
 

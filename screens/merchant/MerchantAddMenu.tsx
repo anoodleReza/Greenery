@@ -1,19 +1,18 @@
+/* eslint-disable react-native/no-inline-styles */
 //building the screen
 import {Button, SegmentedButtons} from 'react-native-paper';
 import {Text, View, TextInput, Image, Platform, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {StackActions} from '@react-navigation/native';
-import NumericInput from 'react-native-numeric-input'
+import NumericInput from 'react-native-numeric-input';
 import CheckBox from '@react-native-community/checkbox';
 import * as ImagePicker from 'react-native-image-picker';
 const includeExtra = true;
 
 //firebase stuff
 import {ScrollView} from 'react-native';
-import auth, {firebase} from '@react-native-firebase/auth';
+import {firebase} from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
-
 
 //form
 import {Formik} from 'formik';
@@ -24,23 +23,21 @@ import MerchantNavigation from '../NavigationBar';
 import {styles} from '../Style';
 
 const initialState = {
-    Vegan: false,
-    Keto: false,
-    Mediterranean: false,
-    LowSugar: false,
-    LowCarb: false,
-    LowCal: false,
-  };
+  Vegan: false,
+  Keto: false,
+  Mediterranean: false,
+  LowSugar: false,
+  LowCarb: false,
+  LowCal: false,
+};
 
 //Main funcion
 export default function MerchantAddMenu({navigation}: {navigation: any}) {
   const curUser = firebase.auth().currentUser;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   //checkbox
-  const [toggleButton, setToggleButton] = React.useState(false);
   const [state, setState] = React.useState(initialState);
-  const fullpath = '/userProfile/' + 'ProfilePicture:' + curUser?.uid;
 
   //Fetch user data on start
   useEffect(() => {
@@ -52,7 +49,6 @@ export default function MerchantAddMenu({navigation}: {navigation: any}) {
       }
     }
   }, [curUser, isLoggedIn]);
-  
 
   //Used for menu photo
   //used for profile picture
@@ -67,7 +63,6 @@ export default function MerchantAddMenu({navigation}: {navigation: any}) {
 
   //upload to firebase
   const [pfpUri, setpfpUri] = useState(null);
-  
 
   return (
     <View>
@@ -76,9 +71,7 @@ export default function MerchantAddMenu({navigation}: {navigation: any}) {
         <MerchantHeader navigation={navigation} />
 
         {/* Main Content */}
-      
 
-       
         <View style={styles.container}>
           {/* Profile */}
           <Text style={styles.Subheading}>Menu Information</Text>
@@ -109,7 +102,6 @@ export default function MerchantAddMenu({navigation}: {navigation: any}) {
                   <Image
                     resizeMode="cover"
                     resizeMethod="scale"
-                    // eslint-disable-next-line react-native/no-inline-styles
                     style={{
                       height: 200,
                       width: 200,
@@ -160,15 +152,9 @@ export default function MerchantAddMenu({navigation}: {navigation: any}) {
                 </View>
               ))}
           </>
-          
-          <TextInput style={styles.input} placeholder="Menu Name..." />
-          <TextInput
-            style={styles.input}
-            placeholder="Menu Description..."
-          />
-         
 
-         
+          <TextInput style={styles.input} placeholder="Menu Name..." />
+          <TextInput style={styles.input} placeholder="Menu Description..." />
 
           {/* Details */}
           <Formik
@@ -205,27 +191,32 @@ export default function MerchantAddMenu({navigation}: {navigation: any}) {
               <>
                 <Text style={styles.Subheading}>Details:</Text>
 
-                <View style={{flexDirection:'row',alignItems:'center',marginTop: 15}}>
-                    <Text style={{marginRight: 20,fontWeight:'bold'}}>Stocks</Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginTop: 15,
+                  }}>
+                  <Text style={{marginRight: 20, fontWeight: 'bold'}}>
+                    Stocks
+                  </Text>
 
-                    <NumericInput type='up-down' 
+                  <NumericInput
+                    type="up-down"
                     onChange={value => console.log(value)}
-                    totalWidth={200} 
-                    totalHeight={40} 
+                    totalWidth={200}
+                    totalHeight={40}
                     iconSize={25}
                     step={1}
-                    textColor='black' 
-                    valueType='integer'
+                    textColor="black"
+                    valueType="integer"
                     minValue={0}
-                    rightButtonBackgroundColor='#EA3788' 
-                    leftButtonBackgroundColor='#E56B70'
-                    rounded 
-                    iconStyle={{ color: 'black' }} 
-
-                    />
+                    rightButtonBackgroundColor="#EA3788"
+                    leftButtonBackgroundColor="#E56B70"
+                    rounded
+                  />
                 </View>
-                
-    
+
                 <TextInput
                   style={styles.input}
                   placeholder="Price..."
@@ -233,7 +224,7 @@ export default function MerchantAddMenu({navigation}: {navigation: any}) {
                   onChangeText={handleChange('Name')}
                   onBlur={handleBlur('Name')}
                 />
-                
+
                 <SegmentedButtons
                   style={styles.segmentButton}
                   value={values.Type}
@@ -369,7 +360,7 @@ export default function MerchantAddMenu({navigation}: {navigation: any}) {
                     </View>
                   </View>
                 </View>
-                
+
                 {/* Confirm Button */}
                 <Button
                   style={styles.button}
@@ -383,8 +374,6 @@ export default function MerchantAddMenu({navigation}: {navigation: any}) {
           </Formik>
         </View>
 
-        
-
         {/* Navigation Bar */}
         <MerchantNavigation navigation={navigation} />
       </ScrollView>
@@ -392,32 +381,30 @@ export default function MerchantAddMenu({navigation}: {navigation: any}) {
   );
 }
 
-
-
 const buttons = {
-    roundness: 5,
-    colors: {
-      primary: '#A9FDAC',
-      accent: '#f1c40f',
-      background: '#f2f2f2',
+  roundness: 5,
+  colors: {
+    primary: '#A9FDAC',
+    accent: '#f1c40f',
+    background: '#f2f2f2',
+  },
+};
+
+interface Action {
+  title: string;
+  type: 'capture' | 'library';
+  options: ImagePicker.CameraOptions | ImagePicker.ImageLibraryOptions;
+}
+
+const actions: Action[] = [
+  {
+    title: 'Select Image',
+    type: 'library',
+    options: {
+      selectionLimit: 1,
+      mediaType: 'photo',
+      includeBase64: false,
+      includeExtra,
     },
-  };
-  
-  interface Action {
-    title: string;
-    type: 'capture' | 'library';
-    options: ImagePicker.CameraOptions | ImagePicker.ImageLibraryOptions;
-  }
-  
-  const actions: Action[] = [
-    {
-      title: 'Select Image',
-      type: 'library',
-      options: {
-        selectionLimit: 1,
-        mediaType: 'photo',
-        includeBase64: false,
-        includeExtra,
-      },
-    },
-  ];
+  },
+];

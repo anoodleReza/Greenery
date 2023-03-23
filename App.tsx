@@ -1,6 +1,6 @@
 //navigation
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
 //basic react
 import * as React from 'react';
 import 'react-native-gesture-handler';
@@ -103,7 +103,7 @@ function App() {
             component={MerchantNavigation}
             options={{headerShown: false}}
           />
-           <Stack.Screen
+          <Stack.Screen
             name="MerchantAddMenu"
             component={MerchantAddMenu}
             options={{headerShown: false}}
