@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import {Text, View, Image, TouchableOpacity, ScrollView} from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
 //user session
 import {firebase} from '@react-native-firebase/auth';
@@ -65,7 +65,6 @@ export default function MerchantMenu({navigation}: {navigation: any}) {
         {/* Banner */}
         <MerchantHeader navigation={navigation} />
         {/* Content */}
-
         <View style={styles.contentBox}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Text style={styles.homepagetext}>Menu:</Text>
@@ -79,7 +78,7 @@ export default function MerchantMenu({navigation}: {navigation: any}) {
                   marginRight: 5,
                 }}
                 onPress={() => {
-                  navigation.push('MerchantAddMenu');
+                  navigation.push('MerchantAddMenu', {foodID: 'new'});
                 }}>
                 Add New Menu
               </Text>

@@ -131,7 +131,8 @@ export default function MerchantDessert({
             Image={element.image}
             Stock={element.stock}
             Navigate={() => {
-              navigation.push('MerchantAddMenu');
+              var id = element.name + resto;
+              navigation.push('MerchantAddMenu', {foodID: id});
             }}
           />
         </View>

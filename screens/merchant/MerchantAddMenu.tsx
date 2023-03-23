@@ -21,6 +21,7 @@ import {Formik} from 'formik';
 import MerchantHeader from '../PageHeader';
 import MerchantNavigation from '../NavigationBar';
 import {styles} from '../Style';
+import {Item} from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
 const initialState = {
   Vegan: false,
@@ -30,14 +31,58 @@ const initialState = {
   LowCarb: false,
   LowCal: false,
 };
+interface FoodData {
+  stock: number;
+  name: string;
+  category: string;
+  description: string;
+  price: number;
+  calorie: number;
+}
 
 //Main funcion
-export default function MerchantAddMenu({navigation}: {navigation: any}) {
+export default function MerchantAddMenu({
+  route,
+  navigation,
+}: {
+  route: any;
+  navigation: any;
+}) {
+  const foodID = JSON.stringify(route.params.foodID).replace(/"/g, '');
+
   const curUser = firebase.auth().currentUser;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   //checkbox
   const [state, setState] = React.useState(initialState);
+
+  //fetch food information
+  const initialArray: FoodData[] = [
+    {
+      stock: 0,
+      name: 'Food Name...',
+      category: 'Food Category...',
+      description: 'Food Description...',
+      price: 0,
+      calorie: 0,
+    },
+  ];
+  const [item, setItem] = useState<FoodData[]>(initialArray);
+  useEffect(() => {
+    if (foodID !== 'new') {
+      const fetchRestaurants = async () => {
+        const querySnapshot = await firestore()
+          .collection('fooditems')
+          .where('key', '==', foodID)
+          .get();
+        const fetchedFood = querySnapshot.docs.map(
+          doc => doc.data() as FoodData,
+        );
+        setItem(fetchedFood);
+      };
+      fetchRestaurants();
+    }
+  }, [foodID]);
 
   //Fetch user data on start
   useEffect(() => {
@@ -63,7 +108,6 @@ export default function MerchantAddMenu({navigation}: {navigation: any}) {
 
   //upload to firebase
   const [pfpUri, setpfpUri] = useState(null);
-
   return (
     <View>
       <ScrollView>
@@ -102,7 +146,6 @@ export default function MerchantAddMenu({navigation}: {navigation: any}) {
                   <Image
                     resizeMode="cover"
                     resizeMethod="scale"
-                    // eslint-disable-next-line react-native/no-inline-styles
                     style={{
                       height: 200,
                       width: 200,
@@ -154,42 +197,52 @@ export default function MerchantAddMenu({navigation}: {navigation: any}) {
               ))}
           </>
 
-          <TextInput style={styles.input} placeholder="Menu Name..." />
-          <TextInput style={styles.input} placeholder="Menu Description..." />
-
           {/* Details */}
           <Formik
             initialValues={{
-              Name: '',
-              Category: '',
-              Price: '',
-              Type: '',
-              Address: '',
-              Opening: '',
-              Closing: '',
+              stock: 0,
+              name: '',
+              category: '',
+              description: '',
+              price: 0,
+              calorie: 0,
             }}
             onSubmit={values => {
-              if (firestore().collection('merchant').doc(curUser?.uid)) {
-                //user data found found
-                console.log('user data found');
-                firestore()
-                  .collection('merchant')
-                  .doc(curUser?.uid)
-                  .set({
-                    Name: values.Name,
-                    Category: values.Category,
-                    Price: values.Price,
-                    Address: values.Address,
-                    Opening: values.Opening,
-                    Closing: values.Closing,
-                  })
-                  .then(() => {
-                    console.log('User updated!');
-                  });
-              }
+              // if (firestore().collection('merchant').doc(curUser?.uid)) {
+              //   //user data found found
+              //   console.log('user data found');
+              //   firestore()
+              //     .collection('merchant')
+              //     .doc(curUser?.uid)
+              //     .set({
+              //       Name: values.Name,
+              //       Category: values.Category,
+              //       Price: values.Price,
+              //       Address: values.Address,
+              //       Opening: values.Opening,
+              //       Closing: values.Closing,
+              //     })
+              //     .then(() => {
+              //       console.log('User updated!');
+              //     });
+              // }
             }}>
             {({handleChange, handleBlur, handleSubmit, values}) => (
               <>
+                <TextInput
+                  style={styles.input}
+                  placeholder={item[0].name}
+                  value={values.name}
+                  onChangeText={handleChange('name')}
+                  onBlur={handleBlur('name')}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder={item[0].description}
+                  value={values.description}
+                  onChangeText={handleChange('description')}
+                  onBlur={handleBlur('description')}
+                />
                 <Text style={styles.Subheading}>Details:</Text>
 
                 <View
@@ -221,10 +274,10 @@ export default function MerchantAddMenu({navigation}: {navigation: any}) {
 
                 <TextInput
                   style={styles.input}
-                  placeholder="Price..."
-                  value={values.Name}
-                  onChangeText={handleChange('Name')}
-                  onBlur={handleBlur('Name')}
+                  placeholder={'Price: ' + item[0].price}
+                  value={values.price}
+                  onChangeText={handleChange('price')}
+                  onBlur={handleBlur('price')}
                 />
 
                 <SegmentedButtons

@@ -94,7 +94,7 @@ export default function MerchantMainCourse({
   route,
   navigation,
 }: {
-  reoute: any;
+  route: any;
   navigation: any;
 }) {
   const [item, setItem] = useState<FoodData[]>([]);
@@ -129,7 +129,8 @@ export default function MerchantMainCourse({
             Image={element.image}
             Stock={element.stock}
             Navigate={() => {
-              navigation.push('MerchantAddMenu');
+              var id = element.name + resto;
+              navigation.push('MerchantAddMenu', {foodID: id});
             }}
           />
         </View>
