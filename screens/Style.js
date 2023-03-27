@@ -5,6 +5,14 @@ const styles = StyleSheet.create({
     color: '#0066FF',
     textDecorationLine: 'underline',
   },
+  basicContainerResto: {
+    flex: 1,
+    minHeight: 370,
+  },
+  basicContainer: {
+    flex: 1,
+    minHeight: 500,
+  },
   paperinput: {
     width: 300,
     height: 20,
@@ -192,6 +200,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'column',
     backgroundColor: '#fff',
+    minHeight: '100%',
   },
   containerrow: {
     flex: 1,

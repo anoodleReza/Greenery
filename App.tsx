@@ -43,6 +43,7 @@ import RestaurantPage from './screens/user/RestaurantPage';
 import UserProfile from './screens/user/UserProfile';
 import UserEditProfile from './screens/user/UserEditProfile';
 import UserDetails from './screens/user/UserDetails';
+import Search from './screens/user/Search';
 
 const Stack = createStackNavigator();
 
@@ -103,7 +104,7 @@ function App() {
             component={MerchantNavigation}
             options={{headerShown: false}}
           />
-           <Stack.Screen
+          <Stack.Screen
             name="MerchantAddMenu"
             component={MerchantAddMenu}
             options={{headerShown: false}}
@@ -197,6 +198,11 @@ function App() {
           <Stack.Screen
             name="UserDetails"
             component={UserDetails}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Search"
+            component={Search}
             options={{headerShown: false}}
           />
         </Stack.Navigator>

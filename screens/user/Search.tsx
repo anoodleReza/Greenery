@@ -9,15 +9,13 @@ import {UserNavigation} from '../NavigationBar';
 import {UserHeader} from '../PageHeader';
 //firebase
 import firestore from '@react-native-firebase/firestore';
+
 interface RestoData {
   key: number;
   Name: string;
   Category: string;
   image: string;
   Address: string;
-  Opening: any;
-  Closing: any;
-  Price: string;
 }
 // Restaurant cards
 const Restaurant = (props: {
@@ -59,25 +57,32 @@ const Restaurant = (props: {
 };
 
 //main
-export default function BestSeller({navigation}: {navigation: any}) {
+export default function Search({
+  route,
+  navigation,
+}: {
+  route: any;
+  navigation: any;
+}) {
   const [resto, setResto] = useState<RestoData[]>([]);
+  const query = JSON.stringify(route.params.query).replace(/"/g, '');
 
   //retrieve restaurant information
   useEffect(() => {
     const fetchRestaurants = async () => {
       const querySnapshot = await firestore()
         .collection('merchant')
-        .limit(10)
+        .where('Name', '==', query)
+        .limit(20)
         .get();
       const fetchedRestaurants = querySnapshot.docs.map((doc, index) => ({
         ...(doc.data() as RestoData),
         key: index,
       }));
-      console.log('restos found: ', querySnapshot.docs.length);
       setResto(fetchedRestaurants);
     };
     fetchRestaurants();
-  }, []);
+  }, [query]);
 
   // Map restaurant array into the components
   const RestoList = () => {
@@ -108,13 +113,13 @@ export default function BestSeller({navigation}: {navigation: any}) {
 
   //Main Function
   return (
-    <View>
+    <View style={{flex: 1}}>
       <ScrollView>
         <View style={styles.containerUncentered}>
           {/* Banner */}
           <UserHeader navigation={navigation} />
           {/* Content */}
-          <View>
+          <View style={styles.basicContainer}>
             <View>
               <Text style={styles.homepagetext}>Bestsellers</Text>
               <Text style={{marginLeft: 30}}>
@@ -122,7 +127,7 @@ export default function BestSeller({navigation}: {navigation: any}) {
               </Text>
             </View>
             {/* Testing Database */}
-            <View style={styles.basicContainer}>{RestoList()}</View>
+            <View>{RestoList()}</View>
           </View>
 
           {/* Navigation */}

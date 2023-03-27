@@ -89,6 +89,7 @@ export function UserHeader({navigation}: {navigation: any}) {
 
   const onChangeSearch = (query: React.SetStateAction<string>) =>
     setSearchQuery(query);
+
   return (
     <View style={styles.row}>
       {/* Banner */}
@@ -99,6 +100,10 @@ export function UserHeader({navigation}: {navigation: any}) {
           onChangeText={onChangeSearch}
           value={searchQuery}
           inputStyle={styles.searchInput}
+          onIconPress={() => {
+            navigation.push('Search', {query: searchQuery});
+            console.log('Query: ', searchQuery);
+          }}
         />
         <IconButton
           style={styles.iconbutton}

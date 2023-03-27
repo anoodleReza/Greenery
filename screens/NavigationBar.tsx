@@ -148,7 +148,6 @@ export function UserNavigation({navigation}: {navigation: any}) {
         </TouchableOpacity>
       </View>
     </View>
-    //2 rows, 5 columns
   );
 }
 

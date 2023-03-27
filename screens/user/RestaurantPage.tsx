@@ -154,7 +154,13 @@ const RestaurantBlock = (props: {
 //#endregion
 
 //main
-export default function RestaurantPage({route, navigation}) {
+export default function RestaurantPage({
+  route,
+  navigation,
+}: {
+  route: any;
+  navigation: any;
+}) {
   const [item, setItem] = useState<FoodData[]>([]);
   const restoName = JSON.stringify(route.params.restoName).replace(/"/g, '');
   const restoAddress = JSON.stringify(route.params.restoAddress).replace(
@@ -170,17 +176,17 @@ export default function RestaurantPage({route, navigation}) {
 
   //retrieve restaurant information
   useEffect(() => {
-    const fetchRestaurants = async () => {
+    const fetchFood = async () => {
       const querySnapshot = await firestore()
         .collection('fooditems')
         .where('restoID', '==', restoID)
         .get();
-      const fetchedRestaurants = querySnapshot.docs.map(
+      const fetchedItems = querySnapshot.docs.map(
         doc => doc.data() as FoodData,
       );
-      setItem(fetchedRestaurants);
+      setItem(fetchedItems);
     };
-    fetchRestaurants();
+    fetchFood();
   }, []);
 
   //group into categories
@@ -209,7 +215,7 @@ export default function RestaurantPage({route, navigation}) {
             Image={restoImage}
           />
 
-          <View style={{flex: 1, minHeight: 370}}>
+          <View style={styles.basicContainerResto}>
             {/* FOOD INFORMATION */}
             {Object.entries(groupedData).map(([category, elements]) => (
               <View key={category}>

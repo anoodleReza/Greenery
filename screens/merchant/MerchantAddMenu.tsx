@@ -21,7 +21,6 @@ import {Formik} from 'formik';
 import MerchantHeader from '../PageHeader';
 import MerchantNavigation from '../NavigationBar';
 import {styles} from '../Style';
-import {Item} from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
 const initialState = {
   Vegan: false,

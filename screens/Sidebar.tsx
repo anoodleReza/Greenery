@@ -12,7 +12,10 @@ export function MerchantSidebar({navigation}: {navigation: any}) {
       .signOut()
       .then(() => navigation.dispatch(StackActions.replace('MerchantSignin')));
     //just in case
-    navigation.dispatch(StackActions.replace('MerchantSignin'));
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'MerchantSignin'}],
+    });
   };
   return (
     <View style={styles.container}>
@@ -45,7 +48,10 @@ export function UserSidebar({navigation}: {navigation: any}) {
       .signOut()
       .then(() => navigation.dispatch(StackActions.replace('UserSignin')));
     //just in case
-    navigation.dispatch(StackActions.replace('UserSignin'));
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'UserSignin'}],
+    });
   };
   return (
     <View style={styles.container}>
@@ -78,7 +84,10 @@ const PartnerSidebar = ({navigation}: {navigation: any}) => {
       .signOut()
       .then(() => navigation.dispatch(StackActions.replace('PartnerSignin')));
     //just in case
-    navigation.dispatch(StackActions.replace('PartnerSignin'));
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'PartnerSignin'}],
+    });
   };
   return (
     <View style={styles.container}>
