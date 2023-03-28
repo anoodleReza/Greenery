@@ -12,6 +12,7 @@ import MerchantNavigation, {UserNavigation} from '../NavigationBar';
 import MerchantHeader, {UserHeader} from '../PageHeader';
 //firebase
 import firestore from '@react-native-firebase/firestore';
+import {firebase} from '@react-native-firebase/auth';
 
 let nextId = 0;
 interface FoodData {
@@ -35,6 +36,7 @@ export default function MerchantAppetizer({
   navigation: any;
 }) {
   const [item, setItem] = useState<FoodData[]>([]);
+  const curUser = firebase.auth().currentUser;
 
   //resto info
   const resto = JSON.stringify(route.params.resto).replace(/"/g, '');
@@ -43,8 +45,9 @@ export default function MerchantAppetizer({
   useEffect(() => {
     const fetchRestaurants = async () => {
       const querySnapshot = await firestore()
+        .collection('merchant')
+        .doc(curUser?.uid)
         .collection('fooditems')
-        .where('restoID', '==', resto)
         .where('category', '==', 'Appetizer')
         .get();
       const fetchedRestaurants = querySnapshot.docs.map(
@@ -53,7 +56,7 @@ export default function MerchantAppetizer({
       setItem(fetchedRestaurants);
     };
     fetchRestaurants();
-  }, [resto]);
+  }, []);
 
   //Menu Item Component
   const Menu = (props: {
@@ -136,7 +139,7 @@ export default function MerchantAppetizer({
             Stock={element.stock}
             Navigate={() => {
               var id = element.name + resto;
-              navigation.push('MerchantAddMenu', {foodID: id});
+              navigation.push('MerchantAddMenu', {foodID: id, restoID: resto});
             }}
           />
         </View>

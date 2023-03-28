@@ -172,16 +172,20 @@ export default function RestaurantPage({
     '',
   );
   const restoImage = JSON.stringify(route.params.restoImage).replace(/"/g, '');
-  var restoID = restoName + restoAddress;
 
   //retrieve restaurant information
   useEffect(() => {
     const fetchFood = async () => {
-      const querySnapshot = await firestore()
-        .collection('fooditems')
-        .where('restoID', '==', restoID)
+      const docSnapshot = await firestore()
+        .collection('merchant')
+        .where('Name', '==', restoName)
+        .limit(1)
         .get();
-      const fetchedItems = querySnapshot.docs.map(
+      console.log(docSnapshot.docs[0].data);
+      const docSubcollection = docSnapshot.docs[0].ref
+        .collection('fooditems')
+        .get();
+      const fetchedItems = (await docSubcollection).docs.map(
         doc => doc.data() as FoodData,
       );
       setItem(fetchedItems);

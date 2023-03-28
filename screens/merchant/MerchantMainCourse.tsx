@@ -9,6 +9,8 @@ import MerchantNavigation from '../NavigationBar';
 import MerchantHeader from '../PageHeader';
 //firebase
 import firestore from '@react-native-firebase/firestore';
+import {firebase} from '@react-native-firebase/auth';
+
 interface FoodData {
   stock: number;
   key: number;
@@ -98,6 +100,7 @@ export default function MerchantMainCourse({
   navigation: any;
 }) {
   const [item, setItem] = useState<FoodData[]>([]);
+  const curUser = firebase.auth().currentUser;
 
   //#region  RESTO INFO
   const resto = JSON.stringify(route.params.resto).replace(/"/g, '');
@@ -105,9 +108,10 @@ export default function MerchantMainCourse({
   useEffect(() => {
     const fetchRestaurants = async () => {
       const querySnapshot = await firestore()
+        .collection('merchant')
+        .doc(curUser?.uid)
         .collection('fooditems')
-        .where('restoID', '==', resto)
-        .where('category', '==', 'MainCourse')
+        .where('category', '==', 'Main')
         .get();
       const fetchedRestaurants = querySnapshot.docs.map(
         doc => doc.data() as FoodData,
@@ -130,7 +134,7 @@ export default function MerchantMainCourse({
             Stock={element.stock}
             Navigate={() => {
               var id = element.name + resto;
-              navigation.push('MerchantAddMenu', {foodID: id});
+              navigation.push('MerchantAddMenu', {foodID: id, restoID: resto});
             }}
           />
         </View>
@@ -153,7 +157,7 @@ export default function MerchantMainCourse({
                 marginTop: 20,
                 justifyContent: 'space-around',
               }}>
-              Appetizer Menu
+              Main Menu
             </Text>
             <Text
               onPress={() => {

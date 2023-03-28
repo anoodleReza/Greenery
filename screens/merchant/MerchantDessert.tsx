@@ -9,6 +9,7 @@ import MerchantNavigation from '../NavigationBar';
 import MerchantHeader from '../PageHeader';
 //firebase
 import firestore from '@react-native-firebase/firestore';
+import {firebase} from '@react-native-firebase/auth';
 
 interface FoodData {
   stock: number;
@@ -100,6 +101,7 @@ export default function MerchantDessert({
   navigation: any;
 }) {
   const [item, setItem] = useState<FoodData[]>([]);
+  const curUser = firebase.auth().currentUser;
 
   //#region  RESTO INFO
   const resto = JSON.stringify(route.params.resto).replace(/"/g, '');
@@ -107,8 +109,9 @@ export default function MerchantDessert({
   useEffect(() => {
     const fetchRestaurants = async () => {
       const querySnapshot = await firestore()
+        .collection('merchant')
+        .doc(curUser?.uid)
         .collection('fooditems')
-        .where('restoID', '==', resto)
         .where('category', '==', 'Dessert')
         .get();
       const fetchedRestaurants = querySnapshot.docs.map(
@@ -132,7 +135,7 @@ export default function MerchantDessert({
             Stock={element.stock}
             Navigate={() => {
               var id = element.name + resto;
-              navigation.push('MerchantAddMenu', {foodID: id});
+              navigation.push('MerchantAddMenu', {foodID: id, restoID: resto});
             }}
           />
         </View>
@@ -156,7 +159,7 @@ export default function MerchantDessert({
                 marginTop: 20,
                 justifyContent: 'space-around',
               }}>
-              Appetizer Menu
+              Dessert Menu
             </Text>
             <Text
               onPress={() => {

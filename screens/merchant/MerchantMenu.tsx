@@ -78,7 +78,9 @@ export default function MerchantMenu({navigation}: {navigation: any}) {
                   marginRight: 5,
                 }}
                 onPress={() => {
-                  navigation.push('MerchantAddMenu', {foodID: 'new'});
+                  navigation.push('MerchantAddMenu', {
+                    foodID: 'new',
+                  });
                 }}>
                 Add New Menu
               </Text>
@@ -116,12 +118,12 @@ export default function MerchantMenu({navigation}: {navigation: any}) {
               image={require('../../assets/Appetizer.png')}
               name="Appetizer"
               navigation={() => {
-                navigation.push('MerchantAppetizer', {resto: restoID});
+                navigation.push('MerchantAppetizer', {resto: name});
               }}
             />
             <ButtonBox
               image={require('../../assets/MainCourse.png')}
-              name="Main Course"
+              name="Main"
               navigation={() => {
                 navigation.push('MerchantMainCourse', {resto: restoID});
               }}

@@ -158,7 +158,9 @@ export default function MerchantUserView({navigation}) {
 
   const [name, setname] = useState('');
   const [address, setaddress] = useState('');
-  const [image, setimage] = useState('');
+  const [image, setimage] = useState(
+    'https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg',
+  );
   var restoID = name + address;
 
   const curUser = firebase.auth().currentUser;
@@ -197,17 +199,19 @@ export default function MerchantUserView({navigation}) {
   useEffect(() => {
     const fetchRestaurants = async () => {
       const querySnapshot = await firestore()
+        .collection('merchant')
+        .doc(curUser?.uid)
         .collection('fooditems')
-        .where('restoID', '==', restoID)
         .get();
       const fetchedRestaurants = querySnapshot.docs.map(
         doc => doc.data() as FoodData,
       );
+      console.log(fetchedRestaurants);
       setItem(fetchedRestaurants);
     };
     fetchRestaurants();
   }, [restoID]);
-
+  console.log(item);
   //group into categories
   const groupedData = item.reduce(
     (result, element) => ({
