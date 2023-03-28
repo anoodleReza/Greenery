@@ -207,24 +207,24 @@ export default function MerchantAddMenu({
               calorie: 0,
             }}
             onSubmit={values => {
-              // if (firestore().collection('merchant').doc(curUser?.uid)) {
-              //   //user data found found
-              //   console.log('user data found');
-              //   firestore()
-              //     .collection('merchant')
-              //     .doc(curUser?.uid)
-              //     .set({
-              //       Name: values.Name,
-              //       Category: values.Category,
-              //       Price: values.Price,
-              //       Address: values.Address,
-              //       Opening: values.Opening,
-              //       Closing: values.Closing,
-              //     })
-              //     .then(() => {
-              //       console.log('User updated!');
-              //     });
-              // }
+              if (firestore().collection('fooditems').doc(curUser?.uid)) {
+                 //user data found found
+                 console.log('user data found');
+                 firestore()
+                   .collection('fooditems')
+                   .doc(curUser?.uid)
+                   .set({
+                     Stock: values.stock,
+                     Name: values.name,
+                     Category: values.category,
+                     Price: values.price,
+                     Description: values.description,
+                     Calorie: values.calorie
+                   })
+                   .then(() => {
+                     console.log('User updated!');
+                   });
+               }
             }}>
             {({handleChange, handleBlur, handleSubmit, values}) => (
               <>
