@@ -1,12 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
-import {View, Image, TouchableOpacity, ScrollView} from 'react-native';
+import {View, Image, TouchableOpacity, ScrollView, Button, Alert, StyleSheet} from 'react-native';
 import {styles} from '../Style';
 //material ui + form
-import {Text} from 'react-native-paper';
+import {Divider, Text, Modal, Provider, Portal} from 'react-native-paper';
 import {UserNavigation} from '../NavigationBar';
 import {UserHeader} from '../PageHeader';
+
 //firebase
 import firestore from '@react-native-firebase/firestore';
 
@@ -55,6 +56,11 @@ const Restaurant = (props: {
     </View>
   );
 };
+
+
+
+
+
 
 //main
 export default function Search({
@@ -111,6 +117,72 @@ export default function Search({
     });
   };
 
+  // const RestoList = () => {
+  //   return resto.map(element => {
+  //     return (
+  //       <View key={element.key}>
+  //         <Restaurant
+  //           navigation={() => {
+  //             navigation.dispatch(
+  //               navigation.push('RestaurantPage', {
+  //                 restoName: element.Name,
+  //                 restoAddress: element.Address,
+  //                 restoCategory: element.Category,
+  //                 restoImage: element.image,
+  //               }),
+  //             );
+  //           }}
+  //           RestaurantName={element.Name}
+  //           FoodCategory={element.Category}
+  //           eta={30}
+  //           distance={1.5}
+  //           image={element.image}
+  //         />
+  //       </View>
+  //     );
+  //   });
+  // };
+
+  //  class modal extends Component {
+  //   // initial state
+  //   state = {
+  //     isVisible: false
+  //   };
+  //   // hide show modal
+  //   displayModal(show){
+  //     this.setState({isVisible: show})
+  //   }
+  //   render() {
+  //     return (
+  //       <View style = { styles2.container }>
+  //         <Modal
+  //             animationType = {"slide"}
+  //             transparent={false}
+  //             visible={this.state.isVisible}
+  //             onRequestClose={() => {
+  //               Alert.alert('Modal has now been closed.');
+  //             }}>
+  //             {/* <Image 
+  //               source={require('./assets/scooby.jpeg')}
+  //               style = { styles2.image }/> */}
+  //               <Text style = { styles2.text }>
+  //                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+  //                   Maecenas eget tempus augue, a convallis velit.</Text>
+  //           </Modal>
+              
+  //           <TouchableOpacity
+  //               style={styles2.button}
+  //               onPress={() => {
+  //                 this.displayModal(true);
+  //               }}>
+  //               <Text style={styles2.buttonText}>Show Modal</Text>
+  //           </TouchableOpacity>          
+  //         </View>
+  //       );
+  //   }
+  // };
+ 
+
   //Main Function
   return (
     <View style={{flex: 1}}>
@@ -121,13 +193,36 @@ export default function Search({
           {/* Content */}
           <View style={styles.basicContainer}>
             <View>
-              <Text style={styles.homepagetext}>Bestsellers</Text>
+              <Text style={styles.homepagetext}>Search Results</Text>
               <Text style={{marginLeft: 30}}>
                 Try the best we have to offer:
               </Text>
             </View>
+
+            <Divider
+            style={{marginTop: 15}}
+            />
             {/* Testing Database */}
+            <Text style={styles.homepagetext}>Restaurant</Text>
             <View>{RestoList()}</View>
+
+            <Divider
+            style={{marginTop: 15}}
+            />
+            <Text style={styles.homepagetext}>Menu</Text>
+
+           
+            
+
+            
+
+
+         
+
+
+            
+
+            
           </View>
 
           {/* Navigation */}

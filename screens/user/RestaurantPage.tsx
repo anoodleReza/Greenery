@@ -1,10 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
-import {View, Image, TouchableOpacity, ScrollView} from 'react-native';
+import {View, Image, TouchableOpacity, ScrollView, Modal, StyleSheet} from 'react-native';
 import {styles} from '../Style';
 //material ui + form
-import {Divider, Text} from 'react-native-paper';
+import {Button, Divider, Portal, Provider, Text} from 'react-native-paper';
 import {UserNavigation} from '../NavigationBar';
 import {UserHeader} from '../PageHeader';
 //firebase
@@ -28,7 +28,13 @@ const Menu = (props: {
   CalorieIntake: number;
   Price: number;
   Image: string;
+  Description: any;
 }) => {
+  
+
+  const [active , setactive] = useState(false);
+  const showModal = () => setactive(true);
+  const hideModal = () => setactive(false);
   return (
     <View
       style={{
@@ -48,6 +54,7 @@ const Menu = (props: {
       </View>
 
       <View>
+        <TouchableOpacity onPress={()=>{setactive(!active)}}>
         <Image
           style={{
             borderWidth: 1,
@@ -59,6 +66,59 @@ const Menu = (props: {
           }}
           source={{uri: props.Image}}
         />
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={()=>{setactive(!active)}} style={styles2.container}>
+        <Modal
+        animationType="slide"
+        transparent={true}
+        visible={active}
+        onRequestClose={() => {
+          console.warn("closed");
+        }}
+        >
+          <View style={styles2.container}>
+            <View style={styles2.View}>
+              <Image source={{uri: props.Image}} style={{
+            borderWidth: 1,
+            borderColor: 'black',
+            borderRadius: 8,
+            backgroundColor: '#A9FDAC',
+            width: 100,
+            height: 100,
+          }}/>
+            <Text style={styles2.text}>{props.MenuName}</Text>
+            <View style={{alignItems:'center',flexDirection:'row',justifyContent:'center'}}>
+              <Text style={{fontWeight:'bold'}}>Calorie: {props.CalorieIntake} kcal</Text>
+              <Text style={{marginLeft: 5,fontWeight:'bold'}}>IDR {props.Price}</Text>
+            </View>
+            <View
+          style={{
+            borderWidth: 0.5,
+            borderColor: 'black',
+            borderRadius: 50,
+            backgroundColor: '#A9FDAC',
+            width: 65,
+            height: 18,
+            alignItems: 'center',
+            marginTop: 5,
+          }}>
+          <TouchableOpacity>
+            {/* add button */}
+            <Text>Add</Text>
+          </TouchableOpacity>
+          </View>
+            <View>
+              <Text>Description:</Text>
+            </View>
+            <Text>{props.Description}</Text>
+            <Button onPress={()=>{setactive(!active)}}/>
+            </View>
+          </View>
+        </Modal>
+        </TouchableOpacity>
+        
+          
         <View
           style={{
             borderWidth: 0.5,
@@ -172,20 +232,16 @@ export default function RestaurantPage({
     '',
   );
   const restoImage = JSON.stringify(route.params.restoImage).replace(/"/g, '');
+  var restoID = restoName + restoAddress;
 
   //retrieve restaurant information
   useEffect(() => {
     const fetchFood = async () => {
-      const docSnapshot = await firestore()
-        .collection('merchant')
-        .where('Name', '==', restoName)
-        .limit(1)
-        .get();
-      console.log(docSnapshot.docs[0].data);
-      const docSubcollection = docSnapshot.docs[0].ref
+      const querySnapshot = await firestore()
         .collection('fooditems')
+        .where('restoID', '==', restoID)
         .get();
-      const fetchedItems = (await docSubcollection).docs.map(
+      const fetchedItems = querySnapshot.docs.map(
         doc => doc.data() as FoodData,
       );
       setItem(fetchedItems);
@@ -235,6 +291,7 @@ export default function RestaurantPage({
                       CalorieIntake={element.calorie}
                       Price={element.price}
                       Image={element.image}
+                      Description={element.description}
                     />
                   </View>
                 ))}
@@ -249,3 +306,31 @@ export default function RestaurantPage({
     </View>
   );
 }
+const styles2 = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor : 'rgba(0, 0, 0, 0.3)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  View : {
+    backgroundColor : "white" ,
+    height : 300 ,
+    width : 250,
+    borderRadius : 15,
+    alignItems : "center",
+    justifyContent : "center",
+    borderColor : "black",
+    borderWidth:2,
+  },
+  text : {
+    fontSize : 20,
+    color : "green",
+    marginBottom:5,
+    marginTop:10,
+  },
+  button : {
+    margin : 20,
+    width:200,
+  }
+});
