@@ -17,6 +17,16 @@ interface RestoData {
   image: string;
   Address: string;
 }
+interface FoodData {
+  key: string;
+  restoID: string;
+  name: string;
+  category: string;
+  image: string;
+  description: string;
+  price: number;
+  calorie: number;
+}
 // Restaurant cards
 const Restaurant = (props: {
   navigation: any;
@@ -55,6 +65,66 @@ const Restaurant = (props: {
     </View>
   );
 };
+//Menu Item cards
+const Menu = (props: {
+  navigation: any;
+  MenuName: string;
+  description: string;
+  Price: number;
+  Image: string;
+}) => {
+  return (
+    <TouchableOpacity
+      onPress={() => {
+        const fetchParent = async () => {
+          //get all merchants
+          const docSubcollection = await firestore()
+            .collectionGroup('fooditems')
+            .where('name', '==', props.MenuName)
+            .get();
+          console.log(docSubcollection.docs[0].data());
+          // props.navigation.push('RestaurantPage', {
+          //   restoName: docSubcollection.docs[0].data().Name,
+          //   restoAddress: docSubcollection.docs[0].data().Address,
+          //   restoCategory: docSubcollection.docs[0].data().Category,
+          //   restoImage: docSubcollection.docs[0].data().image,
+          // });
+        };
+        fetchParent();
+      }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          marginLeft: 15,
+          justifyContent: 'space-around',
+          marginTop: 10,
+        }}>
+        <View>
+          <Text>{props.MenuName}</Text>
+          <Text>{props.description}</Text>
+        </View>
+
+        <View>
+          <Text>IDR {props.Price}</Text>
+        </View>
+
+        <View>
+          <Image
+            style={{
+              borderWidth: 1,
+              borderColor: 'black',
+              borderRadius: 8,
+              backgroundColor: '#A9FDAC',
+              width: 60,
+              height: 60,
+            }}
+            source={{uri: props.Image}}
+          />
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 //main
 export default function Search({
@@ -65,10 +135,13 @@ export default function Search({
   navigation: any;
 }) {
   const [resto, setResto] = useState<RestoData[]>([]);
+  const [foods, setFoods] = useState<FoodData[]>([]);
+
   const query = JSON.stringify(route.params.query).replace(/"/g, '');
 
-  //retrieve restaurant information
+  //retrieve restaurant and food information
   useEffect(() => {
+    //GET RESTO INFORMATION
     const fetchRestaurants = async () => {
       const querySnapshot = await firestore()
         .collection('merchant')
@@ -81,6 +154,22 @@ export default function Search({
       }));
       setResto(fetchedRestaurants);
     };
+
+    //GET FOOD INFORMATION
+    const fetchFood = async () => {
+      //get all merchants
+      const docSubcollection = await firestore()
+        .collectionGroup('fooditems')
+        .where('name', '==', query)
+        .get();
+      //map the food into array
+      const fetchedItems = (await docSubcollection).docs.map(
+        doc => doc.data() as FoodData,
+      );
+      setFoods(fetchedItems);
+    };
+
+    fetchFood();
     fetchRestaurants();
   }, [query]);
 
@@ -110,8 +199,24 @@ export default function Search({
       );
     });
   };
+  // Map food array into the components
+  const FoodList = () => {
+    return foods.map(element => {
+      return (
+        <View key={element.key}>
+          <Menu
+            navigation={navigation}
+            MenuName={element.name}
+            description={element.description}
+            Price={element.price}
+            Image={element.image}
+          />
+        </View>
+      );
+    });
+  };
 
-  //Main Function
+  //MAIN FUNCTION
   return (
     <View style={{flex: 1}}>
       <ScrollView>
@@ -121,12 +226,12 @@ export default function Search({
           {/* Content */}
           <View style={styles.basicContainer}>
             <View>
-              <Text style={styles.homepagetext}>Bestsellers</Text>
-              <Text style={{marginLeft: 30}}>
-                Try the best we have to offer:
-              </Text>
+              <Text style={styles.homepagetext}>Search</Text>
+              <Text style={{marginLeft: 30}}>Searching for: {query}</Text>
             </View>
-            {/* Testing Database */}
+            {/* FOOD LIST */}
+            <View>{FoodList()}</View>
+            {/* RESTO LIST */}
             <View>{RestoList()}</View>
           </View>
 
