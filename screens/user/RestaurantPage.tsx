@@ -1,10 +1,18 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
-import {View, Image, TouchableOpacity, ScrollView, Modal, StyleSheet} from 'react-native';
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+  StyleSheet,
+} from 'react-native';
 import {styles} from '../Style';
 //material ui + form
-import {Button, Divider, Portal, Provider, Text} from 'react-native-paper';
+import {Divider, Text} from 'react-native-paper';
 import {UserNavigation} from '../NavigationBar';
 import {UserHeader} from '../PageHeader';
 //firebase
@@ -30,11 +38,10 @@ const Menu = (props: {
   Image: string;
   Description: any;
 }) => {
-  
-
-  const [active , setactive] = useState(false);
+  const [active, setactive] = useState(false);
   const showModal = () => setactive(true);
   const hideModal = () => setactive(false);
+
   return (
     <View
       style={{
@@ -54,73 +61,84 @@ const Menu = (props: {
       </View>
 
       <View>
-        <TouchableOpacity onPress={()=>{setactive(!active)}} >
-        <Image
-          style={{
-            borderWidth: 1,
-            borderColor: 'black',
-            borderRadius: 8,
-            backgroundColor: '#A9FDAC',
-            width: 60,
-            height: 60,
-          }}
-          source={{uri: props.Image}}
-        />
+        <TouchableOpacity
+          onPress={() => {
+            setactive(!active);
+          }}>
+          <Image
+            style={{
+              borderWidth: 1,
+              borderColor: 'black',
+              borderRadius: 8,
+              backgroundColor: '#A9FDAC',
+              width: 60,
+              height: 60,
+            }}
+            source={{uri: props.Image}}
+          />
         </TouchableOpacity>
 
-        
         <Modal
-        animationType="slide"
-        transparent={true}
-        visible={active}
-        onRequestClose={() => {
-          console.warn("closed");
-        }}
-        >
-          <TouchableOpacity onPress={hideModal} style={styles2.container}>
-          <View>
-            <View style={styles2.View}>
-              <Image source={{uri: props.Image}} style={{
-            borderWidth: 1,
-            borderColor: 'black',
-            borderRadius: 8,
-            backgroundColor: '#A9FDAC',
-            width: 100,
-            height: 100,
-          }}/>
-            <Text style={styles2.text}>{props.MenuName}</Text>
-            <View style={{alignItems:'center',flexDirection:'row',justifyContent:'center'}}>
-              <Text style={{fontWeight:'bold'}}>Calorie: {props.CalorieIntake} kcal</Text>
-              <Text style={{marginLeft: 5,fontWeight:'bold'}}>IDR {props.Price}</Text>
-            </View>
-            <View
-          style={{
-            borderWidth: 0.5,
-            borderColor: 'black',
-            borderRadius: 50,
-            backgroundColor: '#A9FDAC',
-            width: 65,
-            height: 18,
-            alignItems: 'center',
-            marginTop: 5,
+          animationType="slide"
+          transparent={true}
+          visible={active}
+          onRequestClose={() => {
+            console.warn('closed');
           }}>
-          <TouchableOpacity>
-            {/* add button */}
-            <Text>Add</Text>
-          </TouchableOpacity>
-          </View>
+          <TouchableOpacity onPress={hideModal} style={styles2.container}>
             <View>
-              <Text>Description:</Text>
+              <View style={styles2.View}>
+                <Image
+                  source={{uri: props.Image}}
+                  style={{
+                    borderWidth: 1,
+                    borderColor: 'black',
+                    borderRadius: 8,
+                    backgroundColor: '#A9FDAC',
+                    width: 100,
+                    height: 100,
+                  }}
+                />
+                <Text style={styles2.text}>{props.MenuName}</Text>
+                <View
+                  style={{
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                  }}>
+                  <Text style={{fontWeight: 'bold'}}>
+                    Calorie: {props.CalorieIntake} kcal
+                  </Text>
+                  <Text style={{marginLeft: 5, fontWeight: 'bold'}}>
+                    IDR {props.Price}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    borderWidth: 0.5,
+                    borderColor: 'black',
+                    borderRadius: 50,
+                    backgroundColor: '#A9FDAC',
+                    width: 65,
+                    height: 18,
+                    alignItems: 'center',
+                    marginTop: 5,
+                  }}>
+                  <TouchableOpacity>
+                    {/* add button */}
+                    <Text>Add</Text>
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <Text>Description:</Text>
+                </View>
+                <Text>{props.Description}</Text>
+                {/* <Button onPress={()=>{setactive(!active)}}/> */}
+              </View>
             </View>
-            <Text>{props.Description}</Text>
-            {/* <Button onPress={()=>{setactive(!active)}}/> */}
-            </View>
-          </View>
           </TouchableOpacity>
         </Modal>
-      
-        
-          
+
         <View
           style={{
             borderWidth: 0.5,
@@ -239,17 +257,21 @@ export default function RestaurantPage({
   //retrieve restaurant information
   useEffect(() => {
     const fetchFood = async () => {
-      const querySnapshot = await firestore()
-        .collection('fooditems')
-        .where('restoID', '==', restoID)
+      const docSnapshot = await firestore()
+        .collection('merchant')
+        .where('Name', '==', restoName)
+        .limit(1)
         .get();
-      const fetchedItems = querySnapshot.docs.map(
+      const docSubcollection = docSnapshot.docs[0].ref
+        .collection('fooditems')
+        .get();
+      const fetchedItems = (await docSubcollection).docs.map(
         doc => doc.data() as FoodData,
       );
       setItem(fetchedItems);
     };
     fetchFood();
-  }, []);
+  }, [restoName]);
 
   //group into categories
   const groupedData = item.reduce(
@@ -311,28 +333,28 @@ export default function RestaurantPage({
 const styles2 = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor : 'rgba(0, 0, 0, 0.3)',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  View : {
-    backgroundColor : "white" ,
-    height : 300 ,
-    width : 250,
-    borderRadius : 15,
-    alignItems : "center",
-    justifyContent : "center",
-    borderColor : "black",
-    borderWidth:2,
+  View: {
+    backgroundColor: 'white',
+    height: 300,
+    width: 250,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: 'black',
+    borderWidth: 2,
   },
-  text : {
-    fontSize : 20,
-    color : "green",
-    marginBottom:5,
-    marginTop:10,
+  text: {
+    fontSize: 20,
+    color: 'green',
+    marginBottom: 5,
+    marginTop: 10,
   },
-  button : {
-    margin : 20,
-    width:200,
-  }
+  button: {
+    margin: 20,
+    width: 200,
+  },
 });
