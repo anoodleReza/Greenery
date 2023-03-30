@@ -297,13 +297,15 @@ export default function Search({
             </View>
             <Divider style={{marginTop: 15}} />
             {/* FOOD LIST */}
+            <Text style={styles.homepagetext}>Items Found</Text>
             <View>{FoodList()}</View>
+
             <Divider style={{marginTop: 15}} />
             {/* RESTO LIST */}
+            <Text style={styles.homepagetext}>Restos Found</Text>
             <View>{RestoList()}</View>
 
             <Divider style={{marginTop: 15}} />
-            <Text style={styles.homepagetext}>Menu</Text>
           </View>
 
           {/* Navigation */}
