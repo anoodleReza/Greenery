@@ -54,7 +54,7 @@ const Menu = (props: {
       </View>
 
       <View>
-        <TouchableOpacity onPress={()=>{setactive(!active)}}>
+        <TouchableOpacity onPress={()=>{setactive(!active)}} >
         <Image
           style={{
             borderWidth: 1,
@@ -68,7 +68,7 @@ const Menu = (props: {
         />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={()=>{setactive(!active)}} style={styles2.container}>
+        
         <Modal
         animationType="slide"
         transparent={true}
@@ -77,7 +77,8 @@ const Menu = (props: {
           console.warn("closed");
         }}
         >
-          <View style={styles2.container}>
+          <TouchableOpacity onPress={hideModal} style={styles2.container}>
+          <View>
             <View style={styles2.View}>
               <Image source={{uri: props.Image}} style={{
             borderWidth: 1,
@@ -112,11 +113,12 @@ const Menu = (props: {
               <Text>Description:</Text>
             </View>
             <Text>{props.Description}</Text>
-            <Button onPress={()=>{setactive(!active)}}/>
+            {/* <Button onPress={()=>{setactive(!active)}}/> */}
             </View>
           </View>
+          </TouchableOpacity>
         </Modal>
-        </TouchableOpacity>
+      
         
           
         <View
