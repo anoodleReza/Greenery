@@ -66,6 +66,7 @@ export default function MerchantAddMenu({
 
   //checkbox
   const [state, setState] = React.useState(initialState);
+  const [imageUrl, setImageUrl] = useState('');
 
   //fetch food information
   const initialArray: FoodData[] = [
@@ -80,22 +81,27 @@ export default function MerchantAddMenu({
         'https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg',
     },
   ];
+
   const [item, setItem] = useState<FoodData[]>(initialArray);
   useEffect(() => {
     if (foodID !== 'new') {
       const fetchRestaurants = async () => {
         const querySnapshot = await firestore()
+          .collection('merchant')
+          .doc(curUser?.uid)
           .collection('fooditems')
           .where('key', '==', foodID)
           .get();
         const fetchedFood = querySnapshot.docs.map(
           doc => doc.data() as FoodData,
         );
+        console.log('looking for ', foodID);
+        console.log('Menu Items Found', fetchedFood);
         setItem(fetchedFood);
       };
       fetchRestaurants();
     }
-  }, [foodID]);
+  }, [curUser?.uid, foodID]);
 
   //Fetch user data on start
   useEffect(() => {
@@ -109,7 +115,6 @@ export default function MerchantAddMenu({
   }, [curUser, isLoggedIn]);
 
   //Used for menu photo
-  //used for profile picture
   const [response, setResponse] = React.useState<any>(null);
   const onImageSelect = React.useCallback((type: any, options: any) => {
     if (type === 'capture') {
@@ -178,13 +183,12 @@ export default function MerchantAddMenu({
               } else {
                 _price = values.price;
               }
-              if (fooduri === '') {
-                setfooduri(item[0].image);
-                console.log(fooduri);
+              if (imageUrl === '') {
+                setImageUrl(item[0].image);
+                console.log(imageUrl);
               }
               //#endregion
 
-              //console.log(_name, _category, _description, _price, _stock);
               //submit values to firestore
               if (firestore().collection('merchant').doc(curUser?.uid)) {
                 //edit menu
@@ -193,14 +197,14 @@ export default function MerchantAddMenu({
                   .doc(curUser?.uid)
                   .collection('fooditems')
                   .doc(_name)
-                  .set({
+                  .update({
                     stock: _stock,
                     name: _name,
                     category: _category,
                     price: _price,
                     description: _description,
                     calorie: values.calorie,
-                    image: fooduri,
+                    image: imageUrl,
                     key: _name + _description,
                   })
                   .then(() => {
@@ -458,16 +462,16 @@ export default function MerchantAddMenu({
                                 Platform.OS === 'ios'
                                   ? fooduri.replace('file://', '')
                                   : fooduri;
-                              //check if there is a pfp already (if there is an image url)
+                              //get path of the image
                               const fullpath = '/fooditems/' + filename;
                               if (
+                                //check if there is an image already
                                 storage().ref(fullpath).getDownloadURL() != null
                               ) {
+                                //delete prev image
                                 storage().ref(fullpath).delete();
                                 console.log('previous image found');
                               }
-                              console.log('local uri: ', uri);
-                              console.log('file: ', fooduri);
                               //put file on storage
                               const task = storage()
                                 .ref('/fooditems/' + filename)
@@ -482,6 +486,19 @@ export default function MerchantAddMenu({
                                 'Photo uploaded!',
                                 'Your photo has been uploaded to Firebase Cloud Storage!',
                               );
+                              storage()
+                                .ref(fullpath) //name in storage in firebase console
+                                .getDownloadURL()
+                                .then(url => {
+                                  console.log('image server url ', url);
+                                  setImageUrl(url);
+                                })
+                                .catch(e =>
+                                  console.log(
+                                    'Errors while downloading => ',
+                                    e,
+                                  ),
+                                );
                             }
                           }}>
                           Upload image

@@ -86,7 +86,7 @@ export default function UserEditProfile({navigation}: {navigation: any}) {
         <View style={styles.centeredContainer}>
           {/* Profile */}
           <Text style={styles.Subheading}>Profile</Text>
-          <TextInput style={styles.input} placeholder="Change username..." />
+          <TextInput style={styles.input} placeholder="Change Name..." />
           <TextInput
             style={styles.input}
             placeholder="Change E-Mail address..."
@@ -116,32 +116,11 @@ export default function UserEditProfile({navigation}: {navigation: any}) {
           {/* Details */}
           <Formik
             initialValues={{
-              VehicleType: '',
-              VehicleDescription: '',
-              VehiclePlateNumber: '',
+              Name: '',
+              Address: '',
             }}
             onSubmit={values => {
               console.log('new values: ', values);
-              //change this to send the form data to the partner database
-              // if (firestore().collection('merchant').doc(curUser?.uid)) {
-              //   //user data found found
-              //   console.log('user data found');
-              //   //change this to send the 'change vehicle detils'
-              //   firestore()
-              //     .collection('merchant')
-              //     .doc(curUser?.uid)
-              //     .set({
-              //       Name: values.Name,
-              //       Category: values.Category,
-              //       Price: values.Price,
-              //       Address: values.Address,
-              //       Opening: values.Opening,
-              //       Closing: values.Closing,
-              //     })
-              //     .then(() => {
-              //       console.log('User updated!');
-              //     });
-              // }
             }}>
             {({handleChange, handleBlur, handleSubmit, values}) => (
               <View style={styles.container2}>

@@ -2,7 +2,6 @@
 import React, {useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
 import {View, Image, TouchableOpacity, Text} from 'react-native';
-import {StackActions} from '@react-navigation/native';
 //material ui + form
 import {Divider} from 'react-native-paper';
 import {PartnerHeader} from '../PageHeader';
@@ -11,6 +10,7 @@ import {styles} from '../Style';
 //firebase
 import storage from '@react-native-firebase/storage';
 import {firebase} from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 export default function PartnerProfile({navigation}: {navigation: any}) {
   const curUser = firebase.auth().currentUser;
@@ -70,7 +70,13 @@ export default function PartnerProfile({navigation}: {navigation: any}) {
           <View style={styles.box}>
             <TouchableOpacity
               onPress={() => {
-                navigation.push('PartnerEditProfile');
+                if (firestore().collection('driver').doc(curUser?.uid)) {
+                  //user has a user account already
+                  navigation.push('PartnerEditProfile');
+                } else {
+                  //user needs to enter account info first
+                  navigation.push('PartnerSignupDetails');
+                }
               }}>
               <Text style={styles.textBasic}>Edit Profile</Text>
             </TouchableOpacity>

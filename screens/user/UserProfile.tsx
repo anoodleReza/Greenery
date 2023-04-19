@@ -2,7 +2,6 @@
 import React, {useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
 import {View, Image, TouchableOpacity, Text, SafeAreaView} from 'react-native';
-import {StackActions} from '@react-navigation/native';
 //material ui + form
 import {Divider} from 'react-native-paper';
 import {UserHeader} from '../PageHeader';
@@ -11,12 +10,15 @@ import {styles} from '../Style';
 //firebase
 import storage from '@react-native-firebase/storage';
 import {firebase} from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 export default function UserProfile({navigation}: {navigation: any}) {
   const curUser = firebase.auth().currentUser;
   const fullpath = '/userProfile/' + 'ProfilePicture:' + curUser?.uid;
   const [imageUrl, setImageUrl] = useState('');
   const [isPfp, setisPfp] = React.useState(false);
+  const [name, setName] = useState('');
+  const [phoneNo, setPhoneNo] = useState('');
 
   useEffect(() => {
     storage()
@@ -28,6 +30,32 @@ export default function UserProfile({navigation}: {navigation: any}) {
       })
       .catch(e => console.log('Errors while downloading => ', e));
   }, [fullpath]);
+
+  //Fetch user data on start
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (curUser?.uid) {
+        firestore()
+          .collection('user')
+          .doc(curUser?.uid)
+          .get()
+          .then(documentSnapshot => {
+            // Document fields
+            const userDetails = documentSnapshot.data();
+            console.log(userDetails);
+            // Get the document related data
+            setName(userDetails?.Name);
+            setPhoneNo(userDetails?.PhoneNumber);
+          });
+      }
+    };
+
+    if (curUser) {
+      fetchUserInfo();
+    } else {
+      console.log('Error in retrieving user data');
+    }
+  }, [curUser]);
 
   return (
     <SafeAreaView>
@@ -55,8 +83,8 @@ export default function UserProfile({navigation}: {navigation: any}) {
                 <Image source={require('../../assets/person.png')} />
               )}
             </View>
-            <Text style={styles.text}>Customer Name</Text>
-            <Text>+62 821 12345678</Text>
+            <Text style={styles.text}>{name}</Text>
+            <Text>{phoneNo}</Text>
           </View>
 
           <View style={{alignItems: 'center', justifyContent: 'center'}}>
@@ -67,9 +95,61 @@ export default function UserProfile({navigation}: {navigation: any}) {
             <View style={styles.box}>
               <TouchableOpacity
                 onPress={() => {
-                  navigation.push('UserEditProfile');
+                  firestore()
+                    .collection('user')
+                    .doc(curUser?.uid)
+                    .get()
+                    .then(function (querySnapshot) {
+                      if (querySnapshot.exists) {
+                        //user has a user account already
+                        navigation.push('UserEditProfile');
+                        console.log('to edit profile');
+                      } else {
+                        //user needs to enter account info first
+                        navigation.push('UserDetails');
+                        console.log('to user details');
+                      }
+                    });
                 }}>
                 <Text style={styles.textBasic}>Edit Profile</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* BUTTON TO ADD */}
+            <View style={styles.box}>
+              <TouchableOpacity
+                onPress={async () => {
+                  try {
+                    //FIND THE CART ITEM
+                    const item = await firestore()
+                      .collection('user')
+                      .doc(curUser?.uid)
+                      .collection('cart')
+                      .where('foodid', '==', 'abcd')
+                      .limit(1)
+                      .get();
+                    if (!item.empty) {
+                      //GET THE CART ITEM ID
+                      const documentSnapshot = item.docs[0];
+                      const collectionId = documentSnapshot.id;
+                      const qty = documentSnapshot.data().quantity;
+                      //UPDATE THE CART ITEM QUANTITY
+                      await firestore()
+                        .collection('user')
+                        .doc(curUser?.uid)
+                        .collection('cart')
+                        .doc(collectionId)
+                        .update({quantity: qty + 1});
+
+                      console.log(qty + 1);
+                    } else {
+                      console.log('No collection found with the given name');
+                    }
+                  } catch (error) {
+                    console.error('Error getting collection by name:', error);
+                  }
+                }}>
+                <Text style={styles.textBasic}>Debug: Add cart amount</Text>
               </TouchableOpacity>
             </View>
           </View>

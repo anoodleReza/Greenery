@@ -133,7 +133,7 @@ export default function MerchantMainCourse({
             Image={element.image}
             Stock={element.stock}
             Navigate={() => {
-              var id = element.name + resto;
+              var id = element.name + element.description;
               navigation.push('MerchantAddMenu', {foodID: id, restoID: resto});
             }}
           />

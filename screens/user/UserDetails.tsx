@@ -30,6 +30,10 @@ export default function UserDetails({navigation}: {navigation: any}) {
   const phoneRegExp =
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
   const SignupSchema = Yup.object().shape({
+    Name: Yup.string()
+      .min(3, 'Too Short!')
+      .max(50, 'Too Long!')
+      .required('Required'),
     Address: Yup.string()
       .min(8, 'Too Short!')
       .max(50, 'Too Long!')
@@ -48,6 +52,7 @@ export default function UserDetails({navigation}: {navigation: any}) {
       <Image style={styles.Image} source={require('../../assets/logo.png')} />
       <Formik
         initialValues={{
+          Name: '',
           PhoneNumber: '',
           Address: '',
         }}
@@ -62,6 +67,7 @@ export default function UserDetails({navigation}: {navigation: any}) {
               .collection('user')
               .doc(curUser?.uid)
               .set({
+                Name: values.Name,
                 Address: values.Address,
                 PhoneNumber: values.PhoneNumber,
                 Vegan: state.Vegan,
@@ -88,6 +94,15 @@ export default function UserDetails({navigation}: {navigation: any}) {
         }) => (
           <>
             <Text style={styles.Subheading}>User Information:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your name..."
+              mode="outlined"
+              value={values.Name}
+              onChangeText={handleChange('Name')}
+              onBlur={handleBlur('Name')}
+              error={touched.Address && Boolean(errors.Name)}
+            />
             <TextInput
               style={styles.input}
               placeholder="Enter your address..."

@@ -2,7 +2,6 @@
 import React, {useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
 import {View, Image, TouchableOpacity, Text} from 'react-native';
-import {StackActions} from '@react-navigation/native';
 //material ui + form
 import {Divider} from 'react-native-paper';
 import MerchantHeader from '../PageHeader';
@@ -111,7 +110,13 @@ export default function MercantProfile({navigation}: {navigation: any}) {
           <View style={styles.box}>
             <TouchableOpacity
               onPress={() => {
-                navigation.push('MerchantEditProfile');
+                if (firestore().collection('merchant').doc(curUser?.uid)) {
+                  //user has a merchant account already
+                  navigation.push('MerchantEditProfile');
+                } else {
+                  //user needs to enter account info first
+                  navigation.push('MerchantDetails');
+                }
               }}>
               <Text style={styles.textBasic}>Edit Profile</Text>
             </TouchableOpacity>
