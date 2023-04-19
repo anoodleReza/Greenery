@@ -119,7 +119,7 @@ export default function MerchantMainCourse({
       setItem(fetchedRestaurants);
     };
     fetchRestaurants();
-  }, [resto]);
+  }, [curUser?.uid, resto]);
   //#endregion
 
   const RestoList = () => {

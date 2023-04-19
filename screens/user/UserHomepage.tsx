@@ -14,7 +14,7 @@ import {styles} from '../Style';
 import {Text} from 'react-native-paper';
 import {UserNavigation} from '../NavigationBar';
 import {UserHeader} from '../PageHeader';
-import { StackActions } from '@react-navigation/native';
+import {StackActions} from '@react-navigation/native';
 
 //main
 export default function UserHomepage({navigation}: {navigation: any}) {
@@ -81,9 +81,12 @@ export default function UserHomepage({navigation}: {navigation: any}) {
                 image={require('../../assets/stars.png')}
                 name="Most Popular"
               />
-              <Text onPress={() => {
-              navigation.dispatch(StackActions.replace('Cart'));
-            }}>aaaaaaaaaaa</Text>
+              <Text
+                onPress={() => {
+                  navigation.push('Cart');
+                }}>
+                aaaaaaaaaaa
+              </Text>
             </View>
           </View>
           {/* Navigation */}
