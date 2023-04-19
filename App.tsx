@@ -44,6 +44,7 @@ import UserProfile from './screens/user/UserProfile';
 import UserEditProfile from './screens/user/UserEditProfile';
 import UserDetails from './screens/user/UserDetails';
 import Search from './screens/user/Search';
+import Cart from './screens/user/Cart';
 
 const Stack = createStackNavigator();
 
@@ -203,6 +204,11 @@ function App() {
           <Stack.Screen
             name="Search"
             component={Search}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Cart"
+            component={Cart}
             options={{headerShown: false}}
           />
         </Stack.Navigator>
