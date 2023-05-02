@@ -228,21 +228,21 @@ const FeeCalc = (props: {
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <Text style={{fontSize: 14, marginLeft: 25}}>Subtotal</Text>
         <Text style={{fontWeight: 'bold', fontSize: 16, marginRight: 35}}>
-          ${props.subtotal}
+          IDR.{props.subtotal}
         </Text>
       </View>
 
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <Text style={{fontSize: 14, marginLeft: 25}}>Delivery Fee</Text>
         <Text style={{fontWeight: 'bold', fontSize: 16, marginRight: 35}}>
-          ${props.deliveryFee}
+          IDR.{props.deliveryFee}
         </Text>
       </View>
 
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <Text style={{fontSize: 14, marginLeft: 25}}>Order Fee</Text>
         <Text style={{fontWeight: 'bold', fontSize: 16, marginRight: 35}}>
-          ${props.orderFee}
+          IDR.{props.orderFee}
         </Text>
       </View>
       <View style={{alignItems: 'center'}}>
@@ -257,7 +257,7 @@ const FeeCalc = (props: {
         }}>
         <Text style={{marginLeft: 25, fontSize: 14}}>Grand Total</Text>
         <Text style={{fontWeight: 'bold', fontSize: 16, marginRight: 35}}>
-          ${props.subtotal + props.deliveryFee + props.orderFee}
+          IDR.{props.subtotal + props.deliveryFee + props.orderFee}
         </Text>
       </View>
     </View>
@@ -319,13 +319,18 @@ interface FoodData {
   key: string;
   restoID: string;
   name: string;
-  price: number;
+  price: string;
 }
 
 //main
 export default function Cart({navigation}: {navigation: any}) {
   const [item, setItem] = useState<CartItemData[]>([]);
   const [cartItem, setCartItem] = useState<FoodData[]>([]);
+
+  const [subtotal, setSubtotal] = useState<number>(0);
+  const [deliveryFee, setDeliveryFee] = useState<number>(0);
+  const [orderFee, setOrderFee] = useState<number>(0);
+  const [grandTotal, setGrandTotal] = useState<number>(0);
 
   const CartList = () => {
     return cartItem.map(element => {
@@ -334,7 +339,7 @@ export default function Cart({navigation}: {navigation: any}) {
           {element.name !== undefined && (
             <OrderSummary
               menuName={element.name}
-              subtotalPrice={'IDR. ' + element.price + '.000'}
+              subtotalPrice={'IDR. ' + parseInt(element.price, 10)}
               foodid={element.key}
             />
           )}
@@ -360,10 +365,19 @@ export default function Cart({navigation}: {navigation: any}) {
     fetchCart();
   }, []);
 
+  const [uniqueItemID, setUniqueItemID] = useState<string[]>([]);
+
   //FETCH CART ITEM DETAILS
   useEffect(() => {
     const fetchCartItems = async (element: CartItemData) => {
       if (element === null || element === undefined || element.foodid === '') {
+        return;
+      }
+      //check if the foodid is already in the uniqueItemID array
+      if (!uniqueItemID.includes(element.foodid)) {
+        setUniqueItemID(prevArray => [...prevArray, element.foodid]);
+      } else {
+        console.log('duplicate value');
         return;
       }
       const querySnapshot = await firestore()
@@ -375,18 +389,35 @@ export default function Cart({navigation}: {navigation: any}) {
       const fetchedItems = querySnapshot.docs.map(
         doc => doc.data() as FoodData,
       );
-      if (!cartItem.includes(fetchedItems[0])) {
-        console.log('no duplicate');
-        setCartItem(prevArray => [...prevArray, fetchedItems[0]]);
-      } else {
-        console.log('duplicate value');
-      }
+      setCartItem(prevArray => [...prevArray, fetchedItems[0]]);
     };
     //GET FOOD DATA FOR EACH CART ITEM
     item.forEach(element => {
+      //check if element is null or undefined
       fetchCartItems(element);
     });
   }, [item]);
+
+  useEffect(() => {
+    let tempSubtotal = 0;
+    cartItem.forEach(c_item => {
+      //convert price to number
+      var temprice = parseInt(c_item.price, 10);
+      tempSubtotal += temprice;
+      console.log(tempSubtotal);
+    });
+
+    setSubtotal(tempSubtotal);
+    //temporary values, set to something later
+    setDeliveryFee(5000);
+    setOrderFee(5000);
+    setGrandTotal(tempSubtotal + 5000 + 5000);
+    //print all of the prices
+    console.log('subtotal: ' + subtotal);
+    console.log('delivery fee: ' + deliveryFee);
+    console.log('order fee: ' + orderFee);
+    console.log('grand total: ' + grandTotal);
+  }, [cartItem]);
 
   return (
     <SafeAreaView>
@@ -429,7 +460,11 @@ export default function Cart({navigation}: {navigation: any}) {
 
             {/* Price and Fee Calculations */}
             <Divider />
-            <FeeCalc subtotal={7} deliveryFee={2} orderFee={1} />
+            <FeeCalc
+              subtotal={subtotal}
+              deliveryFee={deliveryFee}
+              orderFee={orderFee}
+            />
 
             {/* Promo */}
             <Divider />

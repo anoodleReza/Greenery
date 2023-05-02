@@ -81,12 +81,6 @@ export default function UserHomepage({navigation}: {navigation: any}) {
                 image={require('../../assets/stars.png')}
                 name="Most Popular"
               />
-              <Text
-                onPress={() => {
-                  navigation.push('Cart');
-                }}>
-                aaaaaaaaaaa
-              </Text>
             </View>
           </View>
           {/* Navigation */}

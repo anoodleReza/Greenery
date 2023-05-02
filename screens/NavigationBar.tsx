@@ -112,10 +112,18 @@ export function UserNavigation({navigation}: {navigation: any}) {
         <TouchableOpacity
           style={styles.col}
           onPress={() => {
-            navigation.dispatch(StackActions.replace('UserHomepage'));
+            navigation.push('UserHomepage');
           }}>
           <Avatar.Icon size={40} icon="home" theme={navTheme} color="black" />
           <Text style={styles.navLabel}>Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.col}
+          onPress={() => {
+            navigation.push('Cart');
+          }}>
+          <Avatar.Icon size={40} icon="cart" theme={navTheme} color="black" />
+          <Text style={styles.navLabel}>Cart</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.col}
