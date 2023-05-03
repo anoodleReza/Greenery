@@ -20,9 +20,9 @@ import {firebase} from '@react-native-firebase/auth';
 const curUser = firebase.auth().currentUser;
 
 const data = [
-  {label: '30% Discount for Minimum 30K Purchase', value: '1'},
-  {label: '70% Special McDonalds Anniversary', value: '2'},
-  {label: 'Free Ongkir Discount', value: '3'},
+  {label: '30% Discount for Minimum 30K Purchase', value: '1', discount: 30},
+  {label: '70% Special McDonalds Anniversary', value: '2', discount: 70},
+  {label: 'Free Ongkir Discount', value: '3', discount: 0, delivery: 100},
 ];
 
 const DropdownComponent = () => {
@@ -50,8 +50,10 @@ const DropdownComponent = () => {
       valueField="value"
       placeholder="Select Voucher..."
       searchPlaceholder="Search..."
-      value={value}
-      onChange={() => {}}
+      value={value + ''}
+      onChange={item => {
+        console.log(item.discount);
+      }}
     />
   );
 };
