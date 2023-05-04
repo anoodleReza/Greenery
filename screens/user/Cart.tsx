@@ -23,16 +23,16 @@ const data = [
   {
     label: '30% Discount for Minimum 30K Purchase',
     value: '1',
-    discount: 30,
+    discount: 0.3,
     delivery: 0,
   },
   {
     label: '70% Special McDonalds Anniversary',
     value: '2',
-    discount: 70,
+    discount: 0.7,
     delivery: 0,
   },
-  {label: 'Free Ongkir Discount', value: '3', discount: 0, delivery: 100},
+  {label: 'Free Ongkir Discount', value: '3', discount: 0, delivery: 1},
 ];
 
 const AddressPlace = (props: {
@@ -301,6 +301,9 @@ export default function Cart({navigation}: {navigation: any}) {
   const [subtotal, setSubtotal] = useState<number>(0);
   const [orderFee, setOrderFee] = useState<number>(5000);
 
+  const [discSubtotal, setDiscSubtotal] = useState<number>(0);
+  const [discDeliveryFee, setDiscDeliveryFee] = useState<number>(5000);
+
   const CartList = () => {
     return cartItem.map(element => {
       return (
@@ -380,15 +383,21 @@ export default function Cart({navigation}: {navigation: any}) {
   }, [cartItem]);
 
   //update grand total when any of the subtotal, order fee, or delivery fee changes
+  
   useEffect(() => {
-    setGrandTotal(subtotal + orderFee + deliveryFee);
+    setDiscSubtotal(subtotal);
+    setGrandTotal( discSubtotal + orderFee + discDeliveryFee);
   }, [subtotal, orderFee, deliveryFee]);
 
+  
+
   const onApplyPromo = (disc: number, delDisc: number) => {
+    setDiscSubtotal(subtotal-subtotal*disc);
+    setDiscDeliveryFee(deliveryFee-deliveryFee*delDisc)
     console.log('promo applied');
     console.log(disc, delDisc);
-    console.log('subtotal: ' + subtotal, 'discount: ' + disc + '%');
-    console.log('delivery fee: ' + deliveryFee, 'discount: ' + delDisc + '%');
+    console.log('subtotal: ' + subtotal, 'discount: ' + disc*100 + '%');
+    console.log('delivery fee: ' + deliveryFee, 'discount: ' + delDisc*100 + '%');
   };
 
   return (
@@ -432,9 +441,10 @@ export default function Cart({navigation}: {navigation: any}) {
 
             {/* Price and Fee Calculations */}
             <Divider />
+           
             <FeeCalc
-              subtotal={subtotal}
-              deliveryFee={deliveryFee}
+              subtotal={discSubtotal}
+              deliveryFee={discDeliveryFee}
               orderFee={orderFee}
             />
 
@@ -469,7 +479,7 @@ export default function Cart({navigation}: {navigation: any}) {
             <Payment />
 
             {/* Order Bar */}
-            <OrderBar total={10.0} />
+            <OrderBar total={"IDR " + (discSubtotal+discDeliveryFee+orderFee)} />
 
             {/* Navigation */}
             <UserNavigation navigation={navigation} />
