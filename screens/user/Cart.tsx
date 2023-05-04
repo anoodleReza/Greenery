@@ -20,43 +20,20 @@ import {firebase} from '@react-native-firebase/auth';
 const curUser = firebase.auth().currentUser;
 
 const data = [
-  {label: '30% Discount for Minimum 30K Purchase', value: '1', discount: 30},
-  {label: '70% Special McDonalds Anniversary', value: '2', discount: 70},
+  {
+    label: '30% Discount for Minimum 30K Purchase',
+    value: '1',
+    discount: 30,
+    delivery: 0,
+  },
+  {
+    label: '70% Special McDonalds Anniversary',
+    value: '2',
+    discount: 70,
+    delivery: 0,
+  },
   {label: 'Free Ongkir Discount', value: '3', discount: 0, delivery: 100},
 ];
-
-const DropdownComponent = () => {
-  const [value, setValue] = useState();
-
-  const renderItem = (item: {label: string}) => {
-    return (
-      <View style={styles2.item}>
-        <Text style={styles2.textItem}>{item.label}</Text>
-      </View>
-    );
-  };
-
-  return (
-    <Dropdown
-      style={styles2.dropdown}
-      placeholderStyle={styles2.placeholderStyle}
-      selectedTextStyle={styles2.selectedTextStyle}
-      inputSearchStyle={styles2.inputSearchStyle}
-      iconStyle={styles2.iconStyle}
-      data={data}
-      search
-      maxHeight={300}
-      labelField="label"
-      valueField="value"
-      placeholder="Select Voucher..."
-      searchPlaceholder="Search..."
-      value={value + ''}
-      onChange={item => {
-        console.log(item.discount);
-      }}
-    />
-  );
-};
 
 const AddressPlace = (props: {
   restaurantAddress: string;
@@ -267,17 +244,6 @@ const FeeCalc = (props: {
   // export const GrandTotal = {props.subtotal+props.deliveryFee+props.orderFee}
 };
 
-const Promo = () => {
-  return (
-    <View style={{marginVertical: 15}}>
-      <Text style={{marginLeft: 25, fontWeight: 'bold', fontSize: 16}}>
-        Promo
-      </Text>
-      <DropdownComponent />
-    </View>
-  );
-};
-
 const Payment = () => {
   const [value, setValue] = React.useState('');
   return (
@@ -329,10 +295,11 @@ export default function Cart({navigation}: {navigation: any}) {
   const [item, setItem] = useState<CartItemData[]>([]);
   const [cartItem, setCartItem] = useState<FoodData[]>([]);
 
-  const [subtotal, setSubtotal] = useState<number>(0);
-  const [deliveryFee, setDeliveryFee] = useState<number>(0);
-  const [orderFee, setOrderFee] = useState<number>(0);
+  const [value, setValue] = useState();
+  const [deliveryFee, setDeliveryFee] = useState<number>(5000);
   const [grandTotal, setGrandTotal] = useState<number>(0);
+  const [subtotal, setSubtotal] = useState<number>(0);
+  const [orderFee, setOrderFee] = useState<number>(5000);
 
   const CartList = () => {
     return cartItem.map(element => {
@@ -367,9 +334,8 @@ export default function Cart({navigation}: {navigation: any}) {
     fetchCart();
   }, []);
 
-  const [uniqueItemID, setUniqueItemID] = useState<string[]>([]);
-
   //FETCH CART ITEM DETAILS
+  const [uniqueItemID, setUniqueItemID] = useState<string[]>([]);
   useEffect(() => {
     const fetchCartItems = async (element: CartItemData) => {
       if (element === null || element === undefined || element.foodid === '') {
@@ -400,6 +366,7 @@ export default function Cart({navigation}: {navigation: any}) {
     });
   }, [item]);
 
+  //update subtotal when cartItem changes
   useEffect(() => {
     let tempSubtotal = 0;
     cartItem.forEach(c_item => {
@@ -410,16 +377,19 @@ export default function Cart({navigation}: {navigation: any}) {
     });
 
     setSubtotal(tempSubtotal);
-    //temporary values, set to something later
-    setDeliveryFee(5000);
-    setOrderFee(5000);
-    setGrandTotal(tempSubtotal + 5000 + 5000);
-    //print all of the prices
-    console.log('subtotal: ' + subtotal);
-    console.log('delivery fee: ' + deliveryFee);
-    console.log('order fee: ' + orderFee);
-    console.log('grand total: ' + grandTotal);
   }, [cartItem]);
+
+  //update grand total when any of the subtotal, order fee, or delivery fee changes
+  useEffect(() => {
+    setGrandTotal(subtotal + orderFee + deliveryFee);
+  }, [subtotal, orderFee, deliveryFee]);
+
+  const onApplyPromo = (disc: number, delDisc: number) => {
+    console.log('promo applied');
+    console.log(disc, delDisc);
+    console.log('subtotal: ' + subtotal, 'discount: ' + disc + '%');
+    console.log('delivery fee: ' + deliveryFee, 'discount: ' + delDisc + '%');
+  };
 
   return (
     <SafeAreaView>
@@ -470,7 +440,29 @@ export default function Cart({navigation}: {navigation: any}) {
 
             {/* Promo */}
             <Divider />
-            <Promo />
+            <View style={{marginVertical: 15}}>
+              <Text style={{marginLeft: 25, fontWeight: 'bold', fontSize: 16}}>
+                Promo
+              </Text>
+              <Dropdown
+                style={styles2.dropdown}
+                placeholderStyle={styles2.placeholderStyle}
+                selectedTextStyle={styles2.selectedTextStyle}
+                inputSearchStyle={styles2.inputSearchStyle}
+                iconStyle={styles2.iconStyle}
+                data={data}
+                search
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder="Select Voucher..."
+                searchPlaceholder="Search..."
+                value={value + ''}
+                onChange={elem => {
+                  onApplyPromo(elem.discount, elem.delivery);
+                }}
+              />
+            </View>
 
             {/* Payment */}
             <Divider />
