@@ -82,7 +82,7 @@ const OrderBar = (props: {total: number}) => {
         <View>
           <Text style={{fontSize: 15, marginLeft: 30}}>Total Cost</Text>
           <Text style={{fontWeight: 'bold', fontSize: 15, marginLeft: 30}}>
-            {props.total}
+            IDR{props.total}
           </Text>
         </View>
 
@@ -102,27 +102,15 @@ const OrderSummary = (props: {
   menuName: string;
   subtotalPrice: string;
   foodid: string;
+  quantity: number;
 }) => {
-  const [qty, setqty] = useState(0);
-
-  useEffect(() => {
-    const fetchqty = async () => {
-      const item = await firestore()
-        .collection('user')
-        .doc(curUser?.uid)
-        .collection('cart')
-        .where('foodid', '==', props.foodid)
-        .limit(1)
-        .get();
-      try {
-        setqty(item.docs[0].data().quantity);
-      } catch (e) {}
-    };
-    fetchqty();
-  });
+  const [quantity, setQuantity] = useState(props.quantity);
 
   const handleChangeQty = async (value: number) => {
-    setqty(value);
+    console.log('value is: ', value);
+    setQuantity(value);
+
+    //GET THE CART ITEM
     const item = await firestore()
       .collection('user')
       .doc(curUser?.uid)
@@ -133,20 +121,26 @@ const OrderSummary = (props: {
     try {
       if (!item.empty) {
         //GET THE CART ITEM ID
-        const documentSnapshot = item.docs[0];
-        const collectionId = documentSnapshot.id;
+        const collectionId = item.docs[0].id;
+
         //UPDATE THE CART ITEM QUANTITY
         await firestore()
           .collection('user')
           .doc(curUser?.uid)
           .collection('cart')
           .doc(collectionId)
-          .update({quantity: value});
+          .update({quantity: value})
+          .then(() => {
+            console.log('Quantity updated!');
+          })
+          .catch(error => {
+            console.error('Error updating quantity: ', error);
+          });
       } else {
         console.log('No collection found with the given name');
       }
     } catch (error) {
-      console.error('Error getting collection by name:', error);
+      console.error('frror getting collection by name:', error);
     }
   };
 
@@ -180,7 +174,7 @@ const OrderSummary = (props: {
         <NumericInput
           type="up-down"
           onChange={value => handleChangeQty(value)}
-          initValue={qty}
+          initValue={quantity}
           totalWidth={80}
           totalHeight={30}
           iconSize={25}
@@ -241,7 +235,6 @@ const FeeCalc = (props: {
       </View>
     </View>
   );
-  // export const GrandTotal = {props.subtotal+props.deliveryFee+props.orderFee}
 };
 
 const Payment = () => {
@@ -290,7 +283,7 @@ interface FoodData {
   price: string;
 }
 
-//main
+//MAIN EXPORT FUNCTION
 export default function Cart({navigation}: {navigation: any}) {
   const [item, setItem] = useState<CartItemData[]>([]);
   const [cartItem, setCartItem] = useState<FoodData[]>([]);
@@ -304,6 +297,7 @@ export default function Cart({navigation}: {navigation: any}) {
   const [discSubtotal, setDiscSubtotal] = useState<number>(0);
   const [discDeliveryFee, setDiscDeliveryFee] = useState<number>(5000);
 
+  //DISPLAY CART LIST
   const CartList = () => {
     return cartItem.map(element => {
       return (
@@ -313,6 +307,7 @@ export default function Cart({navigation}: {navigation: any}) {
               menuName={element.name}
               subtotalPrice={'IDR. ' + parseInt(element.price, 10)}
               foodid={element.key}
+              quantity={item[cartItem.indexOf(element)].quantity}
             />
           )}
         </View>
@@ -322,19 +317,25 @@ export default function Cart({navigation}: {navigation: any}) {
 
   //FETCH CART LIST
   useEffect(() => {
-    const fetchCart = async () => {
-      const querySnapshot = await firestore()
-        .collection('user')
-        .doc(curUser?.uid)
-        .collection('cart')
-        .get();
-      const fetchedItems = querySnapshot.docs.map(
-        doc => doc.data() as CartItemData,
-      );
-      setItem(fetchedItems);
-    };
-    //GET CART LIST CONTAINING FOODID
-    fetchCart();
+    setItem([]);
+    setCartItem([]);
+
+    const unsubscribe = firestore()
+      .collection('user')
+      .doc(curUser?.uid)
+      .collection('cart')
+      .onSnapshot(querySnapshot => {
+        const documents: CartItemData[] = [];
+        querySnapshot.forEach(doc => {
+          documents.push({
+            id: doc.id,
+            ...doc.data(),
+          } as unknown as CartItemData);
+        });
+        setItem(documents);
+      });
+
+    return () => unsubscribe();
   }, []);
 
   //FETCH CART ITEM DETAILS
@@ -348,7 +349,6 @@ export default function Cart({navigation}: {navigation: any}) {
       if (!uniqueItemID.includes(element.foodid)) {
         setUniqueItemID(prevArray => [...prevArray, element.foodid]);
       } else {
-        console.log('duplicate value');
         return;
       }
       const querySnapshot = await firestore()
@@ -364,40 +364,36 @@ export default function Cart({navigation}: {navigation: any}) {
     };
     //GET FOOD DATA FOR EACH CART ITEM
     item.forEach(element => {
-      //check if element is null or undefined
       fetchCartItems(element);
     });
-  }, [item]);
 
-  //update subtotal when cartItem changes
-  useEffect(() => {
     let tempSubtotal = 0;
     cartItem.forEach(c_item => {
-      //convert price to number
-      var temprice = parseInt(c_item.price, 10);
+      var temprice =
+        parseInt(c_item.price, 10) * item[cartItem.indexOf(c_item)].quantity;
       tempSubtotal += temprice;
-      console.log(tempSubtotal);
     });
 
     setSubtotal(tempSubtotal);
-  }, [cartItem]);
+    setDiscSubtotal(tempSubtotal);
+  }, [cartItem, item]);
 
   //update grand total when any of the subtotal, order fee, or delivery fee changes
-  
   useEffect(() => {
-    setDiscSubtotal(subtotal);
-    setGrandTotal( discSubtotal + orderFee + discDeliveryFee);
-  }, [subtotal, orderFee, deliveryFee]);
+    setGrandTotal(discSubtotal + orderFee + discDeliveryFee);
+  }, [subtotal, orderFee, deliveryFee, discSubtotal, discDeliveryFee]);
 
-  
-
+  //apply promo
   const onApplyPromo = (disc: number, delDisc: number) => {
-    setDiscSubtotal(subtotal-subtotal*disc);
-    setDiscDeliveryFee(deliveryFee-deliveryFee*delDisc)
+    setDiscSubtotal(subtotal - subtotal * disc);
+    setDiscDeliveryFee(deliveryFee - deliveryFee * delDisc);
     console.log('promo applied');
     console.log(disc, delDisc);
-    console.log('subtotal: ' + subtotal, 'discount: ' + disc*100 + '%');
-    console.log('delivery fee: ' + deliveryFee, 'discount: ' + delDisc*100 + '%');
+    console.log('subtotal: ' + subtotal, 'discount: ' + disc * 100 + '%');
+    console.log(
+      'delivery fee: ' + deliveryFee,
+      'discount: ' + delDisc * 100 + '%',
+    );
   };
 
   return (
@@ -441,7 +437,7 @@ export default function Cart({navigation}: {navigation: any}) {
 
             {/* Price and Fee Calculations */}
             <Divider />
-           
+
             <FeeCalc
               subtotal={discSubtotal}
               deliveryFee={discDeliveryFee}
@@ -479,7 +475,7 @@ export default function Cart({navigation}: {navigation: any}) {
             <Payment />
 
             {/* Order Bar */}
-            <OrderBar total={"IDR " + (discSubtotal+discDeliveryFee+orderFee)} />
+            <OrderBar total={grandTotal} />
 
             {/* Navigation */}
             <UserNavigation navigation={navigation} />
