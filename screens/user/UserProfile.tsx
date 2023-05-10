@@ -115,41 +115,33 @@ export default function UserProfile({navigation}: {navigation: any}) {
               </TouchableOpacity>
             </View>
 
-            {/* BUTTON TO ADD */}
+            {/* DEV: Create Wallet */}
             <View style={styles.box}>
               <TouchableOpacity
                 onPress={async () => {
-                  try {
-                    //FIND THE CART ITEM
-                    const item = await firestore()
-                      .collection('user')
-                      .doc(curUser?.uid)
-                      .collection('cart')
-                      .where('foodid', '==', 'abcd')
-                      .limit(1)
-                      .get();
-                    if (!item.empty) {
-                      //GET THE CART ITEM ID
-                      const documentSnapshot = item.docs[0];
-                      const collectionId = documentSnapshot.id;
-                      const qty = documentSnapshot.data().quantity;
-                      //UPDATE THE CART ITEM QUANTITY
-                      await firestore()
-                        .collection('user')
+                  //create wallet document for user in wallet collection in firestore
+                  await firestore()
+                    .collection('wallet')
+                    .doc(curUser?.uid)
+                    .set({balance: 100000})
+                    .then(() => {
+                      console.log('Wallet Created!');
+                      //create subcollection called history
+                      firestore()
+                        .collection('wallet')
                         .doc(curUser?.uid)
-                        .collection('cart')
-                        .doc(collectionId)
-                        .update({quantity: qty + 1});
-
-                      console.log(qty + 1);
-                    } else {
-                      console.log('No collection found with the given name');
-                    }
-                  } catch (error) {
-                    console.error('Error getting collection by name:', error);
-                  }
+                        .collection('history')
+                        .doc('history')
+                        .set({history: []})
+                        .then(() => {
+                          console.log('History created!');
+                        });
+                    })
+                    .catch(error => {
+                      console.error('Error updating balance: ', error);
+                    });
                 }}>
-                <Text style={styles.textBasic}>Debug: Add cart amount</Text>
+                <Text style={styles.textBasic}>Debug: Create Wallet</Text>
               </TouchableOpacity>
             </View>
           </View>

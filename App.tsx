@@ -45,6 +45,8 @@ import UserEditProfile from './screens/user/UserEditProfile';
 import UserDetails from './screens/user/UserDetails';
 import Search from './screens/user/Search';
 import Cart from './screens/user/Cart';
+import UserWallet from './screens/user/UserWallet';
+import UserWalletTopup from './screens/user/UserWalletTopup';
 
 const Stack = createStackNavigator();
 
@@ -209,6 +211,16 @@ function App() {
           <Stack.Screen
             name="Cart"
             component={Cart}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="UserWallet"
+            component={UserWallet}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="UserWalletTopup"
+            component={UserWalletTopup}
             options={{headerShown: false}}
           />
         </Stack.Navigator>
