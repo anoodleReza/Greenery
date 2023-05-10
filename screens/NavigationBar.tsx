@@ -125,14 +125,16 @@ export function UserNavigation({navigation}: {navigation: any}) {
           <Avatar.Icon size={40} icon="cart" theme={navTheme} color="black" />
           <Text style={styles.navLabel}>Cart</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.col}
           onPress={() => {
-            console.log('To News');
+            navigation.push('UserWallet');
           }}>
           <Avatar.Icon size={40} icon="wallet" theme={navTheme} color="black" />
           <Text style={styles.navLabel}>Wallet</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.col}
           onPress={() => {
