@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   StyleSheet,
   ScrollView,
+  Alert,
 } from 'react-native';
 import {styles} from '../Style';
 //material ui + form
@@ -74,7 +75,105 @@ const AddressPlace = (props: {
   );
 };
 
-const OrderBar = (props: {total: number}) => {
+const OrderBar = (props: {total: number; navigation: any}) => {
+  interface WalletData {
+    balance: number;
+  }
+
+  const onPayment = async () => {
+    //if using mywallet, check the balance and then subtract balance. If the balance is not enough, suggest cash
+    if (paymentMethod === 'MyWallet') {
+      //obtain wallet balance from firestore
+      const walletDocument = await firestore()
+        .collection('wallet')
+        .doc(curUser?.uid)
+        .get();
+      //check if the user has a wallet already setup
+      if (!walletDocument.exists) {
+        //if not, suggest to setup wallet
+        Alert.alert(
+          'No Wallet Found',
+          'You have not setup a wallet yet. Please setup a wallet first.',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+            //if confirm, update the balance in firestore
+            {
+              text: 'Setup Wallet',
+              onPress: async () => {
+                //WHEN WALLET PAGE AVAILABLE, CHANGE THIS
+                props.navigation.push('UserProfile');
+              },
+            },
+          ],
+          {cancelable: false},
+        );
+        return;
+      }
+
+      const curWallet = walletDocument.data() as WalletData;
+      const curBalance = curWallet.balance;
+      if (curBalance >= props.total) {
+        //enough balance
+        //subtract balance
+        const newBalance = curBalance - props.total;
+        //show alert with a confirm and cancel button
+        Alert.alert(
+          'Confirm Payment',
+          'Are you sure you want to pay with MyWallet?',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+            //if confirm, update the balance in firestore
+            {
+              text: 'Confirm',
+              onPress: async () => {
+                await firestore()
+                  .collection('wallet')
+                  .doc(curUser?.uid)
+                  .update({balance: newBalance})
+                  .then(() => {
+                    console.log('Balance updated!');
+                    //record the order in firestore
+                    //navigate to order success page
+                    props.navigation.push('UserHomepage');
+                  })
+                  .catch(error => {
+                    console.error('Error updating balance: ', error);
+                  });
+              },
+            },
+          ],
+          {cancelable: false},
+        );
+      } else {
+        //not enough balance
+        //show alert with a confirm and cancel button
+        Alert.alert(
+          'Insufficient Balance',
+          'Your balance is not enough to pay with MyWallet. Please use cash instead.',
+          [
+            {
+              text: 'Confirm',
+              onPress: () => console.log('Confirm Pressed'),
+              style: 'cancel',
+            },
+          ],
+          {cancelable: false},
+        );
+
+        return;
+      }
+    }
+    //if using cash, just proceed with the order
+  };
+
   return (
     <View>
       <Divider style={{marginVertical: 15}} />
@@ -86,7 +185,7 @@ const OrderBar = (props: {total: number}) => {
           </Text>
         </View>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={onPayment}>
           <View style={styles2.cartButton}>
             <Text style={{fontWeight: 'bold', padding: 8, marginLeft: 25}}>
               Order
@@ -236,6 +335,7 @@ const FeeCalc = (props: {
     </View>
   );
 };
+var paymentMethod = 'MyWallet';
 
 const Payment = () => {
   const [value, setValue] = React.useState('');
@@ -254,7 +354,11 @@ const Payment = () => {
         <SegmentedButtons
           style={styles.segmentButton}
           value={value}
-          onValueChange={setValue}
+          onValueChange={_value => {
+            paymentMethod = _value;
+            setValue(_value);
+            console.log(paymentMethod);
+          }}
           buttons={[
             {
               value: 'MyWallet',
@@ -475,7 +579,7 @@ export default function Cart({navigation}: {navigation: any}) {
             <Payment />
 
             {/* Order Bar */}
-            <OrderBar total={grandTotal} />
+            <OrderBar total={grandTotal} navigation={navigation} />
 
             {/* Navigation */}
             <UserNavigation navigation={navigation} />
@@ -485,6 +589,7 @@ export default function Cart({navigation}: {navigation: any}) {
     </SafeAreaView>
   );
 }
+
 const styles2 = StyleSheet.create({
   cartContainer: {
     flexDirection: 'row',
