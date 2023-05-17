@@ -19,7 +19,12 @@ import MerchantAppetizer from './screens/merchant/MerchantAppetizer';
 import MerchantUserView from './screens/merchant/MerchantUserView';
 import MerchantMainCourse from './screens/merchant/MerchantMainCourse';
 import MerchantDessert from './screens/merchant/MerchantDessert';
-
+import MerchantOrdersReceived from './screens/merchant/MerchantOrdersReceived';
+import MerchantOrdersFinished from './screens/merchant/MerchantOrdersFinished';
+import MerchantOrdersOnDelivery from './screens/merchant/MerchantOrdersOnDelivery';
+import MerchantOrdersProcessing from './screens/merchant/MerchantOrdersProcessing';
+import MerchantOrdersDetail from './screens/merchant/MerchantOrdersDetail';
+import MerchantOrderDetailsFinished from './screens/merchant/MerchantOrderDetailsFinished';
 //main homepage
 import Homepage from './screens/Homepage';
 
@@ -47,6 +52,7 @@ import Search from './screens/user/Search';
 import Cart from './screens/user/Cart';
 import UserWallet from './screens/user/UserWallet';
 import UserWalletTopup from './screens/user/UserWalletTopup';
+
 
 const Stack = createStackNavigator();
 
@@ -130,6 +136,36 @@ function App() {
           <Stack.Screen
             name="MerchantDessert"
             component={MerchantDessert}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MerchantOrdersReceived"
+            component={MerchantOrdersReceived}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MerchantOrdersFinished"
+            component={MerchantOrdersFinished}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MerchantOrdersOnDelivery"
+            component={MerchantOrdersOnDelivery}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen   
+            name="MerchantOrdersProcessing"
+            component={MerchantOrdersProcessing}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MerchantOrdersDetail"
+            component={MerchantOrdersDetail}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MerchantOrderDetailsFinished"
+            component={MerchantOrderDetailsFinished}
             options={{headerShown: false}}
           />
           {/* Partner */}
