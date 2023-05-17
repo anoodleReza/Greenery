@@ -75,10 +75,86 @@ const AddressPlace = (props: {
   );
 };
 
-const OrderBar = (props: {total: number; navigation: any}) => {
+const OrderBar = (props: {
+  total: number;
+  navigation: any;
+  cartItems: CartItemData[];
+  foodItems: FoodData[];
+  deliveryFee: number;
+  totalFee: number;
+}) => {
   interface WalletData {
     balance: number;
   }
+  interface OrderData {
+    foodName: string;
+    foodPrice: number;
+    foodQuantity: number;
+    foodid: string;
+    restoid: string;
+  }
+
+  const onSuccess = async () => {
+    console.log('Order Success!');
+    //record the order in firestore as a transaction
+    //transactionID = restoid-userid-timestamp
+    const transactionID =
+      props.cartItems[0].restoid +
+      '-' +
+      curUser?.uid +
+      '-' +
+      Date.now().toString();
+
+    // for each element combine cartItems and foodItems into orderItems variable in orderData
+    //loop for every item in cartItems
+    //for each item, loop for every item in foodItems
+    //if foodItems.foodid == cartItems.foodid, then add foodItems to orderItems
+    const orderItems: OrderData[] = [];
+
+    props.cartItems.forEach(cartItem => {
+      props.foodItems.forEach(foodItem => {
+        if (foodItem.key === cartItem.foodid) {
+          const orderItem: OrderData = {
+            foodName: foodItem.name,
+            foodPrice: Number(foodItem.price),
+            foodQuantity: cartItem.quantity,
+            foodid: foodItem.key,
+            restoid: foodItem.restoid,
+          };
+          orderItems.push(orderItem);
+        }
+      });
+    });
+    const orderData = {
+      transactionID: transactionID,
+      restoid: props.cartItems[0].restoid,
+      userid: curUser?.uid,
+      orderStatus: 'Pending',
+      orderTotal: props.total,
+      orderItems: orderItems,
+      orderDeliveryFee: props.deliveryFee,
+      orderTotalFee: props.totalFee,
+      timestamp: firestore.FieldValue.serverTimestamp(),
+    };
+    await firestore().collection('orders').doc(transactionID).set({orderData});
+    console.log('Order recorded in firestore!');
+
+    //delete cart subcollection in user collection in firestore
+    await firestore()
+      .collection('user')
+      .doc(curUser?.uid)
+      .collection('cart')
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(documentSnapshot => {
+          documentSnapshot.ref.delete();
+        });
+      });
+
+    console.log('Cart items deleted from firestore!');
+
+    //props.navigation.push('UserHomepage');
+  };
 
   const onPayment = async () => {
     //if using mywallet, check the balance and then subtract balance. If the balance is not enough, suggest cash
@@ -140,9 +216,7 @@ const OrderBar = (props: {total: number; navigation: any}) => {
                   .update({balance: newBalance})
                   .then(() => {
                     console.log('Balance updated!');
-                    //record the order in firestore
-                    //navigate to order success page
-                    props.navigation.push('UserHomepage');
+                    onSuccess();
                   })
                   .catch(error => {
                     console.error('Error updating balance: ', error);
@@ -171,7 +245,28 @@ const OrderBar = (props: {total: number; navigation: any}) => {
         return;
       }
     }
+
     //if using cash, just proceed with the order
+    Alert.alert(
+      'Confirm Payment',
+      'Are you sure you want to pay with cash?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        //if confirm, update the balance in firestore
+        {
+          text: 'Confirm',
+          onPress: () => {
+            console.log('Order Success!');
+            onSuccess();
+          },
+        },
+      ],
+      {cancelable: false},
+    );
   };
 
   return (
@@ -335,10 +430,11 @@ const FeeCalc = (props: {
     </View>
   );
 };
-var paymentMethod = 'MyWallet';
 
+var paymentMethod = 'MyWallet';
 const Payment = () => {
   const [value, setValue] = React.useState('');
+
   return (
     <View style={{marginVertical: 10}}>
       <Text
@@ -382,7 +478,7 @@ interface CartItemData {
 }
 interface FoodData {
   key: string;
-  restoID: string;
+  restoid: string;
   name: string;
   price: string;
 }
@@ -402,21 +498,33 @@ export default function Cart({navigation}: {navigation: any}) {
   const [discDeliveryFee, setDiscDeliveryFee] = useState<number>(5000);
 
   //DISPLAY CART LIST
+  // eslint-disable-next-line react/no-unstable-nested-components
   const CartList = () => {
-    return cartItem.map(element => {
+    //if cart is empty or undefined, return empty view
+    if (item.length === 0 || item === undefined) {
       return (
-        <View key={element.key}>
-          {element.name !== undefined && (
-            <OrderSummary
-              menuName={element.name}
-              subtotalPrice={'IDR. ' + parseInt(element.price, 10)}
-              foodid={element.key}
-              quantity={item[cartItem.indexOf(element)].quantity}
-            />
-          )}
+        <View style={{alignItems: 'center', marginTop: 50}}>
+          <Text style={{fontSize: 18, fontWeight: 'bold'}}>
+            Your cart is empty
+          </Text>
         </View>
       );
-    });
+    } else {
+      return cartItem.map(element => {
+        return (
+          <View key={element.key}>
+            {item[cartItem.indexOf(element)] !== undefined && (
+              <OrderSummary
+                menuName={element.name}
+                subtotalPrice={'IDR. ' + parseInt(element.price, 10)}
+                foodid={element.key}
+                quantity={item[cartItem.indexOf(element)].quantity}
+              />
+            )}
+          </View>
+        );
+      });
+    }
   };
 
   //FETCH CART LIST
@@ -447,24 +555,35 @@ export default function Cart({navigation}: {navigation: any}) {
   useEffect(() => {
     const fetchCartItems = async (element: CartItemData) => {
       if (element === null || element === undefined || element.foodid === '') {
+        console.log('element is null');
         return;
       }
+
       //check if the foodid is already in the uniqueItemID array
       if (!uniqueItemID.includes(element.foodid)) {
         setUniqueItemID(prevArray => [...prevArray, element.foodid]);
       } else {
         return;
       }
+
       const querySnapshot = await firestore()
         .collectionGroup('fooditems')
         .where('key', '==', element.foodid)
         .where('restoid', '==', element.restoid)
         .limit(1)
         .get();
-      const fetchedItems = querySnapshot.docs.map(
+
+      const fetchedItems = await querySnapshot.docs.map(
         doc => doc.data() as FoodData,
       );
-      setCartItem(prevArray => [...prevArray, fetchedItems[0]]);
+
+      //map the querySnapshot to a new array of FoodData
+      if (fetchedItems !== null || fetchedItems !== undefined) {
+        setCartItem(prevArray => [...prevArray, fetchedItems[0]]);
+        console.log('fetchedItems added');
+      } else {
+        console.log('fetchedItems is null');
+      }
     };
     //GET FOOD DATA FOR EACH CART ITEM
     item.forEach(element => {
@@ -473,14 +592,16 @@ export default function Cart({navigation}: {navigation: any}) {
 
     let tempSubtotal = 0;
     cartItem.forEach(c_item => {
-      var temprice =
-        parseInt(c_item.price, 10) * item[cartItem.indexOf(c_item)].quantity;
-      tempSubtotal += temprice;
+      if (item[cartItem.indexOf(c_item)] !== undefined) {
+        var temprice =
+          parseInt(c_item.price, 10) * item[cartItem.indexOf(c_item)].quantity;
+        tempSubtotal += temprice;
+      }
     });
 
     setSubtotal(tempSubtotal);
     setDiscSubtotal(tempSubtotal);
-  }, [cartItem, item]);
+  }, [cartItem, item, uniqueItemID]);
 
   //update grand total when any of the subtotal, order fee, or delivery fee changes
   useEffect(() => {
@@ -579,7 +700,14 @@ export default function Cart({navigation}: {navigation: any}) {
             <Payment />
 
             {/* Order Bar */}
-            <OrderBar total={grandTotal} navigation={navigation} />
+            <OrderBar
+              total={grandTotal}
+              navigation={navigation}
+              cartItems={item}
+              foodItems={cartItem}
+              deliveryFee={deliveryFee}
+              totalFee={grandTotal}
+            />
 
             {/* Navigation */}
             <UserNavigation navigation={navigation} />

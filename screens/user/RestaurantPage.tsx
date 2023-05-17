@@ -17,12 +17,14 @@ import {UserNavigation} from '../NavigationBar';
 import {UserHeader} from '../PageHeader';
 //firebase
 import firestore from '@react-native-firebase/firestore';
-import { StackActions } from '@react-navigation/native';
+import {StackActions} from '@react-navigation/native';
+import {firebase} from '@react-native-firebase/auth';
+const curUser = firebase.auth().currentUser;
 
 //data structure for food information
 interface FoodData {
   key: string;
-  restoID: string;
+  restoid: string;
   name: string;
   category: string;
   image: string;
@@ -38,6 +40,7 @@ const Menu = (props: {
   Price: number;
   Image: string;
   Description: any;
+  onButtonPress: any;
 }) => {
   const [active, setactive] = useState(false);
   const showModal = () => setactive(true);
@@ -223,7 +226,7 @@ const RestaurantBlock = (props: {
             </View>
             <Text>Rating</Text>
           </View>
-          
+
           <View>
             <Text>{props.Distance} km</Text>
             <Text>Distance</Text>
@@ -234,28 +237,25 @@ const RestaurantBlock = (props: {
   );
 };
 //#endregion
-const CartBar = (props:{
-  quantity:number,
-}) => {
+const CartBar = (props: {quantity: number; navigation: any}) => {
   return (
     <View>
-    <Divider style={{marginVertical:15}}/>
-    <View style={styles2.cartContainer}>
-      <View>
-        <Text style={{fontSize:15,marginLeft:30}}>Total Cost</Text>
-        <Text style={{fontWeight:'bold',fontSize:15,marginLeft:30}}>$7.00</Text>
-      </View>
-
-      <TouchableOpacity onPress={props.navigation}>
-        <View style={styles2.cartButton}>
-          <Text style={styles2.notif}>{props.quantity}</Text>
-          <Text style={{fontWeight:'bold',padding:8}}>Check Basket</Text>
+      <Divider style={{marginVertical: 15}} />
+      <View style={styles2.cartContainer}>
+        <View>
+          <Text style={{fontSize: 15, marginLeft: 30}}> </Text>
         </View>
-      </TouchableOpacity>
+
+        <TouchableOpacity onPress={props.navigation}>
+          <View style={styles2.cartButton}>
+            <Text style={styles2.notif}>{props.quantity}</Text>
+            <Text style={{fontWeight: 'bold', padding: 8}}>Check Basket</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
-  </View>
-  )
-}
+  );
+};
 
 //main
 export default function RestaurantPage({
@@ -276,7 +276,6 @@ export default function RestaurantPage({
     '',
   );
   const restoImage = JSON.stringify(route.params.restoImage).replace(/"/g, '');
-  var restoID = restoName + restoAddress;
 
   //retrieve restaurant information
   useEffect(() => {
@@ -341,17 +340,75 @@ export default function RestaurantPage({
                       Price={element.price}
                       Image={element.image}
                       Description={element.description}
-                      onButtonPress={() => setTotalProduct(totalProduct + 1)}
+                      onButtonPress={async () => {
+                        //add to cart in firestore
+                        //if the food is already in the cart, add 1 to quantity, otherwise create new entry
+                        const docSnapshot = await firestore()
+                          .collection('users')
+                          .doc(curUser?.uid)
+                          .collection('cart')
+                          .doc(element.name + element.restoid)
+                          .get();
+
+                        if ((await docSnapshot.exists) === false) {
+                          await firestore()
+                            .collection('user')
+                            .doc(curUser?.uid)
+                            .collection('cart')
+                            .doc(element.name + element.restoid)
+                            .set({
+                              foodid: element.name + element.description,
+                              quantity: firestore.FieldValue.increment(1),
+                              restoid: element.restoid,
+                            })
+                            .then(() => {
+                              console.log('Added ' + element.name + ' to cart');
+                              //print if added
+                              setTotalProduct(totalProduct + 1);
+                            })
+                            .catch(error => {
+                              console.log(
+                                'Something went wrong with added ' +
+                                  element.name +
+                                  ' to cart: ' +
+                                  error,
+                              );
+                            });
+                        } else {
+                          firestore()
+                            .collection('user')
+                            .doc(curUser?.uid)
+                            .collection('cart')
+                            .doc(element.name + element.restoid)
+                            .update({
+                              quantity: firestore.FieldValue.increment(1),
+                            })
+                            .then(() => {
+                              console.log(
+                                'Added 1 ' + element.name + ' to cart',
+                              );
+                              //print if added
+                              setTotalProduct(totalProduct + 1);
+                            });
+                          console.log(
+                            'Something went wrong with increasing ' +
+                              element.name +
+                              ' to cart: ',
+                          );
+                        }
+                      }}
                     />
                   </View>
                 ))}
               </View>
             ))}
           </View>
-          <CartBar quantity={totalProduct}
-          navigation={() => {
-            navigation.dispatch(StackActions.replace('Cart'));
-          }}/>
+          <CartBar
+            quantity={totalProduct}
+            navigation={() => {
+              navigation.dispatch(StackActions.replace('Cart'));
+            }}
+          />
           {/* NAVIGATION BAR */}
           <UserNavigation navigation={navigation} />
         </View>
@@ -390,18 +447,19 @@ const styles2 = StyleSheet.create({
     fontSize: 12,
     color: 'white',
     backgroundColor: 'red',
-    padding: 4,
+    paddingLeft: 9,
+    paddingTop: 4,
     borderRadius: 25,
-    width:24,
+    width: 24,
     height: 24,
     position: 'absolute',
     top: -13,
     right: -5,
   },
   cartContainer: {
-    flexDirection:'row',
-    justifyContent:'space-between',
-    marginBottom:15
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
   },
   cartButton: {
     borderWidth: 1,
@@ -410,6 +468,6 @@ const styles2 = StyleSheet.create({
     backgroundColor: '#A9FDAC',
     width: 112,
     height: 40,
-    marginRight:30,
+    marginRight: 30,
   },
 });
