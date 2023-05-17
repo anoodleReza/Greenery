@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
-import {View, Image, TouchableOpacity, ScrollView} from 'react-native';
+import {View, Image, TouchableOpacity, ScrollView, Modal} from 'react-native';
 import {styles} from '../Style';
 //material ui + form
 import {Divider, Text} from 'react-native-paper';
@@ -175,31 +175,7 @@ export default function Search({
   }, [query]);
 
   // Map restaurant array into the components
-  const RestoList = () => {
-    return resto.map(element => {
-      return (
-        <View key={element.key}>
-          <Restaurant
-            navigation={() => {
-              navigation.dispatch(
-                navigation.push('RestaurantPage', {
-                  restoName: element.Name,
-                  restoAddress: element.Address,
-                  restoCategory: element.Category,
-                  restoImage: element.image,
-                }),
-              );
-            }}
-            RestaurantName={element.Name}
-            FoodCategory={element.Category}
-            eta={30}
-            distance={1.5}
-            image={element.image}
-          />
-        </View>
-      );
-    });
-  };
+
   // Map food array into the components
   const FoodList = () => {
     return foods.map(element => {

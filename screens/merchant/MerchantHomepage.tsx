@@ -66,8 +66,11 @@ export default function MerchantHomepage({navigation}: {navigation: any}) {
             name="MyWallet"
           />
           <ButtonBox
-            image={require('../../assets/newspaper.png')}
-            name="Check the News"
+            image={require('../../assets/basket.png')}
+            name="Orders"
+            navigation={() => {
+              navigation.push('MerchantOrdersReceived');
+            }}
           />
         </View>
       </View>
