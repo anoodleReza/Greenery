@@ -96,19 +96,7 @@ const OrderBar = (props: {
 
   const onSuccess = async () => {
     console.log('Order Success!');
-    //record the order in firestore as a transaction
-    //transactionID = restoid-userid-timestamp
-    const transactionID =
-      props.cartItems[0].restoid +
-      '-' +
-      curUser?.uid +
-      '-' +
-      Date.now().toString();
-
-    // for each element combine cartItems and foodItems into orderItems variable in orderData
-    //loop for every item in cartItems
-    //for each item, loop for every item in foodItems
-    //if foodItems.foodid == cartItems.foodid, then add foodItems to orderItems
+    const transactionID = Date.now().toString();
     const orderItems: OrderData[] = [];
 
     props.cartItems.forEach(cartItem => {
