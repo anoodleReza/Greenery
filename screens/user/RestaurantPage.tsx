@@ -344,7 +344,7 @@ export default function RestaurantPage({
                         //add to cart in firestore
                         //if the food is already in the cart, add 1 to quantity, otherwise create new entry
                         const docSnapshot = await firestore()
-                          .collection('users')
+                          .collection('user')
                           .doc(curUser?.uid)
                           .collection('cart')
                           .doc(element.name + element.restoid)

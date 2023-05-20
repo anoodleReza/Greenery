@@ -33,7 +33,7 @@ export default function MerchantOrdersReceived({
             {props.orderedMenu !== undefined ? (
               props.orderedMenu.map(orderItem => {
                 return (
-                  <Text key={props.orderID}>
+                  <Text key={orderItem.foodName}>
                     {orderItem.foodName} x {orderItem.foodQuantity}
                   </Text>
                 );

@@ -117,7 +117,7 @@ const OrderBar = (props: {
       transactionID: transactionID,
       restoid: props.cartItems[0].restoid,
       userid: curUser?.uid,
-      orderStatus: 'Pending',
+      orderStatus: 'Received',
       orderTotal: props.total,
       orderItems: orderItems,
       orderDeliveryFee: props.deliveryFee,

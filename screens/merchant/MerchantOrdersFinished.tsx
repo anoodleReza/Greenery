@@ -28,12 +28,12 @@ export default function MerchantOrdersFinished({
     return (
       <View>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <View style={{marginTop: 5}} key={props.orderID}>
+          <View style={{marginTop: 5}}>
             <Text style={{fontWeight: 'bold'}}>Order {props.orderID}</Text>
             {props.orderedMenu !== undefined ? (
               props.orderedMenu.map(orderItem => {
                 return (
-                  <Text>
+                  <Text key={orderItem.foodName}>
                     {orderItem.foodName} x {orderItem.foodQuantity}
                   </Text>
                 );
