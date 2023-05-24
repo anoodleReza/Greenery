@@ -65,7 +65,12 @@ export default function PartnerHomepage({navigation}: {navigation: any}) {
               image={require('../../assets/wallet.png')}
               name="MyWallet"
             />
-            <ButtonBox image={require('../../assets/map.png')} name="Map" />
+            <ButtonBox 
+            image={require('../../assets/map.png')} 
+            name="Map"
+            navigation={() => {
+              navigation.push('PartnerMap');
+            }} />
           </View>
         </View>
         {/* Navigation */}

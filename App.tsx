@@ -35,6 +35,7 @@ import PartnerHomepage from './screens/partner/PartnerHomepage';
 import PartnerProfile from './screens/partner/PartnerProfile';
 import PartnerEditProfile from './screens/partner/PartnerEditProfile';
 import PartnerSignupDetails from './screens/partner/PartnerSignupDetails';
+import PartnerMap from './screens/partner/PartnerMap';
 
 //paper meterial ui
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
@@ -197,6 +198,11 @@ function App() {
           <Stack.Screen
             name="PartnerSignupDetails"
             component={PartnerSignupDetails}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="PartnerMap"
+            component={PartnerMap}
             options={{headerShown: false}}
           />
           <Stack.Screen
