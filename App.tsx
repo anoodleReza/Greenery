@@ -54,7 +54,6 @@ import Cart from './screens/user/Cart';
 import UserWallet from './screens/user/UserWallet';
 import UserWalletTopup from './screens/user/UserWalletTopup';
 
-
 const Stack = createStackNavigator();
 
 function App() {
@@ -154,7 +153,7 @@ function App() {
             component={MerchantOrdersOnDelivery}
             options={{headerShown: false}}
           />
-          <Stack.Screen   
+          <Stack.Screen
             name="MerchantOrdersProcessing"
             component={MerchantOrdersProcessing}
             options={{headerShown: false}}

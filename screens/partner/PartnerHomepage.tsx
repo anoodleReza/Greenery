@@ -2,7 +2,6 @@
 import React from 'react';
 import 'react-native-gesture-handler';
 import {View, Image, TouchableOpacity} from 'react-native';
-import {StackActions} from '@react-navigation/native';
 import {styles} from '../Style';
 //material ui + form
 import {Text} from 'react-native-paper';
@@ -65,12 +64,13 @@ export default function PartnerHomepage({navigation}: {navigation: any}) {
               image={require('../../assets/wallet.png')}
               name="MyWallet"
             />
-            <ButtonBox 
-            image={require('../../assets/map.png')} 
-            name="Map"
-            navigation={() => {
-              navigation.push('PartnerMap');
-            }} />
+            <ButtonBox
+              image={require('../../assets/map.png')}
+              name="Map"
+              navigation={() => {
+                navigation.push('PartnerMap');
+              }}
+            />
           </View>
         </View>
         {/* Navigation */}
