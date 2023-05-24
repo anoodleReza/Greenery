@@ -8,7 +8,7 @@ import { Button, Card, IconButton, List } from 'react-native-paper';
 
 export default function PartnerMap ({navigation}: {navigation: any}) {
 
-  const [state, setState] = useState<number>(1);
+  const [state, setState] = useState<number>(2);
 
   return (
     <SafeAreaView style={styles.containerUncentered}>
@@ -48,9 +48,9 @@ export default function PartnerMap ({navigation}: {navigation: any}) {
           : null
           }
           {
-            state == 2 ?
+            state == 2 || state ==3 || state==4 ?
             <>
-                        <Marker
+            <Marker
             description="Driver Location"
             coordinate={{
               latitude: -3.723,
@@ -91,98 +91,12 @@ export default function PartnerMap ({navigation}: {navigation: any}) {
             </>
             :null
           }
-          {
-            state == 3 ?
-            <>
-                        <Marker
-            description="Driver Location"
-            coordinate={{
-              latitude: -3.723,
-              longitude: -38.515,
-            }}
-            >
-            <Image 
-            source={require('../../assets/driverMarker.png')} 
-            style={MapStyles.driverMarker}/>
-
-            </Marker>
-
-            <Marker
-            description="User Location"
-            coordinate={{
-              latitude: -3.719,
-              longitude: -38.511,
-            }}
-            >
-            <Image 
-            source={require('../../assets/destination.png')} 
-            style={MapStyles.pinPoint}/>
-
-            </Marker>
-
-            <Marker
-            description="Merchant Location"
-            coordinate={{
-              latitude: -3.727,
-              longitude: -38.514,
-            }}
-            >
-            <Image 
-            source={require('../../assets/restaurant.png')} 
-            style={MapStyles.pinPoint}/>
-
-            </Marker>
-            </>
-            :null
-          }  
-          {
-            state == 4 ?
-            <>
-                        <Marker
-            description="Driver Location"
-            coordinate={{
-              latitude: -3.723,
-              longitude: -38.515,
-            }}
-            >
-            <Image 
-            source={require('../../assets/driverMarker.png')} 
-            style={MapStyles.driverMarker}/>
-
-            </Marker>
-
-            <Marker
-            description="User Location"
-            coordinate={{
-              latitude: -3.719,
-              longitude: -38.511,
-            }}
-            >
-            <Image 
-            source={require('../../assets/destination.png')} 
-            style={MapStyles.pinPoint}/>
-
-            </Marker>
-
-            <Marker
-            description="Merchant Location"
-            coordinate={{
-              latitude: -3.727,
-              longitude: -38.514,
-            }}
-            >
-            <Image 
-            source={require('../../assets/restaurant.png')} 
-            style={MapStyles.pinPoint}/>
-
-            </Marker>
-            </>
-            :null
-          }    
+          
           </MapView>
-          {/* add some mechanism to automatically increment state when receiving new order ??? */}
-`         {
+
+       {
             state == 1 ?
+            
             (<>
             <Card mode='elevated' style={{marginBottom: 20}}>
               <Card.Content>
@@ -195,8 +109,9 @@ export default function PartnerMap ({navigation}: {navigation: any}) {
               </Card.Content>
             </Card>
             </>)
+           
             : null
-          }`
+          }
           {/* CONFIRMING ORDER STATE */}
          
             {
@@ -206,7 +121,8 @@ export default function PartnerMap ({navigation}: {navigation: any}) {
             <Card.Content>
               <List.Item
               title="Confirm Delivery Order"
-              description="Restaurant located 800m from you"
+              description="800m from you                  Price: $ 20.00 "
+              descriptionNumberOfLines={3}
               left={() =>
               <IconButton icon="bike" size={30}/>}
               right={() =>
@@ -231,11 +147,12 @@ export default function PartnerMap ({navigation}: {navigation: any}) {
             <Card.Content>
               <List.Item
               title="Restaurant Name"
-              description="Restaurant Address"
+              description="Restaurant Address Price: $ 20.00 "
+              descriptionNumberOfLines={3}
               left={() => <Image source={require('../../assets/person.png')} style={{width: 50, height: 50,marginTop:20}}/>}
               right={() =>
               <View style={{justifyContent:'space-evenly'}}>
-                <Button mode="contained" style={MapStyles.button}>Message Cust.</Button>
+                <Button mode="contained" style={MapStyles.button}>Message</Button>
                 <Button mode="contained" style={MapStyles.button} onPress={() => setState(state + 1)}>Finish</Button>
               </View>
              }
@@ -249,8 +166,6 @@ export default function PartnerMap ({navigation}: {navigation: any}) {
           {
             state == 4 ?
             <>
-
-
             <Card mode='elevated' style={{marginBottom: 20}}>
             <Card.Content>
               <List.Item
@@ -286,8 +201,8 @@ const MapStyles = StyleSheet.create({
     height: 60,
   },
   pinPoint:{
-    width: 20,
-    height: 20,
+    width: 15,
+    height: 15,
   },
   button: {
     backgroundColor: '#00BF63',
