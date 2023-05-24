@@ -41,36 +41,22 @@ export default function PartnerMap({navigation}: {navigation: any}) {
                 />
               </Marker>
             </>
-          ) : null}
-        </MapView>
+          : null
+          }
+          {
+            state == 2 ?
+            <>
+                        <Marker
+            description="Driver Location"
+            coordinate={{
+              latitude: -3.723,
+              longitude: -38.515,
+            }}
+            >
+            <Image 
+            source={require('../../assets/driverMarker.png')} 
+            style={MapStyles.driverMarker}/>
 
-        {/* add some mechanism to automatically increment state when receiving new order ??? */}
-        {state === 1 ? (
-          <>
-            <Card mode="elevated" style={{marginBottom: 20}}>
-              <Card.Content>
-                <List.Item
-                  title="Waiting for order..."
-                  description="Tips: You can go offline to stop receiving orders"
-                />
-              </Card.Content>
-            </Card>
-          </>
-        ) : null}
-
-        {/* CONFIRMING ORDER STATE */}
-        {state === 2 ? (
-          <>
-            <Marker
-              description="Driver Location"
-              coordinate={{
-                latitude: -3.723,
-                longitude: -38.515,
-              }}>
-              <Image
-                source={require('../../assets/driverMarker.png')}
-                style={MapStyles.driverMarker}
-              />
             </Marker>
 
             <Marker
@@ -97,42 +83,42 @@ export default function PartnerMap({navigation}: {navigation: any}) {
               />
             </Marker>
 
-            <Card mode="elevated" style={{marginBottom: 20}}>
-              <Card.Content>
-                <List.Item
-                  title="Confirm Delivery Order"
-                  description="Restaurant located 800m from you"
-                  left={() => <IconButton icon="bike" size={30} />}
-                  right={() => (
-                    <View>
-                      <Button>Cancel</Button>
-                      <Button
-                        mode="contained"
-                        style={MapStyles.button}
-                        onPress={() => setState(state + 1)}>
-                        Confirm
-                      </Button>
-                    </View>
-                  )}
-                />
-              </Card.Content>
-            </Card>
-          </>
-        ) : null}
-
-        {/* WORKING ON ORDER STATE */}
-        {state === 3 ? (
-          <>
-            <Marker
-              description="Driver Location"
-              coordinate={{
-                latitude: -3.723,
-                longitude: -38.515,
-              }}>
-              <Image
-                source={require('../../assets/driverMarker.png')}
-                style={MapStyles.driverMarker}
+            <Card mode='elevated' style={{marginBottom: 20}}>
+            <Card.Content>
+              <List.Item
+              title="Confirm Delivery Order"
+              description="Restaurant located 800m from you"
+              left={() =>
+              <IconButton icon="bike" size={30}/>}
+              right={() =>
+              <View>
+                <Button>Cancel</Button>
+                <Button mode="contained" style={MapStyles.button} onPress={() => setState(state + 1)}>Confirm</Button>
+              </View>
+             }
               />
+            </Card.Content>
+            </Card>
+            </>
+            :null
+          }
+
+          {/* WORKING ON ORDER STATE */}
+
+          {
+            state == 3 ?
+            <>
+            <Marker
+            description="Driver Location"
+            coordinate={{
+              latitude: -3.723,
+              longitude: -38.515,
+            }}
+            >
+            <Image 
+            source={require('../../assets/driverMarker.png')} 
+            style={MapStyles.driverMarker}/>
+
             </Marker>
 
             <Marker
@@ -159,48 +145,39 @@ export default function PartnerMap({navigation}: {navigation: any}) {
               />
             </Marker>
 
-            <Card mode="elevated" style={{marginBottom: 20}}>
-              <Card.Content>
-                <List.Item
-                  title="Restaurant Name"
-                  description="Restaurant Address"
-                  left={() => (
-                    <Image
-                      source={require('../../assets/person.png')}
-                      style={{width: 50, height: 50, marginTop: 20}}
-                    />
-                  )}
-                  right={() => (
-                    <View style={{justifyContent: 'space-evenly'}}>
-                      <Button mode="contained" style={MapStyles.button}>
-                        Message Cust.
-                      </Button>
-                      <Button
-                        mode="contained"
-                        style={MapStyles.button}
-                        onPress={() => setState(state + 1)}>
-                        Finish
-                      </Button>
-                    </View>
-                  )}
-                />
-              </Card.Content>
-            </Card>
-          </>
-        ) : null}
-        {/* DELIVERING ORDER STATE */}
-        {state === 4 ? (
-          <>
-            <Marker
-              description="Driver Location"
-              coordinate={{
-                latitude: -3.723,
-                longitude: -38.515,
-              }}>
-              <Image
-                source={require('../../assets/driverMarker.png')}
-                style={MapStyles.driverMarker}
+            <Card mode='elevated' style={{marginBottom: 20}}>
+            <Card.Content>
+              <List.Item
+              title="Restaurant Name"
+              description="Restaurant Address"
+              left={() => <Image source={require('../../assets/person.png')} style={{width: 50, height: 50,marginTop:20}}/>}
+              right={() =>
+              <View style={{justifyContent:'space-evenly'}}>
+                <Button mode="contained" style={MapStyles.button}>Message Cust.</Button>
+                <Button mode="contained" style={MapStyles.button} onPress={() => setState(state + 1)}>Finish</Button>
+              </View>
+             }
               />
+            </Card.Content>
+            </Card>
+            </>
+            :null
+          }
+          {/* DELIVERING ORDER STATE */}
+          {
+            state == 4 ?
+            <>
+            <Marker
+            description="Driver Location"
+            coordinate={{
+              latitude: -3.723,
+              longitude: -38.515,
+            }}
+            >
+            <Image 
+            source={require('../../assets/driverMarker.png')} 
+            style={MapStyles.driverMarker}/>
+
             </Marker>
 
             <Marker
@@ -227,38 +204,28 @@ export default function PartnerMap({navigation}: {navigation: any}) {
               />
             </Marker>
 
-            <Card mode="elevated" style={{marginBottom: 20}}>
-              <Card.Content>
-                <List.Item
-                  title="Customer Name"
-                  description="Customer Address"
-                  left={() => (
-                    <Image
-                      source={require('../../assets/person.png')}
-                      style={{width: 50, height: 50, marginTop: 20}}
-                    />
-                  )}
-                  right={() => (
-                    <View style={{justifyContent: 'space-evenly'}}>
-                      <Button mode="contained" style={MapStyles.button}>
-                        Message
-                      </Button>
-                      <Button
-                        mode="contained"
-                        style={MapStyles.button}
-                        onPress={() => setState(state - 3)}>
-                        Finish
-                      </Button>
-                    </View>
-                  )}
-                />
-              </Card.Content>
+            <Card mode='elevated' style={{marginBottom: 20}}>
+            <Card.Content>
+              <List.Item
+              title="Customer Name"
+              description="Customer Address"
+              left={() => <Image source={require('../../assets/person.png')} style={{width: 50, height: 50,marginTop:20}}/>}
+              right={() =>
+              <View style={{justifyContent:'space-evenly'}}>
+                <Button mode="contained" style={MapStyles.button}>Message</Button>
+                <Button mode="contained" style={MapStyles.button} onPress={() => setState(state - 3)}>Finish</Button>
+              </View>
+             }
+              />
+            </Card.Content>
             </Card>
-          </>
-        ) : null}
-      </View>
-      {/* Navigation */}
-      <PartnerNavigation navigation={navigation} />
+            </>
+            :null
+          }
+          
+        </View>
+        {/* Navigation */}
+        <PartnerNavigation navigation={navigation} />
     </SafeAreaView>
   );
 }
