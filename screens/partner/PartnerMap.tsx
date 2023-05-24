@@ -1,52 +1,56 @@
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable react-native/no-inline-styles */
-import {View, SafeAreaView, StyleSheet, Image} from 'react-native';
-import React, {useState} from 'react';
-import {PartnerHeader} from '../PageHeader';
-import {styles} from '../Style';
-import {PartnerNavigation} from '../NavigationBar';
-import MapView, {Marker} from 'react-native-maps';
-import {Button, Card, IconButton, List} from 'react-native-paper';
+import { View, Text, SafeAreaView, StyleSheet, Image } from 'react-native'
+import React, { useState } from 'react'
+import { PartnerHeader } from '../PageHeader'
+import { styles } from '../Style';
+import { PartnerNavigation } from '../NavigationBar';
+import MapView, { Marker } from 'react-native-maps';
+import { Button, Card, IconButton, List } from 'react-native-paper';
 
-export default function PartnerMap({navigation}: {navigation: any}) {
-  const [state, setState] = useState<number>(1);
+export default function PartnerMap ({navigation}: {navigation: any}) {
+
+  const [state, setState] = useState<number>(2);
 
   return (
     <SafeAreaView style={styles.containerUncentered}>
-      {/* Banner */}
-      <PartnerHeader navigation={navigation} />
-      {/* Content */}
-      <View style={styles.contentBox}>
-        {/* Map */}
-        <MapView
+        {/* Banner */}
+        <PartnerHeader navigation={navigation} />
+        {/* Content */}
+        <View style={styles.contentBox}>
+          {/* Map */}
+          <MapView 
           style={MapStyles.flex}
           initialRegion={{
             latitude: -3.722,
             longitude: -38.515,
             latitudeDelta: 0.04,
             longitudeDelta: 0.05,
-          }}>
+          }}
+          >
+          
           {/* WAITING ORDER STATE */}
-          {state === 1 ? (
+          {
+            state == 1 ? 
             <>
-              <Marker
-                description="Driver Location"
-                coordinate={{
-                  latitude: -3.723,
-                  longitude: -38.515,
-                }}>
-                <Image
-                  source={require('../../assets/driverMarker.png')}
-                  style={MapStyles.driverMarker}
-                />
-              </Marker>
+            <Marker
+            description="Driver Location"
+            coordinate={{
+              latitude: -3.723,
+              longitude: -38.515,
+            }}
+            >
+            <Image 
+            source={require('../../assets/driverMarker.png')} 
+            style={MapStyles.driverMarker}/>
+
+            </Marker>
+
             </>
           : null
           }
           {
-            state == 2 ?
+            state == 2 || state ==3 || state==4 ?
             <>
-                        <Marker
+            <Marker
             description="Driver Location"
             coordinate={{
               latitude: -3.723,
@@ -60,34 +64,65 @@ export default function PartnerMap({navigation}: {navigation: any}) {
             </Marker>
 
             <Marker
-              description="User Location"
-              coordinate={{
-                latitude: -3.719,
-                longitude: -38.511,
-              }}>
-              <Image
-                source={require('../../assets/destination.png')}
-                style={MapStyles.pinPoint}
-              />
+            description="User Location"
+            coordinate={{
+              latitude: -3.719,
+              longitude: -38.511,
+            }}
+            >
+            <Image 
+            source={require('../../assets/destination.png')} 
+            style={MapStyles.pinPoint}/>
+
             </Marker>
 
             <Marker
-              description="Merchant Location"
-              coordinate={{
-                latitude: -3.727,
-                longitude: -38.514,
-              }}>
-              <Image
-                source={require('../../assets/restaurant.png')}
-                style={MapStyles.pinPoint}
-              />
-            </Marker>
+            description="Merchant Location"
+            coordinate={{
+              latitude: -3.727,
+              longitude: -38.514,
+            }}
+            >
+            <Image 
+            source={require('../../assets/restaurant.png')} 
+            style={MapStyles.pinPoint}/>
 
+            </Marker>
+            </>
+            :null
+          }
+          
+          </MapView>
+
+       {
+            state == 1 ?
+            
+            (<>
+            <Card mode='elevated' style={{marginBottom: 20}}>
+              <Card.Content>
+                <List.Item
+                title="Waiting for order..."
+                description="Tips: You can go offline to stop receiving orders"
+                left={() =>
+                <IconButton icon="bike" size={30}/>}
+                />
+              </Card.Content>
+            </Card>
+            </>)
+           
+            : null
+          }
+          {/* CONFIRMING ORDER STATE */}
+         
+            {
+            state == 2 ?
+            <>
             <Card mode='elevated' style={{marginBottom: 20}}>
             <Card.Content>
               <List.Item
               title="Confirm Delivery Order"
-              description="Restaurant located 800m from you"
+              description="800m from you                  Price: $ 20.00 "
+              descriptionNumberOfLines={3}
               left={() =>
               <IconButton icon="bike" size={30}/>}
               right={() =>
@@ -108,52 +143,16 @@ export default function PartnerMap({navigation}: {navigation: any}) {
           {
             state == 3 ?
             <>
-            <Marker
-            description="Driver Location"
-            coordinate={{
-              latitude: -3.723,
-              longitude: -38.515,
-            }}
-            >
-            <Image 
-            source={require('../../assets/driverMarker.png')} 
-            style={MapStyles.driverMarker}/>
-
-            </Marker>
-
-            <Marker
-              description="User Location"
-              coordinate={{
-                latitude: -3.719,
-                longitude: -38.511,
-              }}>
-              <Image
-                source={require('../../assets/destination.png')}
-                style={MapStyles.pinPoint}
-              />
-            </Marker>
-
-            <Marker
-              description="Merchant Location"
-              coordinate={{
-                latitude: -3.727,
-                longitude: -38.514,
-              }}>
-              <Image
-                source={require('../../assets/restaurant.png')}
-                style={MapStyles.pinPoint}
-              />
-            </Marker>
-
             <Card mode='elevated' style={{marginBottom: 20}}>
             <Card.Content>
               <List.Item
               title="Restaurant Name"
-              description="Restaurant Address"
+              description="Restaurant Address Price: $ 20.00 "
+              descriptionNumberOfLines={3}
               left={() => <Image source={require('../../assets/person.png')} style={{width: 50, height: 50,marginTop:20}}/>}
               right={() =>
               <View style={{justifyContent:'space-evenly'}}>
-                <Button mode="contained" style={MapStyles.button}>Message Cust.</Button>
+                <Button mode="contained" style={MapStyles.button}>Message</Button>
                 <Button mode="contained" style={MapStyles.button} onPress={() => setState(state + 1)}>Finish</Button>
               </View>
              }
@@ -167,43 +166,6 @@ export default function PartnerMap({navigation}: {navigation: any}) {
           {
             state == 4 ?
             <>
-            <Marker
-            description="Driver Location"
-            coordinate={{
-              latitude: -3.723,
-              longitude: -38.515,
-            }}
-            >
-            <Image 
-            source={require('../../assets/driverMarker.png')} 
-            style={MapStyles.driverMarker}/>
-
-            </Marker>
-
-            <Marker
-              description="User Location"
-              coordinate={{
-                latitude: -3.719,
-                longitude: -38.511,
-              }}>
-              <Image
-                source={require('../../assets/destination.png')}
-                style={MapStyles.pinPoint}
-              />
-            </Marker>
-
-            <Marker
-              description="Merchant Location"
-              coordinate={{
-                latitude: -3.727,
-                longitude: -38.514,
-              }}>
-              <Image
-                source={require('../../assets/restaurant.png')}
-                style={MapStyles.pinPoint}
-              />
-            </Marker>
-
             <Card mode='elevated' style={{marginBottom: 20}}>
             <Card.Content>
               <List.Item
@@ -231,19 +193,20 @@ export default function PartnerMap({navigation}: {navigation: any}) {
 }
 
 const MapStyles = StyleSheet.create({
-  flex: {
-    flex: 1,
+  flex:{
+    flex:1
   },
-  driverMarker: {
+  driverMarker:{
     width: 60,
     height: 60,
   },
-  pinPoint: {
-    width: 20,
-    height: 20,
+  pinPoint:{
+    width: 15,
+    height: 15,
   },
   button: {
     backgroundColor: '#00BF63',
-    marginBottom: 5,
-  },
+    marginBottom: 5
+  }
 });
+
