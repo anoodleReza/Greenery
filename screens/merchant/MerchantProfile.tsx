@@ -1,7 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
-import {View, Image, TouchableOpacity, Text} from 'react-native';
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  Text,
+  PermissionsAndroid,
+} from 'react-native';
 //material ui + form
 import {Divider} from 'react-native-paper';
 import MerchantHeader from '../PageHeader';
@@ -11,6 +17,7 @@ import {styles} from '../Style';
 import {firebase} from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+import Geolocation from '@react-native-community/geolocation';
 
 export default function MercantProfile({navigation}: {navigation: any}) {
   const curUser = firebase.auth().currentUser;
@@ -73,6 +80,48 @@ export default function MercantProfile({navigation}: {navigation: any}) {
     }
   }, [curUser, fetchUserInfo, isLoggedIn]);
 
+  //create a variable that stores latitude and longitude
+  const [_latitude, setLatitude] = useState(0);
+  const [_longitude, setLongitude] = useState(0);
+
+  const getUserLocation = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Cool Photo App Camera Permission',
+          message:
+            'Cool Photo App needs access to your camera ' +
+            'so you can take awesome pictures.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if ((await granted) === PermissionsAndroid.RESULTS.GRANTED) {
+        Geolocation.getCurrentPosition(
+          position => {
+            const {latitude, longitude} = position.coords;
+            console.log('Latitude:', latitude);
+            console.log('Longitude:', longitude);
+            setLatitude(latitude);
+            setLongitude(longitude);
+          },
+          error => {
+            console.log('Error:', error.message);
+          },
+          {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+        );
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // useEffect(() => {
+  //   getUserLocation();
+  // }, []);
+
   return (
     <View style={styles.containerUncentered}>
       {/* Screen Header */}
@@ -119,6 +168,16 @@ export default function MercantProfile({navigation}: {navigation: any}) {
                 }
               }}>
               <Text style={styles.textBasic}>Edit Profile</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={async () => {
+                getUserLocation();
+                await firestore()
+                  .collection('merchant')
+                  .doc(curUser?.uid)
+                  .update({latitude: _latitude, longitude: _longitude});
+              }}>
+              <Text style={styles.textBasic}>Set Current Location</Text>
             </TouchableOpacity>
           </View>
         </View>

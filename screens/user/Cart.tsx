@@ -9,6 +9,7 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
+  PermissionsAndroid,
 } from 'react-native';
 import {styles} from '../Style';
 //material ui + form
@@ -19,6 +20,7 @@ import {Dropdown} from 'react-native-element-dropdown';
 import firestore from '@react-native-firebase/firestore';
 import {firebase} from '@react-native-firebase/auth';
 const curUser = firebase.auth().currentUser;
+import Geolocation from '@react-native-community/geolocation';
 
 const data = [
   {
@@ -82,6 +84,9 @@ const OrderBar = (props: {
   foodItems: FoodData[];
   deliveryFee: number;
   totalFee: number;
+  latitude: number;
+  longitude: number;
+  paymentMethod: string;
 }) => {
   interface WalletData {
     balance: number;
@@ -122,10 +127,15 @@ const OrderBar = (props: {
       orderItems: orderItems,
       orderDeliveryFee: props.deliveryFee,
       orderTotalFee: props.totalFee,
+      latitude: _latitude,
+      longitude: _longitude,
+      paymentMethod: paymentMethod,
       timestamp: firestore.FieldValue.serverTimestamp(),
     };
     await firestore().collection('orders').doc(transactionID).set({orderData});
     console.log('Order recorded in firestore!');
+
+    await getUserLocation();
 
     //delete cart subcollection in user collection in firestore
     await firestore()
@@ -256,6 +266,48 @@ const OrderBar = (props: {
       {cancelable: false},
     );
   };
+
+  //create a variable that stores latitude and longitude
+  const [_latitude, setLatitude] = useState(0);
+  const [_longitude, setLongitude] = useState(0);
+
+  const getUserLocation = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Cool Photo App Camera Permission',
+          message:
+            'Cool Photo App needs access to your camera ' +
+            'so you can take awesome pictures.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if ((await granted) === PermissionsAndroid.RESULTS.GRANTED) {
+        await Geolocation.getCurrentPosition(
+          position => {
+            const {latitude, longitude} = position.coords;
+            console.log('Latitude:', latitude);
+            console.log('Longitude:', longitude);
+            setLatitude(latitude);
+            setLongitude(longitude);
+          },
+          error => {
+            console.log('Error:', error.message);
+          },
+          {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+        );
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getUserLocation();
+  }, []);
 
   return (
     <View>
