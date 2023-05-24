@@ -35,6 +35,7 @@ import PartnerHomepage from './screens/partner/PartnerHomepage';
 import PartnerProfile from './screens/partner/PartnerProfile';
 import PartnerEditProfile from './screens/partner/PartnerEditProfile';
 import PartnerSignupDetails from './screens/partner/PartnerSignupDetails';
+import PartnerMap from './screens/partner/PartnerMap';
 
 //paper meterial ui
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
@@ -52,7 +53,6 @@ import Search from './screens/user/Search';
 import Cart from './screens/user/Cart';
 import UserWallet from './screens/user/UserWallet';
 import UserWalletTopup from './screens/user/UserWalletTopup';
-
 
 const Stack = createStackNavigator();
 
@@ -153,7 +153,7 @@ function App() {
             component={MerchantOrdersOnDelivery}
             options={{headerShown: false}}
           />
-          <Stack.Screen   
+          <Stack.Screen
             name="MerchantOrdersProcessing"
             component={MerchantOrdersProcessing}
             options={{headerShown: false}}
@@ -197,6 +197,11 @@ function App() {
           <Stack.Screen
             name="PartnerSignupDetails"
             component={PartnerSignupDetails}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="PartnerMap"
+            component={PartnerMap}
             options={{headerShown: false}}
           />
           <Stack.Screen
