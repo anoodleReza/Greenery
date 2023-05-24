@@ -47,30 +47,10 @@ export default function PartnerMap ({navigation}: {navigation: any}) {
             </>
           : null
           }
-          </MapView>
-          {/* add some mechanism to automatically increment state when receiving new order ??? */}
-`         {
-            state == 1 ?
-            (<>
-            <Card mode='elevated' style={{marginBottom: 20}}>
-              <Card.Content>
-                <List.Item
-                title="Waiting for order..."
-                description="Tips: You can go offline to stop receiving orders"
-                left={() =>
-                <IconButton icon="bike" size={30}/>}
-                />
-              </Card.Content>
-            </Card>
-            </>)
-            : null
-          }`
-          {/* CONFIRMING ORDER STATE */}
-         
-            {
+          {
             state == 2 ?
             <>
-            <Marker
+                        <Marker
             description="Driver Location"
             coordinate={{
               latitude: -3.723,
@@ -108,7 +88,120 @@ export default function PartnerMap ({navigation}: {navigation: any}) {
             style={MapStyles.pinPoint}/>
 
             </Marker>
+            </>
+            :null
+          }
+          {
+            state == 3 ?
+            <>
+                        <Marker
+            description="Driver Location"
+            coordinate={{
+              latitude: -3.723,
+              longitude: -38.515,
+            }}
+            >
+            <Image 
+            source={require('../../assets/driverMarker.png')} 
+            style={MapStyles.driverMarker}/>
 
+            </Marker>
+
+            <Marker
+            description="User Location"
+            coordinate={{
+              latitude: -3.719,
+              longitude: -38.511,
+            }}
+            >
+            <Image 
+            source={require('../../assets/destination.png')} 
+            style={MapStyles.pinPoint}/>
+
+            </Marker>
+
+            <Marker
+            description="Merchant Location"
+            coordinate={{
+              latitude: -3.727,
+              longitude: -38.514,
+            }}
+            >
+            <Image 
+            source={require('../../assets/restaurant.png')} 
+            style={MapStyles.pinPoint}/>
+
+            </Marker>
+            </>
+            :null
+          }  
+          {
+            state == 4 ?
+            <>
+                        <Marker
+            description="Driver Location"
+            coordinate={{
+              latitude: -3.723,
+              longitude: -38.515,
+            }}
+            >
+            <Image 
+            source={require('../../assets/driverMarker.png')} 
+            style={MapStyles.driverMarker}/>
+
+            </Marker>
+
+            <Marker
+            description="User Location"
+            coordinate={{
+              latitude: -3.719,
+              longitude: -38.511,
+            }}
+            >
+            <Image 
+            source={require('../../assets/destination.png')} 
+            style={MapStyles.pinPoint}/>
+
+            </Marker>
+
+            <Marker
+            description="Merchant Location"
+            coordinate={{
+              latitude: -3.727,
+              longitude: -38.514,
+            }}
+            >
+            <Image 
+            source={require('../../assets/restaurant.png')} 
+            style={MapStyles.pinPoint}/>
+
+            </Marker>
+            </>
+            :null
+          }    
+          </MapView>
+          {/* add some mechanism to automatically increment state when receiving new order ??? */}
+`         {
+            state == 1 ?
+            (<>
+            <Card mode='elevated' style={{marginBottom: 20}}>
+              <Card.Content>
+                <List.Item
+                title="Waiting for order..."
+                description="Tips: You can go offline to stop receiving orders"
+                left={() =>
+                <IconButton icon="bike" size={30}/>}
+                />
+              </Card.Content>
+            </Card>
+            </>)
+            : null
+          }`
+          {/* CONFIRMING ORDER STATE */}
+         
+            {
+            state == 2 ?
+            <>
             <Card mode='elevated' style={{marginBottom: 20}}>
             <Card.Content>
               <List.Item
@@ -134,45 +227,6 @@ export default function PartnerMap ({navigation}: {navigation: any}) {
           {
             state == 3 ?
             <>
-            <Marker
-            description="Driver Location"
-            coordinate={{
-              latitude: -3.723,
-              longitude: -38.515,
-            }}
-            >
-            <Image 
-            source={require('../../assets/driverMarker.png')} 
-            style={MapStyles.driverMarker}/>
-
-            </Marker>
-
-            <Marker
-            description="User Location"
-            coordinate={{
-              latitude: -3.719,
-              longitude: -38.511,
-            }}
-            >
-            <Image 
-            source={require('../../assets/destination.png')} 
-            style={MapStyles.pinPoint}/>
-
-            </Marker>
-
-            <Marker
-            description="Merchant Location"
-            coordinate={{
-              latitude: -3.727,
-              longitude: -38.514,
-            }}
-            >
-            <Image 
-            source={require('../../assets/restaurant.png')} 
-            style={MapStyles.pinPoint}/>
-
-            </Marker>
-
             <Card mode='elevated' style={{marginBottom: 20}}>
             <Card.Content>
               <List.Item
@@ -195,44 +249,7 @@ export default function PartnerMap ({navigation}: {navigation: any}) {
           {
             state == 4 ?
             <>
-            <Marker
-            description="Driver Location"
-            coordinate={{
-              latitude: -3.723,
-              longitude: -38.515,
-            }}
-            >
-            <Image 
-            source={require('../../assets/driverMarker.png')} 
-            style={MapStyles.driverMarker}/>
 
-            </Marker>
-
-            <Marker
-            description="User Location"
-            coordinate={{
-              latitude: -3.719,
-              longitude: -38.511,
-            }}
-            >
-            <Image 
-            source={require('../../assets/destination.png')} 
-            style={MapStyles.pinPoint}/>
-
-            </Marker>
-
-            <Marker
-            description="Merchant Location"
-            coordinate={{
-              latitude: -3.727,
-              longitude: -38.514,
-            }}
-            >
-            <Image 
-            source={require('../../assets/restaurant.png')} 
-            style={MapStyles.pinPoint}/>
-
-            </Marker>
 
             <Card mode='elevated' style={{marginBottom: 20}}>
             <Card.Content>
