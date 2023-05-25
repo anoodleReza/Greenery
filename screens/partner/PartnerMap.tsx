@@ -70,6 +70,7 @@ export default function PartnerMap({navigation}: {navigation: any}) {
   const [orders, setOrders] = useState<OrderData>();
   const [lat, setLat] = useState<number>(0);
   const [long, setLong] = useState<number>(0);
+  const [orderdocid, setOrderDocId] = useState<string>('');
   const fetchOrders = async () => {
     if (curUser?.uid) {
       await firestore()
@@ -80,6 +81,7 @@ export default function PartnerMap({navigation}: {navigation: any}) {
         .get()
         .then(querySnapshot => {
           const _orders: any = [];
+          setOrderDocId(querySnapshot.docs[0].id);
           querySnapshot.forEach(documentSnapshot => {
             _orders.push({
               ...documentSnapshot.data().orderData,
@@ -141,6 +143,7 @@ export default function PartnerMap({navigation}: {navigation: any}) {
     fetchCustomer();
     fetchMerchant();
   }, [orders?.userid]);
+  console.log(orders?.orderItems);
 
   return (
     <SafeAreaView style={styles.containerUncentered}>
@@ -240,7 +243,7 @@ export default function PartnerMap({navigation}: {navigation: any}) {
                 <List.Item
                   title="Confirm Delivery Order"
                   description={
-                    '800m from you - Price: IDR.' + orders?.orderTotalFee
+                    '800m from you \nPrice: IDR.' + orders?.orderTotalFee
                   }
                   descriptionNumberOfLines={3}
                   left={() => <IconButton icon="bike" size={30} />}
@@ -258,7 +261,16 @@ export default function PartnerMap({navigation}: {navigation: any}) {
                             .update({
                               Status: 'picking',
                             });
-                          setState('picking');
+                          if (orders !== undefined) {
+                            orders.orderStatus = 'picking';
+                            await firestore()
+                              .collection('orders')
+                              .doc(orderdocid)
+                              .update({
+                                orderData: orders,
+                              });
+                            setState('picking');
+                          }
                         }}>
                         Confirm
                       </Button>
@@ -274,14 +286,22 @@ export default function PartnerMap({navigation}: {navigation: any}) {
 
         {state === 'picking' ? (
           <>
-            <Card mode="elevated" style={{marginBottom: 20}}>
+            <Card mode="elevated" style={{marginBottom: 30}}>
               <Card.Content>
                 <List.Item
                   title={merchant?.Name}
                   description={
-                    merchant?.Address + ' Price: IDR.' + orders?.orderTotalFee
+                    merchant?.Address +
+                    '\nPrice: IDR.' +
+                    orders?.orderTotalFee +
+                    '\n' +
+                    orders?.orderItems.map((item: OrderItemData) => {
+                      return item.foodName + ' x' + item.foodQuantity + '\n';
+                    })
                   }
-                  descriptionNumberOfLines={3}
+                  descriptionNumberOfLines={
+                    2 + (orders?.orderItems.length || 0)
+                  }
                   left={() => (
                     <Image
                       source={require('../../assets/person.png')}
@@ -305,6 +325,16 @@ export default function PartnerMap({navigation}: {navigation: any}) {
                               Status: 'delivering',
                             });
                           setState('delivering');
+                          if (orders !== undefined) {
+                            orders.orderStatus = 'delivering';
+                            await firestore()
+                              .collection('orders')
+                              .doc(orderdocid)
+                              .update({
+                                orderData: orders,
+                              });
+                            setState('delivering');
+                          }
                         }}>
                         Finish
                       </Button>
@@ -345,7 +375,16 @@ export default function PartnerMap({navigation}: {navigation: any}) {
                             .update({
                               Status: 'available',
                             });
-                          setState('available');
+                          if (orders !== undefined) {
+                            orders.orderStatus = 'finished';
+                            await firestore()
+                              .collection('orders')
+                              .doc(orderdocid)
+                              .update({
+                                orderData: orders,
+                              });
+                            setState('available');
+                          }
                         }}>
                         Finish
                       </Button>
