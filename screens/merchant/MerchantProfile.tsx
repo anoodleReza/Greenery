@@ -118,9 +118,9 @@ export default function MercantProfile({navigation}: {navigation: any}) {
     }
   };
 
-  // useEffect(() => {
-  //   getUserLocation();
-  // }, []);
+  useEffect(() => {
+    getUserLocation();
+  }, []);
 
   return (
     <View style={styles.containerUncentered}>
@@ -175,7 +175,11 @@ export default function MercantProfile({navigation}: {navigation: any}) {
                 await firestore()
                   .collection('merchant')
                   .doc(curUser?.uid)
-                  .update({latitude: _latitude, longitude: _longitude});
+                  .update({
+                    latitude: _latitude,
+                    longitude: _longitude,
+                    restoid: name + address,
+                  });
               }}>
               <Text style={styles.textBasic}>Set Current Location</Text>
             </TouchableOpacity>

@@ -10,11 +10,33 @@ import {Button, Card, IconButton, List} from 'react-native-paper';
 import {firebase} from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
+interface OrderData {
+  orderDeliveryFee: number;
+  orderTotalFee: number;
+  orderStatus: string;
+  restoid: string;
+  timestamp: any;
+  transactionid: string;
+  userid: string;
+  orderItems: OrderItemData[];
+  driverid: string;
+  latitude: number;
+  longitude: number;
+}
+interface OrderItemData {
+  foodName: string;
+  foodPrice: number;
+  foodQuantity: number;
+  foodid: string;
+  restoid: string;
+}
+
 export default function PartnerMap({navigation}: {navigation: any}) {
   const [state, setState] = useState<string>('available');
   const curUser = firebase.auth().currentUser;
 
   //make a function to get the status o the driver in firebase
+  //make a counter variable
   const fetchStatus = async () => {
     if (curUser?.uid) {
       await firestore()
@@ -36,12 +58,89 @@ export default function PartnerMap({navigation}: {navigation: any}) {
             );
           }
         });
+      fetchOrders();
     }
   };
 
   useEffect(() => {
     fetchStatus();
   }, []);
+
+  //obtain orders assigned to the driver from firebase
+  const [orders, setOrders] = useState<OrderData>();
+  const [lat, setLat] = useState<number>(0);
+  const [long, setLong] = useState<number>(0);
+  const fetchOrders = async () => {
+    if (curUser?.uid) {
+      await firestore()
+        .collection('orders')
+        .where('orderData.driverid', '==', curUser?.uid)
+        .where('orderData.orderStatus', '!=', 'finished')
+        .limit(1)
+        .get()
+        .then(querySnapshot => {
+          const _orders: any = [];
+          querySnapshot.forEach(documentSnapshot => {
+            _orders.push({
+              ...documentSnapshot.data().orderData,
+              key: documentSnapshot.id,
+            });
+          });
+          console.log('putting orders');
+          setOrders(_orders[0]);
+          console.log(orders);
+        });
+      if (orders?.latitude !== undefined) {
+        setLat(orders.latitude);
+        setLong(orders.longitude);
+      }
+    }
+  };
+
+  //make a function to get the user information from firebase
+  const [user, setUser] = useState<any>();
+  const fetchCustomer = async () => {
+    if (orders !== undefined) {
+      await firestore()
+        .collection('user')
+        .doc(orders?.userid)
+        .get()
+        .then(documentSnapshot => {
+          const userDetails = documentSnapshot.data();
+          setUser(userDetails);
+        });
+    }
+  };
+  //make a function to get the mwechant information from firebase
+  const [merchant, setMerchant] = useState<any>();
+  const [mlat, setmLat] = useState<number>(-7.7739183333333335);
+  const [mlong, setmLong] = useState<number>(110.36834666666667);
+
+  const fetchMerchant = async () => {
+    if (orders !== undefined) {
+      await firestore()
+        .collection('merchant')
+        .where('restoid', '==', orders?.restoid)
+        .limit(1)
+        .get()
+        .then(querySnapshot => {
+          setMerchant(querySnapshot.docs[0].data());
+        });
+      if (merchant?.latitude !== undefined) {
+        setmLat(merchant.latitude);
+        setmLong(merchant.longitude);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, [curUser?.uid]);
+
+  useEffect(() => {
+    fetchCustomer();
+    fetchMerchant();
+  }, [orders?.userid]);
 
   return (
     <SafeAreaView style={styles.containerUncentered}>
@@ -53,8 +152,8 @@ export default function PartnerMap({navigation}: {navigation: any}) {
         <MapView
           style={MapStyles.flex}
           initialRegion={{
-            latitude: -3.722,
-            longitude: -38.515,
+            latitude: mlat,
+            longitude: mlong,
             latitudeDelta: 0.04,
             longitudeDelta: 0.05,
           }}>
@@ -64,8 +163,8 @@ export default function PartnerMap({navigation}: {navigation: any}) {
               <Marker
                 description="Driver Location"
                 coordinate={{
-                  latitude: -3.723,
-                  longitude: -38.515,
+                  latitude: -7.7739183333333335,
+                  longitude: 110.36834666666667,
                 }}>
                 <Image
                   source={require('../../assets/driverMarker.png')}
@@ -81,38 +180,40 @@ export default function PartnerMap({navigation}: {navigation: any}) {
               <Marker
                 description="Driver Location"
                 coordinate={{
-                  latitude: -3.723,
-                  longitude: -38.515,
+                  latitude: -7.77391833333334,
+                  longitude: 110.36834666666667,
                 }}>
                 <Image
                   source={require('../../assets/driverMarker.png')}
                   style={MapStyles.driverMarker}
                 />
               </Marker>
-
-              <Marker
-                description="User Location"
-                coordinate={{
-                  latitude: -3.719,
-                  longitude: -38.511,
-                }}>
-                <Image
-                  source={require('../../assets/destination.png')}
-                  style={MapStyles.pinPoint}
-                />
-              </Marker>
-
-              <Marker
-                description="Merchant Location"
-                coordinate={{
-                  latitude: -3.727,
-                  longitude: -38.514,
-                }}>
-                <Image
-                  source={require('../../assets/restaurant.png')}
-                  style={MapStyles.pinPoint}
-                />
-              </Marker>
+              {merchant?.latitude !== undefined ? (
+                <>
+                  <Marker
+                    description="User Location"
+                    coordinate={{
+                      latitude: lat,
+                      longitude: long,
+                    }}>
+                    <Image
+                      source={require('../../assets/destination.png')}
+                      style={MapStyles.pinPoint}
+                    />
+                  </Marker>
+                  <Marker
+                    description="Merchant Location"
+                    coordinate={{
+                      latitude: mlat,
+                      longitude: mlong,
+                    }}>
+                    <Image
+                      source={require('../../assets/restaurant.png')}
+                      style={MapStyles.pinPoint}
+                    />
+                  </Marker>
+                </>
+              ) : null}
             </>
           ) : null}
         </MapView>
@@ -138,7 +239,9 @@ export default function PartnerMap({navigation}: {navigation: any}) {
               <Card.Content>
                 <List.Item
                   title="Confirm Delivery Order"
-                  description="800m from you                  Price: $ 20.00 "
+                  description={
+                    '800m from you - Price: IDR.' + orders?.orderTotalFee
+                  }
                   descriptionNumberOfLines={3}
                   left={() => <IconButton icon="bike" size={30} />}
                   right={() => (
@@ -147,7 +250,16 @@ export default function PartnerMap({navigation}: {navigation: any}) {
                       <Button
                         mode="contained"
                         style={MapStyles.button}
-                        onPress={() => setState(state + 1)}>
+                        onPress={async () => {
+                          //update the driver status in firebase
+                          await firestore()
+                            .collection('driver')
+                            .doc(curUser?.uid)
+                            .update({
+                              Status: 'picking',
+                            });
+                          setState('picking');
+                        }}>
                         Confirm
                       </Button>
                     </View>
@@ -165,8 +277,10 @@ export default function PartnerMap({navigation}: {navigation: any}) {
             <Card mode="elevated" style={{marginBottom: 20}}>
               <Card.Content>
                 <List.Item
-                  title="Restaurant Name"
-                  description="Restaurant Address Price: $ 20.00 "
+                  title={merchant?.Name}
+                  description={
+                    merchant?.Address + ' Price: IDR.' + orders?.orderTotalFee
+                  }
                   descriptionNumberOfLines={3}
                   left={() => (
                     <Image
@@ -182,7 +296,16 @@ export default function PartnerMap({navigation}: {navigation: any}) {
                       <Button
                         mode="contained"
                         style={MapStyles.button}
-                        onPress={() => setState(state + 1)}>
+                        onPress={async () => {
+                          //update the driver status in firebase
+                          await firestore()
+                            .collection('driver')
+                            .doc(curUser?.uid)
+                            .update({
+                              Status: 'delivering',
+                            });
+                          setState('delivering');
+                        }}>
                         Finish
                       </Button>
                     </View>
@@ -198,8 +321,8 @@ export default function PartnerMap({navigation}: {navigation: any}) {
             <Card mode="elevated" style={{marginBottom: 20}}>
               <Card.Content>
                 <List.Item
-                  title="Customer Name"
-                  description="Customer Address"
+                  title={user?.Name}
+                  description={user?.Address}
                   left={() => (
                     <Image
                       source={require('../../assets/person.png')}
@@ -214,7 +337,16 @@ export default function PartnerMap({navigation}: {navigation: any}) {
                       <Button
                         mode="contained"
                         style={MapStyles.button}
-                        onPress={() => setState('available')}>
+                        onPress={async () => {
+                          //update the driver status in firebase
+                          await firestore()
+                            .collection('driver')
+                            .doc(curUser?.uid)
+                            .update({
+                              Status: 'available',
+                            });
+                          setState('available');
+                        }}>
                         Finish
                       </Button>
                     </View>
