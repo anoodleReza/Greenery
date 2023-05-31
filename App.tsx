@@ -53,6 +53,7 @@ import Search from './screens/user/Search';
 import Cart from './screens/user/Cart';
 import UserWallet from './screens/user/UserWallet';
 import UserWalletTopup from './screens/user/UserWalletTopup';
+import UserMap from './screens/user/UserMap';
 
 
 const Stack = createStackNavigator();
@@ -263,6 +264,11 @@ function App() {
           <Stack.Screen
             name="UserWalletTopup"
             component={UserWalletTopup}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="UserMap"
+            component={UserMap}
             options={{headerShown: false}}
           />
         </Stack.Navigator>
