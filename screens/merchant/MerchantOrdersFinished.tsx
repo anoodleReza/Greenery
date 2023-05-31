@@ -86,7 +86,6 @@ export default function MerchantOrdersFinished({
     };
     fetchRestaurants();
   }, []);
-
   //create an interface for orderData which is a map containing orderdeliveryfee, orderstatus, restoid, firebabse timestamp, transactionid, userid, and an array of OrderItemData
   interface OrderData {
     orderDeliveryFee: number;
@@ -106,7 +105,7 @@ export default function MerchantOrdersFinished({
     restoid: string;
   }
   const [orderData, setOrderData] = useState<OrderData[]>([]);
-  const orderType = 'Finished';
+  const orderType = 'finished';
   useEffect(() => {
     //get documents from orders collection where the restoid = restoid. restoid is located in a map called orderData
     const fetchOrders = async () => {

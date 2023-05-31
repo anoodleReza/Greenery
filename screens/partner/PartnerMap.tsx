@@ -1,6 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
-import {View, SafeAreaView, StyleSheet, Image} from 'react-native';
+import {
+  View,
+  SafeAreaView,
+  StyleSheet,
+  Image,
+  PermissionsAndroid,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {PartnerHeader} from '../PageHeader';
 import {styles} from '../Style';
@@ -9,6 +15,7 @@ import MapView, {Marker} from 'react-native-maps';
 import {Button, Card, IconButton, List} from 'react-native-paper';
 import {firebase} from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import Geolocation from '@react-native-community/geolocation';
 
 interface OrderData {
   orderDeliveryFee: number;
@@ -22,6 +29,7 @@ interface OrderData {
   driverid: string;
   latitude: number;
   longitude: number;
+  paymentMethod: string;
 }
 interface OrderItemData {
   foodName: string;
@@ -35,10 +43,60 @@ export default function PartnerMap({navigation}: {navigation: any}) {
   const [state, setState] = useState<string>('available');
   const curUser = firebase.auth().currentUser;
 
+  //create a variable that stores latitude and longitude
+  const [_latitude, setLatitude] = useState(0);
+  const [_longitude, setLongitude] = useState(0);
+
+  const getUserLocation = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Cool Photo App Camera Permission',
+          message:
+            'Cool Photo App needs access to your camera ' +
+            'so you can take awesome pictures.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if ((await granted) === PermissionsAndroid.RESULTS.GRANTED) {
+        Geolocation.getCurrentPosition(
+          position => {
+            const {latitude, longitude} = position.coords;
+            //record current location in firebase
+            firestore().collection('driver').doc(curUser?.uid).set(
+              {
+                latitude: latitude,
+                longitude: longitude,
+              },
+              {merge: true},
+            );
+            console.log('Latitude:', latitude);
+            console.log('Longitude:', longitude);
+            setLatitude(latitude);
+            setLongitude(longitude);
+          },
+          error => {
+            console.log('Error:', error.message);
+          },
+          {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+        );
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getUserLocation();
+  }, []);
+
   //make a function to get the status o the driver in firebase
   //make a counter variable
   const fetchStatus = async () => {
-    if (curUser?.uid) {
+    if (curUser?.uid || true) {
       await firestore()
         .collection('driver')
         .doc(curUser?.uid)
@@ -49,6 +107,7 @@ export default function PartnerMap({navigation}: {navigation: any}) {
           if (userDetails?.Status) {
             //if it does, set the state to the status else create status in firebase
             setState(userDetails?.Status);
+            console.log('obtained status from firebase: ', state);
           } else {
             firestore().collection('driver').doc(curUser?.uid).set(
               {
@@ -64,6 +123,7 @@ export default function PartnerMap({navigation}: {navigation: any}) {
 
   useEffect(() => {
     fetchStatus();
+    console.log('state is ', state);
   }, []);
 
   //obtain orders assigned to the driver from firebase
@@ -90,7 +150,6 @@ export default function PartnerMap({navigation}: {navigation: any}) {
           });
           console.log('putting orders');
           setOrders(_orders[0]);
-          console.log(orders);
         });
       if (orders?.latitude !== undefined) {
         setLat(orders.latitude);
@@ -143,7 +202,6 @@ export default function PartnerMap({navigation}: {navigation: any}) {
     fetchCustomer();
     fetchMerchant();
   }, [orders?.userid]);
-  console.log(orders?.orderItems);
 
   return (
     <SafeAreaView style={styles.containerUncentered}>
@@ -243,7 +301,10 @@ export default function PartnerMap({navigation}: {navigation: any}) {
                 <List.Item
                   title="Confirm Delivery Order"
                   description={
-                    '800m from you \nPrice: IDR.' + orders?.orderTotalFee
+                    '800m from you \nPrice: IDR.' +
+                    orders?.orderTotalFee +
+                    '\n' +
+                    orders?.paymentMethod
                   }
                   descriptionNumberOfLines={3}
                   left={() => <IconButton icon="bike" size={30} />}

@@ -104,7 +104,7 @@ export default function MerchantOrdersOnDelivery({
     restoid: string;
   }
   const [orderData, setOrderData] = useState<OrderData[]>([]);
-  const orderType = 'Delivering';
+  const orderType = 'delivering';
   useEffect(() => {
     //get documents from orders collection where the restoid = restoid. restoid is located in a map called orderData
     const fetchOrders = async () => {

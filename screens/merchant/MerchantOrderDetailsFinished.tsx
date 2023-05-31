@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
 import {
   View,
@@ -11,6 +11,7 @@ import {
 import {styles} from '../Style';
 //material ui + form
 import {Divider, Text} from 'react-native-paper';
+import firestore from '@react-native-firebase/firestore';
 
 //import other pages
 import MerchantHeader from '../PageHeader';
@@ -36,17 +37,40 @@ export default function MerchantOrderDetailsFinished({
   route: any;
   navigation: any;
 }) {
-  // const orderid = JSON.stringify(route.params.orderid).replace(/"/g, '');
-  // const customerid = JSON.stringify(route.params.customerid).replace(/"/g, '');
-  // const totalFee = JSON.stringify(route.params.totalFee).replace(/"/g, '');
-  // const orderItems = JSON.stringify(route.params.orderItems).replace(/"/g, '');
-  // console.log(orderid, customerid, totalFee, orderItems);
-
   //create a use state for orderid, customerid, totalFee, orderItems
   const orderid = route.params.orderid;
   const customerid = route.params.customerid;
   const totalFee = Number(route.params.totalFee);
   const orderItems = route.params.orderItems;
+
+  const [user, setUser] = useState<any>();
+  const [user_name, setUser_name] = useState('Name');
+  const [user_address, setUser_address] = useState('Address');
+  const fetchCustomer = async () => {
+    await firestore()
+      .collection('user')
+      .doc(customerid)
+      .get()
+      .then(documentSnapshot => {
+        const userDetails = documentSnapshot.data();
+        setUser(userDetails);
+      });
+  };
+
+  useEffect(() => {
+    fetchCustomer();
+  }, []);
+
+  useEffect(() => {
+    if (user?.Name !== undefined) {
+      setUser_name(user.Name);
+      setUser_address(user.Address);
+    }
+  }, [user]);
+
+  console.log(user);
+  console.log(user_name);
+  console.log(user_address);
 
   return (
     <View style={styles.containerUncentered}>
@@ -97,16 +121,17 @@ export default function MerchantOrderDetailsFinished({
                 />
               </View>
 
-              <View style={{marginLeft: 10, justifyContent: 'center'}}>
-                <Text style={{fontWeight: 'bold'}}>Name</Text>
-                <Text>Address</Text>
+              <View
+                style={{marginLeft: 10, justifyContent: 'center', width: 185}}>
+                <Text style={{fontWeight: 'bold'}}>{user_name}</Text>
+                <Text>{user_address}</Text>
               </View>
 
               <View
                 style={{
                   alignItems: 'center',
                   flexDirection: 'row',
-                  marginLeft: 150,
+                  marginLeft: 15,
                 }}>
                 <TouchableOpacity>
                   <View style={styles2.SmallCircle}>
