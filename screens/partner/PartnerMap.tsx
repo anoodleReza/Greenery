@@ -93,8 +93,6 @@ export default function PartnerMap({navigation}: {navigation: any}) {
     getUserLocation();
   }, []);
 
-  //make a function to get the status o the driver in firebase
-  //make a counter variable
   const fetchStatus = async () => {
     if (curUser?.uid || true) {
       await firestore()

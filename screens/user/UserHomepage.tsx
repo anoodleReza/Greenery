@@ -78,8 +78,11 @@ export default function UserHomepage({navigation}: {navigation: any}) {
                 name="Promo"
               />
               <ButtonBox
-                image={require('../../assets/stars.png')}
-                name="Most Popular"
+                image={require('../../assets/map.png')}
+                name="Track Order"
+                navigation={() => {
+                  navigation.push('UserMap');
+                }}
               />
             </View>
           </View>
