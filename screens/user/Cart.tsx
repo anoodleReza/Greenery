@@ -749,6 +749,8 @@ export default function Cart({navigation}: {navigation: any}) {
               totalFee={grandTotal}
             />
 
+            <Text onPress={()=>{ navigation.push('UserMap')}}>map</Text>
+
             {/* Navigation */}
             <UserNavigation navigation={navigation} />
           </View>
