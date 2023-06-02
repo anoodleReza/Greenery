@@ -83,7 +83,6 @@ const Menu = (props: {
             .collectionGroup('fooditems')
             .where('name', '==', props.MenuName)
             .get();
-          console.log(docSubcollection.docs[0].data());
           // props.navigation.push('RestaurantPage', {
           //   restoName: docSubcollection.docs[0].data().Name,
           //   restoAddress: docSubcollection.docs[0].data().Address,
@@ -163,6 +162,7 @@ export default function Search({
         .collectionGroup('fooditems')
         .where('name', '==', query)
         .get();
+
       //map the food into array
       const fetchedItems = (await docSubcollection).docs.map(
         doc => doc.data() as FoodData,
@@ -175,7 +175,31 @@ export default function Search({
   }, [query]);
 
   // Map restaurant array into the components
-
+  const RestoList = () => {
+    return resto.map(element => {
+      return (
+        <View key={element.key}>
+          <Restaurant
+            navigation={() => {
+              navigation.dispatch(
+                navigation.push('RestaurantPage', {
+                  restoName: element.Name,
+                  restoAddress: element.Address,
+                  restoCategory: element.Category,
+                  restoImage: element.image,
+                }),
+              );
+            }}
+            RestaurantName={element.Name}
+            FoodCategory={element.Category}
+            eta={30}
+            distance={1.5}
+            image={element.image}
+          />
+        </View>
+      );
+    });
+  };
   // Map food array into the components
   const FoodList = () => {
     return foods.map(element => {
@@ -218,7 +242,6 @@ export default function Search({
 
             <Divider style={{marginTop: 15}} />
           </View>
-
           {/* Navigation */}
           <UserNavigation navigation={navigation} />
         </View>

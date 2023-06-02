@@ -54,10 +54,15 @@ export default function UserMap({navigation}: {navigation: any}) {
     latitude: 0,
     longitude: 0,
   });
+  const [description, setDescription] = useState<string>(
+    'Driver Name Plate Number',
+  );
 
   // Google API Key
   const GOOGLE_MAPS_APIKEY = 'AIzaSyDt3gq9B06vP0LuF24Zb2GmsARP3stipaw';
   const curUser = firebase.auth().currentUser;
+
+  const randomTime = Math.floor(Math.random() * 25) + 5;
 
   //Fetching order from the database
   //obtain orders assigned to the driver from firebase
@@ -98,6 +103,14 @@ export default function UserMap({navigation}: {navigation: any}) {
           key: documentSnapshot.id,
         });
         setDriver(_driver[0]);
+        setDescription(
+          _driver[0].Name +
+            ' ' +
+            _driver[0].VehiclePlate +
+            '\n' +
+            randomTime +
+            ' minutes away',
+        );
       });
   };
   //make a function to get the mwechant information from firebase
@@ -239,7 +252,7 @@ export default function UserMap({navigation}: {navigation: any}) {
                 <Card.Content>
                   <List.Item
                     title="Driver is on the way to the restaurant"
-                    description="Driver Name Plate Number"
+                    description={description}
                     descriptionNumberOfLines={3}
                     titleNumberOfLines={3}
                     left={() => (
@@ -271,8 +284,8 @@ export default function UserMap({navigation}: {navigation: any}) {
                 <Card.Content>
                   <List.Item
                     title="Driver has arrived at the restaurant"
-                    description="Driver Name Plate Number"
-                    descriptionNumberOfLines={3}
+                    description={description}
+                    descriptionNumberOfLines={4}
                     titleNumberOfLines={3}
                     left={() => (
                       <Image
@@ -302,8 +315,7 @@ export default function UserMap({navigation}: {navigation: any}) {
                 <Card.Content>
                   <List.Item
                     title="Driver is on the way to your home"
-                    description="Driver Name Plate Number "
-                    descriptionNumberOfLines={3}
+                    description={description}
                     titleNumberOfLines={3}
                     left={() => (
                       <Image

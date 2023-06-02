@@ -114,7 +114,7 @@ export default function BestSeller({navigation}: {navigation: any}) {
           {/* Banner */}
           <UserHeader navigation={navigation} />
           {/* Content */}
-          <View>
+          <View style={{minHeight: 700}}>
             <View>
               <Text style={styles.homepagetext}>Bestsellers</Text>
               <Text style={{marginLeft: 30}}>

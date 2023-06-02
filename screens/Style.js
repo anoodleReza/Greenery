@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
   },
   basicContainer: {
     flex: 1,
-    minHeight: 500,
+    minHeight: 700,
   },
   paperinput: {
     width: 300,
