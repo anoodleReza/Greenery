@@ -54,6 +54,7 @@ import Cart from './screens/user/Cart';
 import UserWallet from './screens/user/UserWallet';
 import UserWalletTopup from './screens/user/UserWalletTopup';
 import UserMap from './screens/user/UserMap';
+import UserFinishedOrder from './screens/user/UserFinishedOrder';
 
 
 const Stack = createStackNavigator();
@@ -269,6 +270,11 @@ function App() {
           <Stack.Screen
             name="UserMap"
             component={UserMap}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="UserFinishedOrder"
+            component={UserFinishedOrder}
             options={{headerShown: false}}
           />
         </Stack.Navigator>
