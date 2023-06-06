@@ -83,12 +83,12 @@ const Menu = (props: {
             .collectionGroup('fooditems')
             .where('name', '==', props.MenuName)
             .get();
-          // props.navigation.push('RestaurantPage', {
-          //   restoName: docSubcollection.docs[0].data().Name,
-          //   restoAddress: docSubcollection.docs[0].data().Address,
-          //   restoCategory: docSubcollection.docs[0].data().Category,
-          //   restoImage: docSubcollection.docs[0].data().image,
-          // });
+           props.navigation.push('RestaurantPage', {
+             restoName: docSubcollection.docs[0].data().Name,
+             restoAddress: docSubcollection.docs[0].data().Address,
+             restoCategory: docSubcollection.docs[0].data().Category,
+             restoImage: docSubcollection.docs[0].data().image,
+           });
         };
         fetchParent();
       }}>
