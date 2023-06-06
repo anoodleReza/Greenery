@@ -582,6 +582,7 @@ export default function Cart({navigation}: {navigation: any}) {
             <OrderBar total={grandTotal} navigation={navigation} />
 
             <Text onPress={()=>{ navigation.push('UserMap')}}>map</Text>
+            <Text onPress={()=>{ navigation.push('UserFinishedOrder')}}>finished order</Text>
 
             {/* Navigation */}
             <UserNavigation navigation={navigation} />
