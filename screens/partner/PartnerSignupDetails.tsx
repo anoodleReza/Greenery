@@ -63,6 +63,9 @@ export default function PartnerSignupDetails({navigation}: {navigation: any}) {
                 PhoneNumber: values.PhoneNumber,
                 VehiclePlate: values.VehiclePlate,
                 VehicleDescription: values.VehicleDescription,
+                latitude: -7.7739,
+                longitude: 110.3741,
+                status: 'available',
               })
               .then(() => {
                 //update successful

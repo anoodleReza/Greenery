@@ -122,7 +122,7 @@ const OrderBar = (props: {
       transactionID: transactionID,
       restoid: props.cartItems[0].restoid,
       userid: curUser?.uid,
-      orderStatus: 'Received',
+      orderStatus: 'received',
       orderTotal: props.total,
       orderItems: orderItems,
       orderDeliveryFee: props.deliveryFee,
@@ -245,26 +245,28 @@ const OrderBar = (props: {
     }
 
     //if using cash, just proceed with the order
-    Alert.alert(
-      'Confirm Payment',
-      'Are you sure you want to pay with cash?',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        //if confirm, update the balance in firestore
-        {
-          text: 'Confirm',
-          onPress: () => {
-            console.log('Order Success!');
-            onSuccess();
+    if (paymentMethod === 'Cash') {
+      Alert.alert(
+        'Confirm Payment',
+        'Are you sure you want to pay with cash?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
           },
-        },
-      ],
-      {cancelable: false},
-    );
+          //if confirm, update the balance in firestore
+          {
+            text: 'Confirm',
+            onPress: () => {
+              console.log('Order Success!');
+              onSuccess();
+            },
+          },
+        ],
+        {cancelable: false},
+      );
+    }
   };
 
   //create a variable that stores latitude and longitude
@@ -537,6 +539,37 @@ export default function Cart({navigation}: {navigation: any}) {
   const [discSubtotal, setDiscSubtotal] = useState<number>(0);
   const [discDeliveryFee, setDiscDeliveryFee] = useState<number>(5000);
 
+  //obtain resto information and user information
+  interface infoBox {
+    Name: string;
+    Address: string;
+  }
+
+  const [userInfo, setUserInfo] = useState<infoBox>();
+  const [restoInfo, setRestoInfo] = useState<infoBox>();
+
+  const getUserInfo = async () => {
+    const userDocument = await firestore()
+      .collection('user')
+      .doc(curUser?.uid)
+      .get();
+    const curUserInfo = userDocument.data() as infoBox;
+    setUserInfo(curUserInfo);
+  };
+  const getRestoInfo = async () => {
+    const restoDocument = await firestore()
+      .collection('merchant')
+      .where('restoid', '==', item[0].restoid)
+      .limit(2)
+      .get();
+    const curRestoInfo = restoDocument.docs[0].data() as infoBox;
+    setRestoInfo(curRestoInfo);
+  };
+  useEffect(() => {
+    getUserInfo();
+    getRestoInfo();
+  }, [item]);
+
   //DISPLAY CART LIST
   // eslint-disable-next-line react/no-unstable-nested-components
   const CartList = () => {
@@ -677,7 +710,7 @@ export default function Cart({navigation}: {navigation: any}) {
               }}>
               <View style={{padding: 20, alignItems: 'center'}}>
                 <Text style={{fontWeight: 'bold', fontSize: 14}}>
-                  Restaurant Name
+                  {restoInfo?.Name || 'Restaurant Name'}
                 </Text>
                 <Text>Distance: 2.5 km</Text>
               </View>
@@ -685,10 +718,12 @@ export default function Cart({navigation}: {navigation: any}) {
             {/* Content */}
             {/* Location Address */}
             <AddressPlace
-              restaurantAddress="Restaurant Address"
-              restaurantDetailedAddress="Restaurant Detailed Address"
-              customerLocationName="Customer Location Name"
-              customerLocationAddress="Customer Location Address"
+              restaurantAddress={restoInfo?.Name || 'Restaurant Name'}
+              restaurantDetailedAddress={
+                restoInfo?.Address || 'Restaurant Address'
+              }
+              customerLocationName={userInfo?.Name || 'Customer Name'}
+              customerLocationAddress={userInfo?.Address || 'Customer Address'}
             />
 
             {/* Order Summary */}
@@ -748,9 +783,6 @@ export default function Cart({navigation}: {navigation: any}) {
               deliveryFee={deliveryFee}
               totalFee={grandTotal}
             />
-
-            <Text onPress={()=>{ navigation.push('UserMap')}}>map</Text>
-
             {/* Navigation */}
             <UserNavigation navigation={navigation} />
           </View>

@@ -141,7 +141,7 @@ export default function UserProfile({navigation}: {navigation: any}) {
                       console.error('Error updating balance: ', error);
                     });
                 }}>
-                <Text style={styles.textBasic}>Debug: Create Wallet</Text>
+                <Text style={styles.textBasic}>Create Wallet</Text>
               </TouchableOpacity>
             </View>
           </View>

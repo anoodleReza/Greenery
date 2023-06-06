@@ -44,18 +44,6 @@ export default function Homepage({navigation}: {navigation: any}) {
           mode="contained">
           User Log In
         </Button>
-        <Button
-          onPress={() => {
-            navigation.dispatch(StackActions.replace('MerchantDetails'));
-          }}
-          style={styles.buttonDefault}
-          textColor="black"
-          mode="contained">
-          Dev: Merchant Details
-        </Button>
-
-
-
       </View>
     </View>
   );

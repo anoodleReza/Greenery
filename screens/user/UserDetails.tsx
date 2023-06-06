@@ -2,7 +2,7 @@
 //basic
 import React from 'react';
 import 'react-native-gesture-handler';
-import {View, Image} from 'react-native';
+import {View, Image, ScrollView} from 'react-native';
 import {StackActions} from '@react-navigation/native';
 //material ui + form
 import {Button, Text, TextInput} from 'react-native-paper';
@@ -92,7 +92,7 @@ export default function UserDetails({navigation}: {navigation: any}) {
           touched,
           errors,
         }) => (
-          <>
+          <ScrollView>
             <Text style={styles.Subheading}>User Information:</Text>
             <TextInput
               style={styles.input}
@@ -101,7 +101,7 @@ export default function UserDetails({navigation}: {navigation: any}) {
               value={values.Name}
               onChangeText={handleChange('Name')}
               onBlur={handleBlur('Name')}
-              error={touched.Address && Boolean(errors.Name)}
+              error={touched.Name && Boolean(errors.Name)}
             />
             <TextInput
               style={styles.input}
@@ -247,7 +247,7 @@ export default function UserDetails({navigation}: {navigation: any}) {
               onPress={handleSubmit}>
               Confirm
             </Button>
-          </>
+          </ScrollView>
         )}
       </Formik>
     </View>

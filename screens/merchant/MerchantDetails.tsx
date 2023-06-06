@@ -71,6 +71,7 @@ export default function MerchantDetails({navigation}: {navigation: any}) {
                 Address: values.Address,
                 Opening: values.Opening,
                 Closing: values.Closing,
+                restoid: values.Name + values.Address,
               })
               .then(() => {
                 console.log('User updated!');
