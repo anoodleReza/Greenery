@@ -782,6 +782,9 @@ export default function Cart({navigation}: {navigation: any}) {
               foodItems={cartItem}
               deliveryFee={deliveryFee}
               totalFee={grandTotal}
+              latitude={-7.78}
+              longitude={110.37}
+              paymentMethod={'Cash'}
             />
             {/* Navigation */}
             <UserNavigation navigation={navigation} />

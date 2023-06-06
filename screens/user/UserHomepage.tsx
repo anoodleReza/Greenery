@@ -63,7 +63,10 @@ export default function UserHomepage({navigation}: {navigation: any}) {
 
               <ButtonBox
                 image={require('../../assets/Map2.png')}
-                name="Near Me"
+                name="Finished Orders"
+                navigation={() => {
+                  navigation.push('UserFinishedOrder');
+                }}
               />
             </View>
 
