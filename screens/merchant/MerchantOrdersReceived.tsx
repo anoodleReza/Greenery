@@ -44,7 +44,8 @@ export default function MerchantOrdersReceived({
           </View>
 
           <View style={{marginRight: 40, justifyContent: 'space-around'}}>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={()=>handleConfirmOrder(props.orderID)}>
               <View
                 style={{
                   borderColor: 'black',
@@ -85,6 +86,49 @@ export default function MerchantOrdersReceived({
       </View>
     );
   };
+
+  async function assignRandomDriver() {
+    // Retrieve the list of drivers from the Firestore database
+    const driversSnapshot = await firestore().collection('drivers').get();
+    const drivers = driversSnapshot.docs.map((doc) => doc.data());
+
+    if (drivers.length === 0) {
+      // No drivers available
+      throw new Error('No drivers available');
+    }
+  
+    // Generate a random index to select a driver
+    const randomIndex = Math.floor(Math.random() * drivers.length);
+  
+    // Return the randomly assigned driver
+    return drivers[randomIndex];
+  }
+
+  function handleConfirmOrder(orderID) {
+    assignRandomDriver()
+      .then((assignedDriver) => {
+        // Perform other necessary actions like updating the order status and assigning the driver to the order in the database
+        firestore()
+          .collection('orders')
+          .doc(orderID)
+          .update({
+            orderStatus: 'Confirmed',
+            assignedDriver: assignedDriver.driverId,
+          })
+          .then(() => {
+            // Success message or navigation to the next screen
+            console.log('Order confirmed. Driver assigned:', assignedDriver);
+          })
+          .catch((error) => {
+            // Error handling
+            console.log('Error confirming order:', error);
+          });
+      })
+      .catch((error) => {
+        // Error handling
+        console.log('Error assigning random driver:', error);
+      });
+  }
 
   const [restoid, setRestoid] = useState('');
   //get merchant document from merchant colelction in firstore
