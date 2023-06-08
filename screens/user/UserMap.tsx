@@ -12,7 +12,7 @@ import {UserHeader} from '../PageHeader';
 import {styles} from '../Style';
 import {UserNavigation} from '../NavigationBar';
 import MapView, {Marker} from 'react-native-maps';
-import {Button, Card, List} from 'react-native-paper';
+import {ActivityIndicator, Button, Card, List, Text} from 'react-native-paper';
 import MapViewDirections from 'react-native-maps-directions';
 import {firebase} from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -339,7 +339,12 @@ export default function UserMap({navigation}: {navigation: any}) {
           ) : null}
           {/* DELIVERING ORDER STATE */}
         </View>
-      ) : null}
+      ) : (
+        <View style={styles.contentBox}>
+          <ActivityIndicator size="large" color="#00BF63" />
+          <Text style={{textAlign: 'center'}}>Waiting for orders...</Text>
+        </View>
+      )}
 
       {/* Navigation */}
       <UserNavigation navigation={navigation} />

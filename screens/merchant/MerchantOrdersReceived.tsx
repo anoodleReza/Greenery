@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
-import {View, TouchableOpacity, ScrollView} from 'react-native';
+import {View, TouchableOpacity} from 'react-native';
 import {styles} from '../Style';
 //material ui + form
 import {Divider, Text} from 'react-native-paper';
@@ -44,8 +44,7 @@ export default function MerchantOrdersReceived({
           </View>
 
           <View style={{marginRight: 40, justifyContent: 'space-around'}}>
-            <TouchableOpacity
-              onPress={()=>handleConfirmOrder(props.orderID)}>
+            <TouchableOpacity onPress={() => handleConfirmOrder(props.orderID)}>
               <View
                 style={{
                   borderColor: 'black',
@@ -89,42 +88,74 @@ export default function MerchantOrdersReceived({
 
   async function assignRandomDriver() {
     // Retrieve the list of drivers from the Firestore database
-    const driversSnapshot = await firestore().collection('drivers').get();
-    const drivers = driversSnapshot.docs.map((doc) => doc.data());
+    const driversSnapshot = await firestore()
+      .collection('driver')
+      .where('Status', '==', 'available')
+      .get();
+
+    //map driver documents to an array of driver data and the docid as driverid
+    const drivers = driversSnapshot.docs.map(doc => {
+      return {
+        driverId: doc.id,
+        ...doc.data(),
+      };
+    });
 
     if (drivers.length === 0) {
       // No drivers available
       throw new Error('No drivers available');
     }
-  
+
     // Generate a random index to select a driver
     const randomIndex = Math.floor(Math.random() * drivers.length);
-  
+
     // Return the randomly assigned driver
     return drivers[randomIndex];
   }
 
   function handleConfirmOrder(orderID) {
+    console.log(orderID);
     assignRandomDriver()
-      .then((assignedDriver) => {
+      .then(assignedDriver => {
         // Perform other necessary actions like updating the order status and assigning the driver to the order in the database
         firestore()
           .collection('orders')
           .doc(orderID)
-          .update({
-            orderStatus: 'Confirmed',
-            assignedDriver: assignedDriver.driverId,
-          })
-          .then(() => {
-            // Success message or navigation to the next screen
-            console.log('Order confirmed. Driver assigned:', assignedDriver);
-          })
-          .catch((error) => {
-            // Error handling
-            console.log('Error confirming order:', error);
+          .get()
+          .then(doc => {
+            if (!doc.exists) {
+              console.log('No such document!');
+            } else {
+              const data = doc.data();
+              console.log('Document data:', data);
+              data.orderData.orderStatus = 'processing';
+              data.orderData.driverid = assignedDriver.driverId;
+              console.log('Document data:', data);
+
+              firestore()
+                .collection('orders')
+                .doc(orderID)
+                .update(data)
+                .then(() => {
+                  // Success message or navigation to the next screen
+                  console.log(
+                    'Order confirmed. Driver assigned:',
+                    assignedDriver.driverId,
+                  );
+                })
+                .catch(error => {
+                  // Error handling
+                  console.log('Error confirming order:', error);
+                });
+            }
           });
+        //update driver status to pending
+        firestore()
+          .collection('driver')
+          .doc(assignedDriver.driverId)
+          .update({Status: 'pending'});
       })
-      .catch((error) => {
+      .catch(error => {
         // Error handling
         console.log('Error assigning random driver:', error);
       });
@@ -150,7 +181,7 @@ export default function MerchantOrdersReceived({
     orderStatus: string;
     restoid: string;
     timestamp: any;
-    transactionid: string;
+    transactionID: string;
     userid: string;
     orderItems: OrderItemData[];
   }
@@ -198,11 +229,11 @@ export default function MerchantOrdersReceived({
         <View style={{marginLeft: 30}}>
           {orderData.map(order => {
             return (
-              <View key={order.transactionid}>
+              <View key={order.transactionID}>
                 <OrderInformation
                   userid={order.userid}
                   totalFee={order.orderTotalFee}
-                  orderID={order.transactionid}
+                  orderID={order.transactionID}
                   orderedMenu={order.orderItems as OrderItemData[]}
                 />
               </View>

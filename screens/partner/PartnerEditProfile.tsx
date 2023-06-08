@@ -112,7 +112,7 @@ export default function PartnerEditProfile({navigation}: {navigation: any}) {
                 firestore()
                   .collection('partner')
                   .doc(curUser?.uid)
-                  .set({
+                  .update({
                     VehicleType: values.VehicleType,
                     VehicleDescription: values.VehicleDescription,
                     VehiclePlateNumber: values.VehiclePlateNumber,
