@@ -197,7 +197,7 @@ export default function MerchantAddMenu({
                   .doc(curUser?.uid)
                   .collection('fooditems')
                   .doc(_name)
-                  .update({
+                  .set({
                     stock: _stock,
                     name: _name,
                     category: _category,
@@ -215,8 +215,8 @@ export default function MerchantAddMenu({
                     );
                     navigation.dispatch(StackActions.pop(1));
                   })
-                  .catch(() => {
-                    console.log('error writing food data');
+                  .catch(e => {
+                    console.log('error writing food data: ', e);
                   });
               }
             }}>
