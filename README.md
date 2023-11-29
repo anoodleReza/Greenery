@@ -6,9 +6,13 @@ Greenery is an all-in-one application for customers, couriers, and merchants bui
 
 ### Team Members
 Ahmad Fadhil Bukhori
+
 Julian Emir Prawira
+
 Muhammad Zaky Firdaus 
+
 Reza Aurelio Brilliansah
+
 Shreshta Adyaksa Hardono 
 
 ## Login and Sign Up Page
