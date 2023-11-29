@@ -1,4 +1,15 @@
 # Greenery
+### About the Project
+Greenery believes that healthy foods should be accessible to everyone, regardless of their preferences and limitations. We hope that this application serves to reach this goal, and help spread healthy foods into everyone’s plates.
+
+Greenery is an all-in-one application for customers, couriers, and merchants built using React Native and Firebase. It has a simple and seamless UI. We will be making an E-Wallet in which customers may use to make transactions.
+
+### Team Members
+Ahmad Fadhil Bukhori
+Julian Emir Prawira
+Muhammad Zaky Firdaus 
+Reza Aurelio Brilliansah
+Shreshta Adyaksa Hardono 
 
 ## Login and Sign Up Page
 Upon turning on the Greenery Application, the user may login as either the Merchant, Driver (Partner), or Customer (User) login.
